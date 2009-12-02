@@ -1,0 +1,71 @@
+name:                   hla-rti13
+version:                0.0.0.1
+stability:              experimental
+
+cabal-version:          >= 1.2
+build-type:             Simple
+
+author:                 James Cook <your email here>
+maintainer:             James Cook <your email here>
+license:                PublicDomain
+homepage:               /dev/null
+
+category:               Unclassified
+synopsis:               HLA RTI 1.3NG/DLC bindings
+description:            HLA RTI bindings for DMSO RTI 1.3NG or the C++ 
+                        Dynamic Link Compatible interface standard
+
+Flag dlc-api
+  description:          Use the DLC API (untested!)
+  default:              False
+
+Flag rti-ng-matrex
+  description:          Use the RTI-NG API version included with the MATREX 
+                        tools (v4.1.1 is what I developed against)
+  default:              True
+
+Flag debug
+  default:              True
+
+Library
+  hs-source-dirs:       src
+  exposed-modules:      Network.HLA.RTI13
+                        Network.HLA.RTI13.BaseTypes
+                        Network.HLA.RTI13.FederateAmbServices
+                        Network.HLA.RTI13.FedTime
+                        Network.HLA.RTI13.HsFederateAmbassador
+                        Network.HLA.RTI13.NullFederateAmbassador
+                        Network.HLA.RTI13.RTIAmbServices
+                        Network.HLA.RTI13.RTIAmbServices.FFI
+                        Network.HLA.RTI13.RTIException
+                        Network.HLA.RTI13.RTITypes
+                        Network.HLA.RTI13.RTITypes.Types
+                        Network.HLA.RTI13.RTITypes.FFI
+                        
+  build-depends:        base >= 4, containers, syb, mtl,
+                        bytestring,
+                        stateref, mutable-containers
+  
+  include-dirs:         include
+  
+  if flag(dlc-api)
+    include-dirs:       include/dlc
+    cc-options:         -DDLC_API
+    extra-libraries:    rti13, fedtime13
+
+  if flag(rti-ng-matrex)
+    include-dirs:       include/rti-ng-matrex
+    cc-options:         -DRTI_NG_MATREX_API
+    extra-libraries:    RTI-NG, fedtime
+  
+  if flag(debug)
+    cc-options:         -DDEBUG
+  
+  c-sources:            cbits/hsFederateAmb.cpp
+                        cbits/wrap/BaseTypes.cpp
+                        cbits/wrap/fedtime.cpp
+                        cbits/wrap/NullFederateAmbassador.cpp
+                        cbits/wrap/RTIambServices.cpp
+                        cbits/wrap/RTItypes.cpp
+                        
+  cc-options:           -DRTI_USES_STD_FSTREAM -DREENTRANT -DRTI_HAS_THREADS -DPOSIX_PTHREAD_SEMANTICS

@@ -41,16 +41,16 @@ public:
   virtual void        throwSelf() const         = 0;
 };
 
-#define RTI_EXCEPT(A)   \
-class A : public Exception {       \
-public: \
-  static RTI_EXPORT const char *_ex;  \
-  A (const char *reason) : Exception (reason)  { _name = _ex; }   \
-  A (ULong serial, const char *reason=NULL)        \
-    : Exception (serial, reason)  { _name = _ex; }        \
-  A (A const & toCopy) : Exception(toCopy) { _name = _ex; } \
-  Exception * cloneSelf() const throw() { return (new A(_reason)); } \
-  void        throwSelf() const         { throw *this; } \
+#define RTI_EXCEPT(A)                                                 \
+class A : public Exception {                                          \
+public:                                                               \
+  static RTI_EXPORT const char *_ex;                                  \
+  A (const char *reason) : Exception (reason)  { _name = _ex; }       \
+  A (ULong serial, const char *reason=NULL)                           \
+    : Exception (serial, reason)  { _name = _ex; }                    \
+  A (A const & toCopy) : Exception(toCopy) { _name = _ex; }           \
+  Exception * cloneSelf() const throw() { return (new A(_reason)); }  \
+  void        throwSelf() const         { throw *this; }              \
 };
 
 } // End of namespace rti13
