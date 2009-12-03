@@ -20,7 +20,7 @@ ccall void wrap_registerFederationSynchronizationPoint_with_syncSet(void *amb, c
 
 ccall void wrap_synchronizationPointAchieved(void *amb, const char *label, void **out_exc);
 
-ccall void wrap_requestFederationSave_at_time(void *amb, const char *label, void *theTime, void **out_exc);
+ccall void wrap_requestFederationSaveAtTime(void *amb, const char *label, void *theTime, void **out_exc);
 ccall void wrap_requestFederationSave(void *amb, const char *label, void **out_exc);
 
 ccall void wrap_federateSaveBegun(void *amb, void **out_exc);
@@ -52,47 +52,21 @@ ccall void wrap_unsubscribeInteractionClass(void *amb, RTI_ULong theClass, void 
 ccall RTI_ULong wrap_registerObjectInstance_withName(void *amb, RTI_ULong theClass, const char *theObject, void **out_exc);
 ccall RTI_ULong wrap_registerObjectInstance(void *amb, RTI_ULong theClass, void **out_exc);
 
-///// EventRetractionHandle                               // returned C3
-///// updateAttributeValues (
-/////         ObjectHandle                 theObject,     // supplied C1
-/////   const AttributeHandleValuePairSet& theAttributes, // supplied C4
-/////   const FedTime&                     theTime,       // supplied C4
-/////   const char                        *theTag)        // supplied C4
-
-///// void updateAttributeValues (
-/////         ObjectHandle                 theObject,     // supplied C1
-/////   const AttributeHandleValuePairSet& theAttributes, // supplied C4
-/////   const char                        *theTag)        // supplied C4
+ccall void wrap_updateAttributeValuesAtTime(void *amb, RTI_ULong theObject, void *theAttributes, void *theTime, const char *theTag, RTI_ULong *out_uniq, RTI_ULong *out_fedHandle, void **out_exc);
+ccall void wrap_updateAttributeValues(void *amb, RTI_ULong theObject, void *theAttributes, const char *theTag, void **out_exc);
 
 ccall RTI_ULong wrap_sendInteractionAtTime(void *amb, RTI_ULong theInteraction, void *theParameters, void *theTime, const char *theTag, RTI_ULong *out_uniq, RTI_ULong *out_fedHandle, void **out_exc);
 ccall void wrap_sendInteraction(void *amb, RTI_ULong theInteraction, void *theParameters, const char *theTag, void **out_exc);
 
-///// EventRetractionHandle                 // returned C3
-///// deleteObjectInstance (
-/////         ObjectHandle    theObject,    // supplied C1
-/////   const FedTime&        theTime,      // supplied C4
-/////   const char           *theTag)       // supplied C4
+ccall void wrap_deleteObjectInstanceAtTime(void *amb, RTI_ULong theObject, void *theTime, const char *theTag, RTI_ULong *out_uniq, RTI_ULong *out_fedHandle, void **out_exc);
+ccall void wrap_deleteObjectInstance(void *amb, RTI_ULong theObject, const char *theTag, void **out_exc);
 
-///// void deleteObjectInstance (
-/////         ObjectHandle    theObject,    // supplied C1
-/////   const char           *theTag)       // supplied C4
+ccall void wrap_localDeleteObjectInstance(void *amb, RTI_ULong theObject, void **out_exc);
 
-///// void localDeleteObjectInstance (
-/////   ObjectHandle    theObject)       // supplied C1
+ccall void wrap_changeAttributeTransportationType(void *amb, RTI_ULong theObject, void *theAttributes, RTI_ULong theType, void **out_exc);
+ccall void wrap_changeInteractionTransportationType(void *amb, RTI_ULong theClass, RTI_ULong theType, void **out_exc);
 
-///// void changeAttributeTransportationType (
-/////         ObjectHandle             theObject,     // supplied C1
-/////   const AttributeHandleSet&      theAttributes, // supplied C4
-/////         TransportationHandle     theType)       // supplied C1
-
-///// void changeInteractionTransportationType (
-/////   InteractionClassHandle theClass, // supplied C1
-/////   TransportationHandle   theType)  // supplied C1
-
-///// void requestObjectAttributeValueUpdate (
-/////         ObjectHandle        theObject,     // supplied C1
-/////   const AttributeHandleSet& theAttributes) // supplied C4
-
+ccall void wrap_requestObjectAttributeValueUpdate(void *amb, RTI_ULong theObject, void *attributeList, void **out_exc);
 ccall void wrap_requestClassAttributeValueUpdate(void *amb, RTI_ULong theClass, void *attributeList, void **out_exc);
 
 ///////////////////////////////////

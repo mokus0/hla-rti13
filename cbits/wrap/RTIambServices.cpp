@@ -47,7 +47,7 @@ ccall void wrap_synchronizationPointAchieved(void *amb, const char *label, void 
     invoke(synchronizationPointAchieved(label))
 }
 
-ccall void wrap_requestFederationSave_at_time(void *amb, const char *label, void *theTime, void **out_exc) {
+ccall void wrap_requestFederationSaveAtTime(void *amb, const char *label, void *theTime, void **out_exc) {
     invoke(requestFederationSave(label, *(rti13::FedTime *)theTime))
 }
 
@@ -130,6 +130,25 @@ ccall RTI_ULong wrap_registerObjectInstance(void *amb, RTI_ULong theClass, void 
     invoke(registerObjectInstance(theClass))
 }
 
+ccall void wrap_updateAttributeValuesAtTime(void *amb, RTI_ULong theObject, void *theAttributes, void *theTime, const char *theTag, RTI_ULong *out_uniq, RTI_ULong *out_fedHandle, void **out_exc) {
+    wrap(
+        rti13::EventRetractionHandle erh = ((rti13::RTIambassador *)amb)->updateAttributeValues(
+            theObject, 
+            *(rti13::AttributeHandleValuePairSet *)theAttributes, 
+            *(rti13::FedTime *)theTime,
+            theTag);
+        *out_uniq       = erh.theSerialNumber;
+        *out_fedHandle  = erh.sendingFederate;
+    )
+}
+
+ccall void wrap_updateAttributeValues(void *amb, RTI_ULong theObject, void *theAttributes, const char *theTag, void **out_exc) {
+    invoke(updateAttributeValues(
+        theObject, 
+        *(rti13::AttributeHandleValuePairSet *)theAttributes, 
+        theTag))
+}
+
 ccall RTI_ULong wrap_sendInteractionAtTime(void *amb, RTI_ULong theInteraction, void *theParameters, void *theTime, const char *theTag, RTI_ULong *out_uniq, RTI_ULong *out_fedHandle, void **out_exc) {
     rti13::ParameterHandleValuePairSet *params = (rti13::ParameterHandleValuePairSet *)theParameters;
     rti13::FedTime *time = (rti13::FedTime *) theTime;
@@ -146,6 +165,38 @@ ccall RTI_ULong wrap_sendInteractionAtTime(void *amb, RTI_ULong theInteraction, 
 ccall void wrap_sendInteraction(void *amb, RTI_ULong theInteraction, void *theParameters, const char *theTag, void **out_exc) {
     rti13::ParameterHandleValuePairSet *params = (rti13::ParameterHandleValuePairSet *)theParameters;
     invoke(sendInteraction(theInteraction, *params, theTag))
+}
+
+ccall void wrap_deleteObjectInstanceAtTime(void *amb, RTI_ULong theObject, void *theTime, const char *theTag, RTI_ULong *out_uniq, RTI_ULong *out_fedHandle, void **out_exc) {
+    wrap(
+        rti13::EventRetractionHandle erh = ((rti13::RTIambassador *)amb)->deleteObjectInstance(
+            theObject, 
+            *(rti13::FedTime *)theTime,
+            theTag);
+        *out_uniq       = erh.theSerialNumber;
+        *out_fedHandle  = erh.sendingFederate;
+    )
+}
+
+ccall void wrap_deleteObjectInstance(void *amb, RTI_ULong theObject, const char *theTag, void **out_exc) {
+    invoke(deleteObjectInstance(theObject, theTag))
+}
+
+ccall void wrap_localDeleteObjectInstance(void *amb, RTI_ULong theObject, void **out_exc) {
+    invoke(localDeleteObjectInstance(theObject))
+}
+
+ccall void wrap_changeAttributeTransportationType(void *amb, RTI_ULong theObject, void *theAttributes, RTI_ULong theType, void **out_exc) {
+    invoke(changeAttributeTransportationType(theObject, *(rti13::AttributeHandleSet *)theAttributes, theType))
+}
+
+ccall void wrap_changeInteractionTransportationType(void *amb, RTI_ULong theClass, RTI_ULong theType, void **out_exc) {
+    invoke(changeInteractionTransportationType(theClass, theType))
+}
+
+ccall void wrap_requestObjectAttributeValueUpdate(void *amb, RTI_ULong theObject, void *attributeList, void **out_exc)  {
+    rti13::AttributeHandleSet *ahSet = (rti13::AttributeHandleSet *) attributeList;
+    invoke(requestClassAttributeValueUpdate(theObject, *ahSet))
 }
 
 ccall void wrap_requestClassAttributeValueUpdate(void *amb, RTI_ULong theClass, void *attributeList, void **out_exc)  {
