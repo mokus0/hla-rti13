@@ -1,4 +1,7 @@
-module Network.HLA.RTI13.RTIAmbServices where
+module Network.HLA.RTI13.RTIAmbServices
+    ( RTIAmbassador
+    , module Network.HLA.RTI13.RTIAmbServices
+    ) where
 
 import Network.HLA.RTI13.BaseTypes
 import Network.HLA.RTI13.RTITypes

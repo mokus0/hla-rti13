@@ -363,7 +363,7 @@ ccall void wrap_deleteRegion(void *amb, void *theRegion, void **out_exc) {
     invoke(deleteRegion((rti13::Region *)theRegion))
 }
 
-ccall RTI_ULong wrap_registerObjectInstanceWithRegion(void *amb, RTI_ULong theClass, const char *theObject, RTI_ULong theAttributes[], void *theRegions[], RTI_ULong theNumberOfHandles, void **out_exc)
+ccall RTI_ULong wrap_registerObjectInstanceWithRegion_withName(void *amb, RTI_ULong theClass, const char *theObject, RTI_ULong theAttributes[], void *theRegions[], RTI_ULong theNumberOfHandles, void **out_exc)
 {
     invoke(registerObjectInstanceWithRegion(theClass, theObject, theAttributes, (rti13::Region **) theRegions, theNumberOfHandles))
 }

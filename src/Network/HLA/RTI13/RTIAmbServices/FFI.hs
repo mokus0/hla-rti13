@@ -130,7 +130,7 @@ foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_notifyAboutRegionModific
 foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_deleteRegion" 
     wrap_deleteRegion :: Ptr (RTIAmbassador fedAmb) -> Ptr Region -> Ptr (Ptr RTIException) -> IO ()
 
-foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_registerObjectInstanceWithRegion" 
+foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_registerObjectInstanceWithRegion_withName" 
     wrap_registerObjectInstanceWithRegion :: Ptr (RTIAmbassador t) -> ObjectClassHandle -> CString -> Ptr AttributeHandle -> Ptr (Ptr Region) -> ULong -> Ptr (Ptr RTIException) -> IO ObjectHandle
 
 foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_subscribeInteractionClassWithRegion" 

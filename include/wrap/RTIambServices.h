@@ -123,7 +123,7 @@ ccall void wrap_changeInteractionOrderType(void *amb, RTI_ULong theClass, RTI_UL
 ccall void *wrap_createRegion(void *amb, RTI_ULong theSpace, RTI_ULong numberOfExtents, void **out_exc);
 ccall void wrap_notifyAboutRegionModification(void *amb, void *theRegion, void **out_exc);
 ccall void wrap_deleteRegion(void *amb, void *theRegion, void **out_exc);
-ccall RTI_ULong wrap_registerObjectInstanceWithRegion(void *amb, RTI_ULong theClass, const char *theObject, RTI_ULong theAttributes[], void *theRegions[], RTI_ULong theNumberOfHandles, void **out_exc);
+ccall RTI_ULong wrap_registerObjectInstanceWithRegion_withName(void *amb, RTI_ULong theClass, const char *theObject, RTI_ULong theAttributes[], void *theRegions[], RTI_ULong theNumberOfHandles, void **out_exc);
 
 ///// ObjectHandle                              // returned C3
 ///// registerObjectInstanceWithRegion (
