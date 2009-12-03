@@ -30,13 +30,13 @@ createFederationExecution rtiAmb executionName fed =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withCString executionName $ \executionName ->
             withCString fed $ \fed ->
-                wrapExceptions (raw_createFederationExecution rtiAmb executionName fed)
+                wrapExceptions (wrap_createFederationExecution rtiAmb executionName fed)
 
 destroyFederationExecution :: RTIAmbassador fedAmb -> String -> IO ()
 destroyFederationExecution rtiAmb executionName = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withCString executionName $ \executionName ->
-            wrapExceptions (raw_destroyFederationExecution rtiAmb executionName)
+            wrapExceptions (wrap_destroyFederationExecution rtiAmb executionName)
 
 joinFederationExecution :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> String -> String -> fedAmb -> IO FederateHandle
 joinFederationExecution rtiAmb yourName executionName fedAmb = do
@@ -44,14 +44,14 @@ joinFederationExecution rtiAmb yourName executionName fedAmb = do
         withCString yourName $ \yourName ->
             withCString executionName $ \executionName ->
                 withFederateAmbassador fedAmb $ \fedAmb ->
-                    wrapExceptions (raw_joinFederationExecution rtiAmb yourName executionName fedAmb)
+                    wrapExceptions (wrap_joinFederationExecution rtiAmb yourName executionName fedAmb)
     writeRef (rtiFedAmb rtiAmb) (Just fedAmb)
     return fedHandle
 
 resignFederationExecution :: RTIAmbassador fedAmb -> ResignAction -> IO ()
 resignFederationExecution rtiAmb resignAction = do
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
-        wrapExceptions (raw_resignFederationExecution rtiAmb (fromIntegral (fromEnum resignAction)))
+        wrapExceptions (wrap_resignFederationExecution rtiAmb (fromIntegral (fromEnum resignAction)))
     writeRef (rtiFedAmb rtiAmb) Nothing
     performGC
 
@@ -517,22 +517,22 @@ withTimeRegulation rtiAmb theFederateTime theLookahead regulatedAction =
     where
         enableTimeRegulation rtiAmb theFederateTime theLookahead =
             withRTIAmbassador rtiAmb $ \rtiAmb ->
-                wrapExceptions (raw_enableTimeRegulation rtiAmb theFederateTime theLookahead)
+                wrapExceptions (wrap_enableTimeRegulation rtiAmb theFederateTime theLookahead)
 
         disableTimeRegulation rtiAmb =
             withRTIAmbassador rtiAmb $ \rtiAmb ->
-                wrapExceptions (raw_disableTimeRegulation rtiAmb)
+                wrapExceptions (wrap_disableTimeRegulation rtiAmb)
 
 
 enableTimeConstrained :: RTIAmbassador fedAmb -> IO ()
 enableTimeConstrained rtiAmb =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
-        wrapExceptions (raw_enableTimeConstrained rtiAmb)
+        wrapExceptions (wrap_enableTimeConstrained rtiAmb)
 
 disableTimeConstrained :: RTIAmbassador fedAmb -> IO ()
 disableTimeConstrained rtiAmb =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
-        wrapExceptions (raw_disableTimeConstrained rtiAmb)
+        wrapExceptions (wrap_disableTimeConstrained rtiAmb)
 
 timeAdvanceRequest :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> FedTime fedAmb -> IO ()
 timeAdvanceRequest rtiAmb theTime = 

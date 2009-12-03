@@ -21,28 +21,28 @@ newtype RTIFedTime = RTIFedTime (ForeignPtr RTIFedTime)
     deriving (Eq, Ord, Show)
 
 foreign import ccall unsafe "wrap/fedtime.h wrap_new_RTIfedTime"
-    raw_new_RTIfedTime :: CDouble -> Ptr (Ptr RTIException) -> IO (Ptr RTIFedTime)
+    wrap_new_RTIfedTime :: CDouble -> Ptr (Ptr RTIException) -> IO (Ptr RTIFedTime)
 new_RTIFedTime :: Double -> IO (Ptr RTIFedTime)
-new_RTIFedTime t = wrapExceptions (raw_new_RTIfedTime (realToFrac t))
+new_RTIFedTime t = wrapExceptions (wrap_new_RTIfedTime (realToFrac t))
 
 foreign import ccall unsafe "wrap/fedtime.h wrap_delete_RTIfedTime"
-    raw_delete_RTIfedTime :: Ptr RTIFedTime -> Ptr (Ptr RTIException) -> IO ()
+    wrap_delete_RTIfedTime :: Ptr RTIFedTime -> Ptr (Ptr RTIException) -> IO ()
 delete_RTIFedTime :: Ptr RTIFedTime -> IO ()
 delete_RTIFedTime rtiFedTime = 
-    wrapExceptions (raw_delete_RTIfedTime rtiFedTime)
+    wrapExceptions (wrap_delete_RTIfedTime rtiFedTime)
 
-foreign import ccall unsafe "wrap/fedtime.h wrap_getTime"
-    raw_getTime :: Ptr RTIFedTime -> Ptr (Ptr RTIException) -> IO CDouble
+foreign import ccall unsafe "wrap/fedtime.h wrap_RTIfedTime_getTime"
+    wrap_getTime :: Ptr RTIFedTime -> Ptr (Ptr RTIException) -> IO CDouble
 getTime :: Ptr RTIFedTime -> IO Double
 getTime fedtime = do
-    t <- wrapExceptions (raw_getTime fedtime)
+    t <- wrapExceptions (wrap_getTime fedtime)
     return (realToFrac t)
 
-foreign import ccall unsafe "wrap/fedtime.h wrap_setTime"
-    raw_setTime :: Ptr RTIFedTime -> CDouble -> Ptr (Ptr RTIException) -> IO ()
+foreign import ccall unsafe "wrap/fedtime.h wrap_RTIfedTime_setTime"
+    wrap_setTime :: Ptr RTIFedTime -> CDouble -> Ptr (Ptr RTIException) -> IO ()
 setTime :: Ptr RTIFedTime -> Double -> IO ()
 setTime fedtime t =
-    wrapExceptions (raw_setTime fedtime (realToFrac t))
+    wrapExceptions (wrap_setTime fedtime (realToFrac t))
 
 mkRTIFedTime :: Double -> IO RTIFedTime
 mkRTIFedTime t = do

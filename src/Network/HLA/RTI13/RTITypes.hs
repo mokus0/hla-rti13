@@ -116,7 +116,7 @@ instance Container AttributeHandleSet where
 instance Insert IO AttributeHandleSet where
     insert ahSet ah = 
         withAttributeHandleSet ahSet $ \ahSet ->
-            wrapExceptions (wrap_attributeHandleSet_add ahSet ah)
+            wrapExceptions (wrap_AttributeHandleSet_add ahSet ah)
     --   
     --   virtual void remove(AttributeHandle h)
     --     throw (			// not guaranteed safe while iterating
@@ -213,7 +213,7 @@ instance Container ParameterHandleValuePairSet where
 instance Insert IO ParameterHandleValuePairSet where
     insert pSet (h,buff) = withParameterHandleValuePairSet pSet $ \pSet ->
         BS.unsafeUseAsCString buff $ \buff ->
-            wrapExceptions (wrap_parameterHandleValuePairSet_add pSet h buff valueLength)
+            wrapExceptions (wrap_ParameterHandleValuePairSet_add pSet h buff valueLength)
         where 
             valueLength = fromIntegral (BS.length buff)
 
@@ -261,12 +261,12 @@ parameterSetWithCapacity count = do
 setRangeLowerBound :: Region -> ExtentIndex -> DimensionHandle -> ULong -> IO ()
 setRangeLowerBound theRegion theExtent theDimension theLowerBound = 
     withRegion theRegion $ \theRegion -> 
-        wrapExceptions (wrap_setRangeLowerBound theRegion theExtent theDimension theLowerBound)
+        wrapExceptions (wrap_Region_setRangeLowerBound theRegion theExtent theDimension theLowerBound)
 
 setRangeUpperBound :: Region -> ExtentIndex -> DimensionHandle -> ULong -> IO ()
 setRangeUpperBound theRegion theExtent theDimension theUpperBound = 
     withRegion theRegion $ \theRegion -> 
-        wrapExceptions (wrap_setRangeUpperBound theRegion theExtent theDimension theUpperBound)
+        wrapExceptions (wrap_Region_setRangeUpperBound theRegion theExtent theDimension theUpperBound)
 
     --   virtual SpaceHandle getSpaceHandle() const
     --     throw (

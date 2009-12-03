@@ -21,30 +21,30 @@ withRTIAmbassador :: RTIAmbassador fedAmb -> (Ptr (RTIAmbassador fedAmb) -> IO a
 withRTIAmbassador (RTIAmbassador rtiAmb _) = withForeignPtr rtiAmb
 
 new_RTIambassador :: IO (Ptr (RTIAmbassador fedAmb))
-new_RTIambassador = wrapExceptions raw_new_RTIambassador
+new_RTIambassador = wrapExceptions wrap_new_RTIambassador
 foreign import ccall unsafe "wrap/RTIambServices.h wrap_new_RTIambassador" 
-    raw_new_RTIambassador :: Ptr (Ptr RTIException) -> IO (Ptr (RTIAmbassador fedAmb))
+    wrap_new_RTIambassador :: Ptr (Ptr RTIException) -> IO (Ptr (RTIAmbassador fedAmb))
 
 delete_RTIambassador :: Ptr (RTIAmbassador fedAmb) -> IO ()
-delete_RTIambassador rtiAmb = wrapExceptions (raw_delete_RTIambassador rtiAmb)
+delete_RTIambassador rtiAmb = wrapExceptions (wrap_delete_RTIambassador rtiAmb)
 foreign import ccall unsafe "wrap/RTIambServices.h wrap_delete_RTIambassador" 
-    raw_delete_RTIambassador :: Ptr (RTIAmbassador fedAmb) -> Ptr (Ptr RTIException) -> IO ()
+    wrap_delete_RTIambassador :: Ptr (RTIAmbassador fedAmb) -> Ptr (Ptr RTIException) -> IO ()
 
 ------------------------------------
 -- Federation Management Services --
 ------------------------------------
 
 foreign import ccall unsafe "wrap/RTIambServices.h wrap_createFederationExecution"
-    raw_createFederationExecution :: Ptr (RTIAmbassador fedAmb) -> CString -> CString -> Ptr (Ptr RTIException) -> IO ()
+    wrap_createFederationExecution :: Ptr (RTIAmbassador fedAmb) -> CString -> CString -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall unsafe "wrap/RTIambServices.h wrap_destroyFederationExecution"
-    raw_destroyFederationExecution :: Ptr (RTIAmbassador fedAmb) -> CString -> Ptr (Ptr RTIException) -> IO ()
+    wrap_destroyFederationExecution :: Ptr (RTIAmbassador fedAmb) -> CString -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTIambServices.h wrap_joinFederationExecution"
-    raw_joinFederationExecution :: Ptr (RTIAmbassador fedAmb) -> CString -> CString -> Ptr SomeFederateAmbassador -> Ptr (Ptr RTIException) -> IO FederateHandle
+    wrap_joinFederationExecution :: Ptr (RTIAmbassador fedAmb) -> CString -> CString -> Ptr SomeFederateAmbassador -> Ptr (Ptr RTIException) -> IO FederateHandle
 
 foreign import ccall unsafe "wrap/RTIambServices.h wrap_resignFederationExecution"
-    raw_resignFederationExecution :: Ptr (RTIAmbassador fedAmb) -> CInt -> Ptr (Ptr RTIException) -> IO ()
+    wrap_resignFederationExecution :: Ptr (RTIAmbassador fedAmb) -> CInt -> Ptr (Ptr RTIException) -> IO ()
 
 -------------------------------------
 -- Declaration Management Services --
@@ -103,16 +103,16 @@ foreign import ccall "wrap/RTIAmbServices.h wrap_requestClassAttributeValueUpdat
 ------------------------------
 
 foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_enableTimeRegulation" 
-    raw_enableTimeRegulation :: Ptr (RTIAmbassador fedAmb) -> Ptr (FedAmbTime fedAmb) -> Ptr (FedAmbTime fedAmb) -> Ptr (Ptr RTIException) -> IO ()
+    wrap_enableTimeRegulation :: Ptr (RTIAmbassador fedAmb) -> Ptr (FedAmbTime fedAmb) -> Ptr (FedAmbTime fedAmb) -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_disableTimeRegulation" 
-    raw_disableTimeRegulation :: Ptr (RTIAmbassador fedAmb) -> Ptr (Ptr RTIException) -> IO ()
+    wrap_disableTimeRegulation :: Ptr (RTIAmbassador fedAmb) -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_enableTimeConstrained"
-    raw_enableTimeConstrained :: Ptr (RTIAmbassador fedAmb) -> Ptr (Ptr RTIException) -> IO ()
+    wrap_enableTimeConstrained :: Ptr (RTIAmbassador fedAmb) -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_disableTimeConstrained" 
-    raw_disableTimeConstrained :: Ptr (RTIAmbassador fedAmb) -> Ptr (Ptr RTIException) -> IO ()
+    wrap_disableTimeConstrained :: Ptr (RTIAmbassador fedAmb) -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_timeAdvanceRequest" 
     wrap_timeAdvanceRequest :: Ptr (RTIAmbassador fedAmb) -> Ptr (FedAmbTime fedAmb) -> Ptr (Ptr RTIException) -> IO ()

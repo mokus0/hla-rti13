@@ -8,7 +8,7 @@
 #   define q_RTIfedTime     RTIfedTime
 #endif
 
-#define invoke(method)  wrap(((q_RTIfedTime *)rtiFedTime)->method)
+#define invoke(method)  wrap(return ((q_RTIfedTime *)rtiFedTime)->method)
 
 
 ccall void *wrap_new_RTIfedTime(double t, void **out_exc) {
@@ -19,11 +19,11 @@ ccall void wrap_delete_RTIfedTime(void *rtiFedTime, void **out_exc) {
     wrap(delete ((q_RTIfedTime *)rtiFedTime))
 }
 
-ccall double wrap_getTime(void *rtiFedTime, void **out_exc) {
+ccall double wrap_RTIfedTime_getTime(void *rtiFedTime, void **out_exc) {
     invoke(getTime())
 }
 
-ccall void wrap_setTime(void *rtiFedTime, double t, void **out_exc) {
+ccall void wrap_RTIfedTime_setTime(void *rtiFedTime, double t, void **out_exc) {
     wrap( 
         *((q_RTIfedTime *)rtiFedTime) = t;
     )
