@@ -129,14 +129,15 @@ instance Show OrderType              where showsPrec p (OrderType              x
 -- is valid for use by the RTI only within the scope of the Update 
 -- Attribute Values or Send Interaction service invocation.  
 newtype AttributeHandleValuePairSet = AttributeHandleValuePairSet (ForeignPtr AttributeHandleValuePairSet)
+withAttributeHandleValuePairSet (AttributeHandleValuePairSet ahvpSet) = withForeignPtr ahvpSet
 data AttributeSetFactory
 
 newtype AttributeHandleSet = AttributeHandleSet (ForeignPtr AttributeHandleSet)
+withAttributeHandleSet (AttributeHandleSet ahSet) = withForeignPtr ahSet
 data AttributeHandleSetFactory
 
-withAttributeHandleSet (AttributeHandleSet ahSet) = withForeignPtr ahSet
-
-data FederateHandleSet
+newtype FederateHandleSet = FederateHandleSet (ForeignPtr FederateHandleSet)
+withFederateHandleSet (FederateHandleSet fhSet) = withForeignPtr fhSet
 data FederateHandleSetFactory
 
 -- |Instances of class HandleValuePairSet are the containers used to pass
@@ -162,19 +163,9 @@ newtype Region = Region (ForeignPtr Region) deriving (Eq, Ord)
 instance Show Region where showsPrec p (Region r) = showsPrec p r
 withRegion (Region r) = withForeignPtr r
 
--- class FedTimeType t where
---     newFedTime_ :: IO t
---     withFedTime :: t -> (Ptr SomeFedTime -> IO a) -> IO a
---     importFedTime :: Ptr t -> IO t
 newtype SomeFedTime = SomeFedTime (ForeignPtr SomeFedTime)
 instance FedTimeImpl SomeFedTime where
     type FedTimeRepr SomeFedTime = ByteString
-
--- instance FedTimeType SomeFedTime where
---     withFedTime (SomeFedTime ft) = withForeignPtr ft
---     importFedTime t = do
---         t <- newForeignPtr_ t
---         return (SomeFedTime t)
 
 data FedTimeFactory
 
