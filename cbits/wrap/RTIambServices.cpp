@@ -81,6 +81,10 @@ ccall RTI_ULong wrap_registerObjectInstance_withName(void *amb, RTI_ULong theCla
     invoke(registerObjectInstance(theClass, theObject))
 }
 
+ccall RTI_ULong wrap_registerObjectInstance(void *amb, RTI_ULong theClass, void **out_exc) {
+    invoke(registerObjectInstance(theClass))
+}
+
 ccall RTI_ULong wrap_sendInteractionAtTime(void *amb, RTI_ULong theInteraction, void *theParameters, void *theTime, const char *theTag, RTI_ULong *out_uniq, RTI_ULong *out_fedHandle, void **out_exc) {
     rti13::ParameterHandleValuePairSet *params = (rti13::ParameterHandleValuePairSet *)theParameters;
     rti13::FedTime *time = (rti13::FedTime *) theTime;
@@ -97,10 +101,6 @@ ccall RTI_ULong wrap_sendInteractionAtTime(void *amb, RTI_ULong theInteraction, 
 ccall void wrap_sendInteraction(void *amb, RTI_ULong theInteraction, void *theParameters, const char *theTag, void **out_exc) {
     rti13::ParameterHandleValuePairSet *params = (rti13::ParameterHandleValuePairSet *)theParameters;
     invoke(sendInteraction(theInteraction, *params, theTag))
-}
-
-ccall RTI_ULong wrap_registerObjectInstance(void *amb, RTI_ULong theClass, void **out_exc) {
-    invoke(registerObjectInstance(theClass))
 }
 
 ccall void wrap_requestClassAttributeValueUpdate(void *amb, RTI_ULong theClass, void *attributeList, void **out_exc)  {
