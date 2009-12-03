@@ -434,28 +434,122 @@ ccall RTI_ULong wrap_getObjectClassHandle(void *amb, const char *theName, void *
     invoke(getObjectClassHandle(theName))
 }
 
+ccall const char *wrap_getObjectClassName(void *amb, RTI_ULong theHandle, void **out_exc) {
+    invoke(getObjectClassName(theHandle))
+}
+
 ccall RTI_ULong wrap_getAttributeHandle(void *amb, const char *theName, RTI_ULong whichClass, void **out_exc)  {
     invoke(getAttributeHandle(theName,whichClass))
+}
+
+ccall const char *wrap_getAttributeName(void *amb, RTI_ULong theHandle, RTI_ULong whichClass, void **out_exc) {
+    invoke(getAttributeName(theHandle, whichClass))
 }
 
 ccall RTI_ULong wrap_getInteractionClassHandle(void *amb, const char *theName, void **out_exc) {
     invoke(getInteractionClassHandle(theName))
 }
 
+ccall const char *wrap_getInteractionClassName(void *amb, RTI_ULong theHandle, void **out_exc) {
+    invoke(getInteractionClassName(theHandle))
+}
+
 ccall RTI_ULong wrap_getParameterHandle(void *amb, const char *theName, RTI_ULong whichClass, void **out_exc) {
     invoke(getParameterHandle(theName, whichClass))
+}
+
+ccall const char *wrap_getParameterName(void *amb, RTI_ULong theHandle, RTI_ULong whichClass, void **out_exc) {
+    invoke(getParameterName(theHandle, whichClass))
+}
+
+ccall RTI_ULong wrap_getObjectInstanceHandle(void *amb, const char *theName, void **out_exc) {
+    invoke(getObjectInstanceHandle(theName))
+}
+ccall const char *wrap_getObjectInstanceName(void *amb, RTI_ULong theHandle, void **out_exc) {
+    invoke(getObjectInstanceName(theHandle))
 }
 
 ccall RTI_ULong wrap_getRoutingSpaceHandle(void *amb, const char *theName, void **out_exc) {
     invoke(getRoutingSpaceHandle(theName))
 }
 
+ccall const char *wrap_getRoutingSpaceName(void *amb, RTI_ULong theHandle, void **out_exc) {
+    invoke(getRoutingSpaceName(theHandle))
+}
+
 ccall RTI_ULong wrap_getDimensionHandle(void *amb, const char *theName, RTI_ULong whichSpace, void **out_exc) {
     invoke(getDimensionHandle(theName, whichSpace))
 }
 
+ccall const char *wrap_getDimensionName(void *amb, RTI_ULong theHandle, RTI_ULong whichSpace, void **out_exc) {
+    invoke(getDimensionName(theHandle, whichSpace))
+}
+
+ccall RTI_ULong wrap_getAttributeRoutingSpaceHandle(void *amb, RTI_ULong theAttribute, RTI_ULong whichClass, void **out_exc) {
+    invoke(getAttributeRoutingSpaceHandle(theAttribute, whichClass))
+}
+
+ccall RTI_ULong wrap_getObjectClass(void *amb, RTI_ULong theObject, void **out_exc) {
+    invoke(getObjectClass(theObject))
+}
+
+ccall RTI_ULong wrap_getInteractionRoutingSpaceHandle(void *amb, RTI_ULong theHandle, void **out_exc) {
+    invoke(getInteractionRoutingSpaceHandle(theHandle))
+}
+
+ccall RTI_ULong wrap_getTransportationHandle(void *amb, const char *theName, void **out_exc) {
+    invoke(getTransportationHandle(theName))
+}
+
+ccall const char *wrap_getTransportationName(void *amb, RTI_ULong theHandle, void **out_exc) {
+    invoke(getTransportationName(theHandle))
+}
+
+ccall RTI_ULong wrap_getOrderingHandle(void *amb, const char *theName, void **out_exc) {
+    invoke(getOrderingHandle(theName))
+}
+
+ccall const char *wrap_getOrderingName(void *amb, RTI_ULong theHandle, void **out_exc) {
+    invoke(getOrderingName(theHandle))
+}
+
+ccall void wrap_enableClassRelevanceAdvisorySwitch(void *amb, void **out_exc) {
+    invoke(enableClassRelevanceAdvisorySwitch())
+}
+
+ccall void wrap_disableClassRelevanceAdvisorySwitch(void *amb, void **out_exc) {
+    invoke(disableClassRelevanceAdvisorySwitch())
+}
+
 ccall void wrap_enableAttributeRelevanceAdvisorySwitch(void *amb, void **out_exc) {
     invoke(enableAttributeRelevanceAdvisorySwitch())
+}
+
+ccall void wrap_disableAttributeRelevanceAdvisorySwitch(void *amb, void **out_exc) {
+    invoke(disableAttributeRelevanceAdvisorySwitch())
+}
+
+ccall void wrap_enableAttributeScopeAdvisorySwitch(void *amb, void **out_exc) {
+    invoke(enableAttributeScopeAdvisorySwitch())
+}
+
+ccall void wrap_disableAttributeScopeAdvisorySwitch(void *amb, void **out_exc) {
+    invoke(disableAttributeScopeAdvisorySwitch())
+}
+
+ccall void wrap_enableInteractionRelevanceAdvisorySwitch(void *amb, void **out_exc) {
+    invoke(enableInteractionRelevanceAdvisorySwitch())
+}
+
+ccall void wrap_disableInteractionRelevanceAdvisorySwitch(void *amb, void **out_exc) {
+    invoke(disableInteractionRelevanceAdvisorySwitch())
+}
+
+ccall HsBool wrap_tick(void *amb, void **out_exc) {
+    wrap(
+        rti13::Boolean res = ((rti13::RTIambassador *)amb)->tick();
+        return res ? HS_BOOL_TRUE : HS_BOOL_FALSE;
+    )
 }
 
 ccall HsBool wrap_tick_minimum_maximum(void *amb, double min, double max, void **out_exc) {
@@ -465,3 +559,11 @@ ccall HsBool wrap_tick_minimum_maximum(void *amb, double min, double max, void *
     )
 }
 
+
+ccall RTI_ULong wrap_getRegionToken(void *amb, void *theRegion, void **out_exc) {
+    invoke(getRegionToken((rti13::Region *)theRegion))
+}
+
+ccall void     *wrap_getRegion(void *amb, RTI_ULong theRegion, void **out_exc) {
+    invoke(getRegion(theRegion))
+}

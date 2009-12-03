@@ -146,112 +146,54 @@ ccall void wrap_requestClassAttributeValueUpdateWithRegion(void *amb, RTI_ULong 
 //////////////////////////
 
 ccall RTI_ULong wrap_getObjectClassHandle(void *amb, const char *theName, void **out_exc);
-
-///// char *                         // returned C6    
-///// getObjectClassName (
-/////   ObjectClassHandle theHandle) // supplied C1
+ccall const char *wrap_getObjectClassName(void *amb, RTI_ULong theHandle, void **out_exc);
 
 ccall RTI_ULong wrap_getAttributeHandle(void *amb, const char *theName, RTI_ULong whichClass, void **out_exc);
-
-///// char *                          // returned C6 
-///// getAttributeName (
-/////   AttributeHandle   theHandle,  // supplied C1
-/////   ObjectClassHandle whichClass) // supplied C1
+ccall const char *wrap_getAttributeName(void *amb, RTI_ULong theHandle, RTI_ULong whichClass, void **out_exc);
 
 ccall RTI_ULong wrap_getInteractionClassHandle(void *amb, const char *theName, void **out_exc);
-
-///// char *                              // returned C6 
-///// getInteractionClassName (
-/////   InteractionClassHandle theHandle) // supplied C1
+ccall const char *wrap_getInteractionClassName(void *amb, RTI_ULong theHandle, void **out_exc);
 
 ccall RTI_ULong wrap_getParameterHandle(void *amb, const char *theName, RTI_ULong whichClass, void **out_exc);
+ccall const char *wrap_getParameterName(void *amb, RTI_ULong theHandle, RTI_ULong whichClass, void **out_exc);
 
-///// char *                               // returned C6
-///// getParameterName (
-/////   ParameterHandle        theHandle,  // supplied C1
-/////   InteractionClassHandle whichClass) // supplied C1
-
-///// ObjectHandle                 // returned C3
-///// getObjectInstanceHandle (
-/////   const char *theName)       // supplied C4
-
-///// char *                     // returned C6  
-///// getObjectInstanceName (
-/////   ObjectHandle theHandle)  // supplied C1
+ccall RTI_ULong wrap_getObjectInstanceHandle(void *amb, const char *theName, void **out_exc);
+ccall const char *wrap_getObjectInstanceName(void *amb, RTI_ULong theHandle, void **out_exc);
 
 ccall RTI_ULong wrap_getRoutingSpaceHandle(void *amb, const char *theName, void **out_exc);
-
-///// char *                         // returned C6
-///// getRoutingSpaceName (
-/////    /* const */ SpaceHandle theHandle) // supplied C4
+ccall const char *wrap_getRoutingSpaceName(void *amb, RTI_ULong theHandle, void **out_exc);
 
 ccall RTI_ULong wrap_getDimensionHandle(void *amb, const char *theName, RTI_ULong whichSpace, void **out_exc);
+ccall const char *wrap_getDimensionName(void *amb, RTI_ULong theHandle, RTI_ULong whichSpace, void **out_exc);
 
-///// char *                        // returned C6
-///// getDimensionName (
-/////   DimensionHandle theHandle,  // supplied C1
-/////   SpaceHandle     whichSpace) // supplied C1
+ccall RTI_ULong wrap_getAttributeRoutingSpaceHandle(void *amb, RTI_ULong theAttribute, RTI_ULong whichClass, void **out_exc);
 
-///// SpaceHandle                      // returned C3
-///// getAttributeRoutingSpaceHandle (
-/////   AttributeHandle   theHandle,   // supplied C1
-/////   ObjectClassHandle whichClass)  // supplied C1
+ccall RTI_ULong wrap_getObjectClass(void *amb, RTI_ULong theObject, void **out_exc);
 
-///// ObjectClassHandle            // returned C3
-///// getObjectClass (
-/////   ObjectHandle theObject)    // supplied C1
+ccall RTI_ULong wrap_getInteractionRoutingSpaceHandle(void *amb, RTI_ULong theHandle, void **out_exc);
 
-///// SpaceHandle                             // returned C3
-///// getInteractionRoutingSpaceHandle (
-/////   InteractionClassHandle   theHandle)   // supplied C1
+ccall RTI_ULong wrap_getTransportationHandle(void *amb, const char *theName, void **out_exc);
+ccall const char *wrap_getTransportationName(void *amb, RTI_ULong theHandle, void **out_exc);
 
-///// TransportationHandle      // returned C3
-///// getTransportationHandle (
-/////   const char *theName)    // supplied C4
+ccall RTI_ULong wrap_getOrderingHandle(void *amb, const char *theName, void **out_exc);
+ccall const char *wrap_getOrderingName(void *amb, RTI_ULong theHandle, void **out_exc);
 
-///// char *                            // returned C6 
-///// getTransportationName (
-/////   TransportationHandle theHandle) // supplied C1
-
-///// OrderingHandle         // returned C3
-///// getOrderingHandle (
-/////   const char *theName) // supplied C4
-
-///// char *                      // returned C6 
-///// getOrderingName (
-/////   OrderingHandle theHandle) // supplied C1
-
-///// void enableClassRelevanceAdvisorySwitch()
-
-///// void disableClassRelevanceAdvisorySwitch()
+ccall void wrap_enableClassRelevanceAdvisorySwitch(void *amb, void **out_exc);
+ccall void wrap_disableClassRelevanceAdvisorySwitch(void *amb, void **out_exc);
 
 ccall void wrap_enableAttributeRelevanceAdvisorySwitch(void *amb, void **out_exc);
+ccall void wrap_disableAttributeRelevanceAdvisorySwitch(void *amb, void **out_exc);
 
-///// void disableAttributeRelevanceAdvisorySwitch()
+ccall void wrap_enableAttributeScopeAdvisorySwitch(void *amb, void **out_exc);
+ccall void wrap_disableAttributeScopeAdvisorySwitch(void *amb, void **out_exc);
 
-///// void enableAttributeScopeAdvisorySwitch()
+ccall void wrap_enableInteractionRelevanceAdvisorySwitch(void *amb, void **out_exc);
+ccall void wrap_disableInteractionRelevanceAdvisorySwitch(void *amb, void **out_exc);
 
-///// void disableAttributeScopeAdvisorySwitch()
-
-///// void enableInteractionRelevanceAdvisorySwitch()
-
-///// void disableInteractionRelevanceAdvisorySwitch()
-
-///// Boolean // returned C3
-///// tick ()
-
+ccall HsBool wrap_tick(void *amb, void **out_exc);
 ccall HsBool wrap_tick_minimum_maximum(void *amb, double min, double max, void **out_exc);
 
-///// RTIambassador()
-
-///// ~RTIambassador()
-
-///// RegionToken
-///// getRegionToken(
-/////   Region *)
-
-///// Region *
-///// getRegion(
-/////   RegionToken)
+ccall RTI_ULong wrap_getRegionToken(void *amb, void *theRegion, void **out_exc);
+ccall void     *wrap_getRegion(void *amb, RTI_ULong theRegion, void **out_exc);
 
 #endif /* ___n_RTIambServices_h__ */
