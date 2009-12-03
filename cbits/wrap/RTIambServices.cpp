@@ -368,6 +368,27 @@ ccall RTI_ULong wrap_registerObjectInstanceWithRegion_withName(void *amb, RTI_UL
     invoke(registerObjectInstanceWithRegion(theClass, theObject, theAttributes, (rti13::Region **) theRegions, theNumberOfHandles))
 }
 
+ccall RTI_ULong wrap_registerObjectInstanceWithRegion(void *amb, RTI_ULong theClass, RTI_ULong theAttributes[], void *theRegions[], RTI_ULong theNumberOfHandles, void **out_exc)
+{
+    invoke(registerObjectInstanceWithRegion(theClass, theAttributes, (rti13::Region **) theRegions, theNumberOfHandles))
+}
+
+ccall void wrap_associateRegionForUpdates(void *amb, void *theRegion, RTI_ULong theObject, void *theAttributes, void **out_exc) {
+    invoke(associateRegionForUpdates(*(rti13::Region *)theRegion, theObject, *(rti13::AttributeHandleSet *)theAttributes))
+}
+
+ccall void wrap_unassociateRegionForUpdates(void *amb, void *theRegion, RTI_ULong theObject, void **out_exc) {
+    invoke(unassociateRegionForUpdates(*(rti13::Region *)theRegion, theObject))
+}
+
+ccall void wrap_subscribeObjectClassAttributesWithRegion(void *amb, RTI_ULong theClass, void *theRegion, void *theAttributes, HsBool active, void **out_exc) {
+    invoke(subscribeObjectClassAttributesWithRegion(theClass, *(rti13::Region *)theRegion, *(rti13::AttributeHandleSet *)theAttributes, active ? rti13::RTI_TRUE : rti13::RTI_FALSE))
+}
+
+ccall void wrap_unsubscribeObjectClassWithRegion(void *amb, RTI_ULong theClass, void *theRegion, void **out_exc) {
+    invoke(unsubscribeObjectClassWithRegion(theClass, *(rti13::Region *)theRegion))
+}
+
 ccall void wrap_subscribeInteractionClassWithRegion(void *amb, RTI_ULong theClass, void *theRegion, HsBool active, void **out_exc) {
     rti13::Region *reg = (rti13::Region *)theRegion;
     invoke(subscribeInteractionClassWithRegion(theClass, *reg, active ? rti13::RTI_TRUE : rti13::RTI_FALSE))
@@ -376,6 +397,33 @@ ccall void wrap_subscribeInteractionClassWithRegion(void *amb, RTI_ULong theClas
 ccall void wrap_unsubscribeInteractionClassWithRegion(void *amb, RTI_ULong theClass, void *theRegion, void **out_exc) {
     rti13::Region *reg = (rti13::Region *)theRegion;
     invoke(unsubscribeInteractionClassWithRegion(theClass, *reg))
+}
+
+ccall RTI_ULong wrap_sendInteractionWithRegionAtTime(void *amb, RTI_ULong theInteraction, void *theParameters, void *theTime, const char *theTag, void *theRegion, RTI_ULong *out_uniq, RTI_ULong *out_fedHandle, void **out_exc) {
+    rti13::ParameterHandleValuePairSet *params = (rti13::ParameterHandleValuePairSet *)theParameters;
+    rti13::FedTime *time = (rti13::FedTime *) theTime;
+    rti13::Region *region = (rti13::Region *) theRegion;
+    
+    wrap(
+        rti13::EventRetractionHandle handle =
+            ((rti13::RTIambassador *)amb)->
+                sendInteractionWithRegion(theInteraction, *params, *time, theTag, *region);
+        *out_uniq       = handle.theSerialNumber;
+        *out_fedHandle  = handle.sendingFederate;
+    );
+}
+
+ccall void wrap_sendInteractionWithRegion(void *amb, RTI_ULong theInteraction, void *theParameters, const char *theTag, void *theRegion, void **out_exc) {
+    rti13::ParameterHandleValuePairSet *params = (rti13::ParameterHandleValuePairSet *)theParameters;
+    rti13::Region *region = (rti13::Region *) theRegion;
+    invoke(sendInteractionWithRegion(theInteraction, *params, theTag, *region))
+}
+
+ccall void wrap_requestClassAttributeValueUpdateWithRegion(void *amb, RTI_ULong theClass, void *theAttributes, void *theRegion, void **out_exc) {
+    invoke(requestClassAttributeValueUpdateWithRegion(
+        theClass, 
+        *(rti13::AttributeHandleSet *) theAttributes,
+        *(rti13::Region *) theRegion))
 }
 
 //////////////////////////

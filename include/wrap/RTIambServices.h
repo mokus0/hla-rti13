@@ -123,55 +123,23 @@ ccall void wrap_changeInteractionOrderType(void *amb, RTI_ULong theClass, RTI_UL
 ccall void *wrap_createRegion(void *amb, RTI_ULong theSpace, RTI_ULong numberOfExtents, void **out_exc);
 ccall void wrap_notifyAboutRegionModification(void *amb, void *theRegion, void **out_exc);
 ccall void wrap_deleteRegion(void *amb, void *theRegion, void **out_exc);
+
 ccall RTI_ULong wrap_registerObjectInstanceWithRegion_withName(void *amb, RTI_ULong theClass, const char *theObject, RTI_ULong theAttributes[], void *theRegions[], RTI_ULong theNumberOfHandles, void **out_exc);
+ccall RTI_ULong wrap_registerObjectInstanceWithRegion(void *amb, RTI_ULong theClass, RTI_ULong theAttributes[], void *theRegions[], RTI_ULong theNumberOfHandles, void **out_exc);
 
-///// ObjectHandle                              // returned C3
-///// registerObjectInstanceWithRegion (
-/////   ObjectClassHandle theClass,             // supplied C1
-/////   AttributeHandle   theAttributes[],      // supplied C4
-/////   Region           *theRegions[],         // supplied C4
-/////   ULong             theNumberOfHandles)   // supplied C1
+ccall void wrap_associateRegionForUpdates(void *amb, void *theRegion, RTI_ULong theObject, void *theAttributes, void **out_exc);
+ccall void wrap_unassociateRegionForUpdates(void *amb, void *theRegion, RTI_ULong theObject, void **out_exc);
 
-///// void associateRegionForUpdates (
-/////         Region             &theRegion,     // supplied C4
-/////         ObjectHandle        theObject,     // supplied C1
-/////   const AttributeHandleSet &theAttributes) // supplied C4
-
-///// void unassociateRegionForUpdates (
-/////   Region       &theRegion,     // supplied C4
-/////   ObjectHandle  theObject)     // supplied C1
-
-///// void subscribeObjectClassAttributesWithRegion (
-/////         ObjectClassHandle   theClass,      // supplied C1
-/////         Region             &theRegion,     // supplied C4
-/////   const AttributeHandleSet &attributeList, // supplied C4
-/////         Boolean        active = RTI_TRUE)
-
-///// void unsubscribeObjectClassWithRegion (
-/////   ObjectClassHandle theClass,          // supplied C1
-/////   Region           &theRegion)         // supplied C4
+ccall void wrap_subscribeObjectClassAttributesWithRegion(void *amb, RTI_ULong theClass, void *theRegion, void *theAttributes, HsBool active, void **out_exc);
+ccall void wrap_unsubscribeObjectClassWithRegion(void *amb, RTI_ULong theClass, void *theRegion, void **out_exc);
 
 ccall void wrap_subscribeInteractionClassWithRegion(void *amb, RTI_ULong theClass, void *theRegion, HsBool active, void **out_exc);
 ccall void wrap_unsubscribeInteractionClassWithRegion(void *amb, RTI_ULong theClass, void *theRegion, void **out_exc);
 
-///// EventRetractionHandle                                // returned C3
-///// sendInteractionWithRegion (
-/////         InteractionClassHandle       theInteraction, // supplied C1
-/////   const ParameterHandleValuePairSet &theParameters,  // supplied C4
-/////   const FedTime&                     theTime,        // supplied C4
-/////   const char                        *theTag,         // supplied C4
-/////   const Region                      &theRegion)      // supplied C4
+ccall RTI_ULong wrap_sendInteractionWithRegionAtTime(void *amb, RTI_ULong theInteraction, void *theParameters, void *theTime, const char *theTag, void *theRegion, RTI_ULong *out_uniq, RTI_ULong *out_fedHandle, void **out_exc);
+ccall void wrap_sendInteractionWithRegion(void *amb, RTI_ULong theInteraction, void *theParameters, const char *theTag, void *theRegion, void **out_exc);
 
-///// void sendInteractionWithRegion (
-/////         InteractionClassHandle       theInteraction, // supplied C1
-/////   const ParameterHandleValuePairSet &theParameters,  // supplied C4
-/////   const char                        *theTag,         // supplied C4
-/////   const Region                      &theRegion)      // supplied C4
-
-///// void requestClassAttributeValueUpdateWithRegion (
-/////         ObjectClassHandle   theClass,      // supplied C1
-/////   const AttributeHandleSet &theAttributes, // supplied C4
-/////   const Region             &theRegion)     // supplied C4
+ccall void wrap_requestClassAttributeValueUpdateWithRegion(void *amb, RTI_ULong theClass, void *theAttributes, void *theRegion, void **out_exc);
 
 //////////////////////////
 // RTI Support Services //
