@@ -73,45 +73,18 @@ ccall void wrap_requestClassAttributeValueUpdate(void *amb, RTI_ULong theClass, 
 // Ownership Management Services //
 ///////////////////////////////////
 
-///// void unconditionalAttributeOwnershipDivestiture (
-/////         ObjectHandle                  theObject,     // supplied C1
-/////   const AttributeHandleSet&           theAttributes) // supplied C4
+ccall void wrap_unconditionalAttributeOwnershipDivestiture(void *amb, RTI_ULong theObject, void *theAttributes, void **out_exc);
+ccall void wrap_negotiatedAttributeOwnershipDivestiture(void *amb, RTI_ULong theObject, void *theAttributes, char *theTag, void **out_exc);
 
-///// void negotiatedAttributeOwnershipDivestiture (
-/////         ObjectHandle                  theObject,     // supplied C1
-/////   const AttributeHandleSet&           theAttributes, // supplied C4
-/////   const char                         *theTag)        // supplied C4
+ccall void wrap_attributeOwnershipAcquisition(void *amb, RTI_ULong theObject, void *theAttributes, char *theTag, void **out_exc);
+ccall void wrap_attributeOwnershipAcquisitionIfAvailable(void *amb, RTI_ULong theObject, void *theAttributes, void **out_exc);
 
-///// void attributeOwnershipAcquisition (
-/////         ObjectHandle        theObject,         // supplied C1
-/////   const AttributeHandleSet& desiredAttributes, // supplied C4
-/////   const char               *theTag)            // supplied C4
+ccall void *wrap_attributeOwnershipReleaseResponse(void *amb, RTI_ULong theObject, void *theAttributes, void **out_exc);
+ccall void wrap_cancelNegotiatedAttributeOwnershipDivestiture(void *amb, RTI_ULong theObject, void *theAttributes, void **out_exc);
+ccall void wrap_cancelAttributeOwnershipAcquisition(void *amb, RTI_ULong theObject, void *theAttributes, void **out_exc);
 
-///// void attributeOwnershipAcquisitionIfAvailable (
-/////         ObjectHandle        theObject,         // supplied C1
-/////   const AttributeHandleSet& desiredAttributes) // supplied C4
-
-///// AttributeHandleSet*                        // returned C6
-///// attributeOwnershipReleaseResponse (
-/////         ObjectHandle        theObject,     // supplied C1
-/////   const AttributeHandleSet& theAttributes) // supplied C4
-
-///// void cancelNegotiatedAttributeOwnershipDivestiture (
-/////         ObjectHandle        theObject,     // supplied C1
-/////   const AttributeHandleSet& theAttributes) // supplied C4
-
-///// void cancelAttributeOwnershipAcquisition (
-/////         ObjectHandle        theObject,     // supplied C1
-/////   const AttributeHandleSet& theAttributes) // supplied C4
-
-///// void queryAttributeOwnership (
-/////   ObjectHandle    theObject,    // supplied C1
-/////   AttributeHandle theAttribute) // supplied C1
-
-///// Boolean                          // returned C3
-///// isAttributeOwnedByFederate (
-/////   ObjectHandle    theObject,     // supplied C1
-/////   AttributeHandle theAttribute)  // supplied C1
+ccall void wrap_queryAttributeOwnership(void *amb, RTI_ULong theObject, RTI_ULong theAttribute, void **out_exc);
+ccall HsBool wrap_isAttributeOwnedByFederate(void *amb, RTI_ULong theObject, RTI_ULong theAttribute, void **out_exc);
 
 //////////////////////////////
 // Time Management Services //

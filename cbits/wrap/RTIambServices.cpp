@@ -208,6 +208,46 @@ ccall void wrap_requestClassAttributeValueUpdate(void *amb, RTI_ULong theClass, 
 // Ownership Management Services //
 ///////////////////////////////////
 
+ccall void wrap_unconditionalAttributeOwnershipDivestiture(void *amb, RTI_ULong theObject, void *theAttributes, void **out_exc) {
+    invoke(unconditionalAttributeOwnershipDivestiture(theObject, *(rti13::AttributeHandleSet *)theAttributes))
+}
+
+ccall void wrap_negotiatedAttributeOwnershipDivestiture(void *amb, RTI_ULong theObject, void *theAttributes, char *theTag, void **out_exc) {
+    invoke(negotiatedAttributeOwnershipDivestiture(theObject, *(rti13::AttributeHandleSet *)theAttributes, theTag))
+}
+
+ccall void wrap_attributeOwnershipAcquisition(void *amb, RTI_ULong theObject, void *theAttributes, char *theTag, void **out_exc) {
+    invoke(attributeOwnershipAcquisition(theObject, *(rti13::AttributeHandleSet *)theAttributes, theTag))
+}
+
+ccall void wrap_attributeOwnershipAcquisitionIfAvailable(void *amb, RTI_ULong theObject, void *theAttributes, void **out_exc) {
+    invoke(attributeOwnershipAcquisitionIfAvailable(theObject, *(rti13::AttributeHandleSet *)theAttributes))
+}
+
+ccall void *wrap_attributeOwnershipReleaseResponse(void *amb, RTI_ULong theObject, void *theAttributes, void **out_exc) {
+    invoke(attributeOwnershipReleaseResponse(theObject, *(rti13::AttributeHandleSet *)theAttributes))
+}
+
+ccall void wrap_cancelNegotiatedAttributeOwnershipDivestiture(void *amb, RTI_ULong theObject, void *theAttributes, void **out_exc) {
+    invoke(cancelNegotiatedAttributeOwnershipDivestiture(theObject, *(rti13::AttributeHandleSet *)theAttributes))
+}
+
+ccall void wrap_cancelAttributeOwnershipAcquisition(void *amb, RTI_ULong theObject, void *theAttributes, void **out_exc) {
+    invoke(cancelAttributeOwnershipAcquisition(theObject, *(rti13::AttributeHandleSet *)theAttributes))
+}
+
+ccall void wrap_queryAttributeOwnership(void *amb, RTI_ULong theObject, RTI_ULong theAttribute, void **out_exc) {
+    invoke(queryAttributeOwnership(theObject, theAttribute))
+}
+
+ccall HsBool wrap_isAttributeOwnedByFederate(void *amb, RTI_ULong theObject, RTI_ULong theAttribute, void **out_exc) {
+    wrap(
+        rti13::Boolean res = ((rti13::RTIambassador *)amb)->isAttributeOwnedByFederate(theObject, theAttribute);
+        return res ? HS_BOOL_TRUE : HS_BOOL_FALSE;
+    )
+}
+
+
 //////////////////////////////
 // Time Management Services //
 //////////////////////////////
