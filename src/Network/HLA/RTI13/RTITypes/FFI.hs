@@ -8,6 +8,51 @@ import Foreign.C
 import Network.HLA.RTI13.BaseTypes
 import Network.HLA.RTI13.RTIException
 import Network.HLA.RTI13.RTITypes.Types
+import System.IO.Unsafe
+
+foreign import ccall "wrap/RTItypes.h wrap_DEFAULT_SPACE_NAME" 
+    wrap_DEFAULT_SPACE_NAME :: CString
+{-# NOINLINE defaultSpaceName #-}
+defaultSpaceName = unsafePerformIO (peekCString wrap_DEFAULT_SPACE_NAME)
+foreign import ccall "wrap/RTItypes.h wrap_DEFAULT_SPACE_DIMENSION_NAME"
+    wrap_DEFAULT_SPACE_DIMENSION_NAME :: CString
+{-# NOINLINE defaultSpaceDimensionName #-}
+defaultSpaceDimensionName = unsafePerformIO (peekCString wrap_DEFAULT_SPACE_DIMENSION_NAME)
+
+foreign import ccall "wrap/RTItypes.h wrap_RTI_VERSION"
+    wrap_RTI_VERSION :: CString
+{-# NOINLINE rtiVersion #-}
+rtiVersion = unsafePerformIO (peekCString wrap_RTI_VERSION)
+foreign import ccall "wrap/RTItypes.h wrap_RTI_INTERNAL_VERSION"
+    wrap_RTI_INTERNAL_VERSION :: CString
+{-# NOINLINE rtiInternalVersion #-}
+rtiInternalVersion = unsafePerformIO (peekCString wrap_RTI_INTERNAL_VERSION)
+
+foreign import ccall "wrap/RTItypes.h wrap_RTI_MAJOR_VERSION"
+    wrap_RTI_MAJOR_VERSION :: ULong
+foreign import ccall "wrap/RTItypes.h wrap_RTI_MINOR_VERSION"
+    wrap_RTI_MINOR_VERSION :: ULong
+foreign import ccall "wrap/RTItypes.h wrap_RTI_RELEASE"
+    wrap_RTI_RELEASE :: ULong
+
+rtiMajorVersion, rtiMinorVersion, rtiRelease :: Num a => a
+rtiMajorVersion = fromIntegral wrap_RTI_MAJOR_VERSION
+rtiMinorVersion = fromIntegral wrap_RTI_MINOR_VERSION
+rtiRelease = fromIntegral wrap_RTI_RELEASE
+
+foreign import ccall "wrap/RTItypes.h wrap_RTI_INTERNAL_MAJOR_VERSION"
+    wrap_RTI_INTERNAL_MAJOR_VERSION :: ULong
+foreign import ccall "wrap/RTItypes.h wrap_RTI_INTERNAL_MINOR_VERSION"
+    wrap_RTI_INTERNAL_MINOR_VERSION :: ULong
+foreign import ccall "wrap/RTItypes.h wrap_RTI_INTERNAL_RELEASE"
+    wrap_RTI_INTERNAL_RELEASE :: ULong
+
+rtiInternalMajorVersion, rtiInternalMinorVersion, rtiInternalRelease :: Num a => a
+rtiInternalMajorVersion = fromIntegral wrap_RTI_INTERNAL_MAJOR_VERSION
+rtiInternalMinorVersion = fromIntegral wrap_RTI_INTERNAL_MINOR_VERSION
+rtiInternalRelease = fromIntegral wrap_RTI_INTERNAL_RELEASE
+
+
 
 --data AttributeHandleValuePairSet
     -- public:
