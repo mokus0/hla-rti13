@@ -94,50 +94,27 @@ ccall void wrap_enableTimeRegulation(void *amb, const void *theFederateTime, con
 ccall void wrap_disableTimeRegulation(void *amb, void **out_exc);
 ccall void wrap_enableTimeConstrained(void *amb, void **out_exc);
 ccall void wrap_disableTimeConstrained(void *amb, void **out_exc);
+
 ccall void wrap_timeAdvanceRequest(void *amb, void *theTime, void **out_exc);
+ccall void wrap_timeAdvanceRequestAvailable(void *amb, void *theTime, void **out_exc);
+ccall void wrap_nextEventRequest(void *amb, void *theTime, void **out_exc);
+ccall void wrap_nextEventRequestAvailable(void *amb, void *theTime, void **out_exc);
+ccall void wrap_flushQueueRequest(void *amb, void *theTime, void **out_exc);
 
-///// void timeAdvanceRequestAvailable (
-///// const FedTime& theTime) // supplied C4
+ccall void wrap_enableAsynchronousDelivery(void *amb, void **out_exc);
+ccall void wrap_disableAsynchronousDelivery(void *amb, void **out_exc);
 
-///// void nextEventRequest (
-/////   const FedTime& theTime) // supplied C4
+ccall void wrap_queryLBTS(void *amb, void *theTime, void **out_exc);
+ccall void wrap_queryFederateTime(void *amb, void *theTime, void **out_exc);
+ccall void wrap_queryMinNextEventTime(void *amb, void *theTime, void **out_exc);
 
-///// void nextEventRequestAvailable (
-/////   const FedTime& theTime) // supplied C4
+ccall void wrap_modifyLookahead(void *amb, void *theTime, void **out_exc);
+ccall void wrap_queryLookahead(void *amb, void *theTime, void **out_exc);
 
-///// void flushQueueRequest (
-/////   const FedTime& theTime) // supplied C4
+ccall void wrap_retract(void *amb, RTI_ULong theSerial, RTI_ULong theFederate, void **out_exc);
 
-///// void enableAsynchronousDelivery()
-
-///// void disableAsynchronousDelivery()
-
-///// void queryLBTS (
-/////   FedTime& theTime) // returned C5
-
-///// void queryFederateTime (
-/////   FedTime& theTime) // returned C5
-
-///// void queryMinNextEventTime (
-/////   FedTime& theTime) // returned C5
-
-///// void modifyLookahead (
-/////   const FedTime& theLookahead) // supplied C4
-
-///// void queryLookahead (
-/////    FedTime& theTime) // returned C5
-
-///// void retract (
-/////   EventRetractionHandle theHandle) // supplied C1
-
-///// void changeAttributeOrderType (
-/////         ObjectHandle        theObject,     // supplied C1
-/////   const AttributeHandleSet& theAttributes, // supplied C4
-/////         OrderingHandle      theType)       // supplied C1
-
-///// void changeInteractionOrderType (
-/////   InteractionClassHandle theClass, // supplied C1
-/////   OrderingHandle         theType)  // supplied C1
+ccall void wrap_changeAttributeOrderType(void *amb, RTI_ULong theObject, void *theAttributes, RTI_ULong theType, void **out_exc);
+ccall void wrap_changeInteractionOrderType(void *amb, RTI_ULong theClass, RTI_ULong theType, void **out_exc);
 
 //////////////////////////////////
 // Data Distribution Management //
