@@ -15,27 +15,22 @@ ccall void wrap_destroyFederationExecution(void *amb, const char *executionName,
 ccall RTI_ULong wrap_joinFederationExecution (void *amb, const char *yourName, const char *executionName, void *federateAmbassadorReference, void **out_exc);
 ccall void wrap_resignFederationExecution(void *amb, int theAction, void **out_exc);
 
-///// void registerFederationSynchronizationPoint (       
-/////   const char *label,  // supplied C4
-/////   const char *theTag) // supplied C4
-///// void registerFederationSynchronizationPoint (       
-/////   const char                *label,    // supplied C4
-/////   const char                *theTag,   // supplied C4
-/////   const FederateHandleSet&   syncSet)  // supplied C4      
-///// void synchronizationPointAchieved (      
-/////   const char *label) // supplied C4
-///// void requestFederationSave (    
-/////   const char     *label,   // supplied C4
-/////   const FedTime&  theTime) // supplied C4
-///// void requestFederationSave ( 
-/////   const char *label)     // supplied C4
-///// void federateSaveBegun ()
-///// void federateSaveComplete ()
-///// void federateSaveNotComplete ()
-///// void requestFederationRestore (    
-/////   const char *label) // supplied C4
-///// void federateRestoreComplete ()
-///// void federateRestoreNotComplete ()
+ccall void wrap_registerFederationSynchronizationPoint(void *amb, const char *label, const char *theTag, void **out_exc);
+ccall void wrap_registerFederationSynchronizationPoint_with_syncSet(void *amb, const char *label, const char *theTag, void *syncSet, void **out_exc);
+
+ccall void wrap_synchronizationPointAchieved(void *amb, const char *label, void **out_exc);
+
+ccall void wrap_requestFederationSave_at_time(void *amb, const char *label, void *theTime, void **out_exc);
+ccall void wrap_requestFederationSave(void *amb, const char *label, void **out_exc);
+
+ccall void wrap_federateSaveBegun(void *amb, void **out_exc);
+ccall void wrap_federateSaveComplete(void *amb, void **out_exc);
+ccall void wrap_federateSaveNotComplete(void *amb, void **out_exc);
+
+ccall void wrap_requestFederationRestore(void *amb, const char *label, void **out_exc);
+
+ccall void wrap_federateRestoreComplete(void *amb, void **out_exc);
+ccall void wrap_federateRestoreNotComplete(void *amb, void **out_exc);
 
 /////////////////////////////////////
 // Declaration Management Services //

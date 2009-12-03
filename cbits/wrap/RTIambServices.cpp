@@ -35,6 +35,51 @@ ccall void wrap_resignFederationExecution(void *amb, int theAction, void **out_e
     invoke(resignFederationExecution((rti13::ResignAction) theAction))
 }
 
+ccall void wrap_registerFederationSynchronizationPoint(void *amb, const char *label, const char *theTag, void **out_exc) {
+    invoke(registerFederationSynchronizationPoint(label, theTag))
+}
+
+ccall void wrap_registerFederationSynchronizationPoint_with_syncSet(void *amb, const char *label, const char *theTag, void *syncSet, void **out_exc) {
+    invoke(registerFederationSynchronizationPoint(label, theTag, *(rti13::FederateHandleSet *)syncSet))
+}
+
+ccall void wrap_synchronizationPointAchieved(void *amb, const char *label, void **out_exc) {
+    invoke(synchronizationPointAchieved(label))
+}
+
+ccall void wrap_requestFederationSave_at_time(void *amb, const char *label, void *theTime, void **out_exc) {
+    invoke(requestFederationSave(label, *(rti13::FedTime *)theTime))
+}
+
+ccall void wrap_requestFederationSave(void *amb, const char *label, void **out_exc) {
+    invoke(requestFederationSave(label))
+}
+
+ccall void wrap_federateSaveBegun(void *amb, void **out_exc) {
+    invoke(federateSaveBegun())
+}
+
+ccall void wrap_federateSaveComplete(void *amb, void **out_exc) {
+    invoke(federateSaveComplete())
+}
+
+ccall void wrap_federateSaveNotComplete(void *amb, void **out_exc) {
+    invoke(federateSaveNotComplete())
+}
+
+ccall void wrap_requestFederationRestore(void *amb, const char *label, void **out_exc) {
+    invoke(requestFederationRestore(label))
+}
+
+ccall void wrap_federateRestoreComplete(void *amb, void **out_exc) {
+    invoke(federateRestoreComplete())
+}
+
+ccall void wrap_federateRestoreNotComplete(void *amb, void **out_exc) {
+    invoke(federateRestoreNotComplete())
+}
+
+
 /////////////////////////////////////
 // Declaration Management Services //
 /////////////////////////////////////
