@@ -18,59 +18,69 @@ import qualified Data.ByteString as BS
 import qualified Data.ByteString.Unsafe as BS
 import Foreign.C
 
---data AttributeHandleValuePairSet
-    -- public:
-    --   virtual ~AttributeHandleValuePairSet() { ; }
-    -- 
-    --   virtual ULong size() const = 0;
-    --   
-    --   virtual Handle getHandle(
-    --     ULong i) const
-    --     throw (
-    --       ArrayIndexOutOfBounds) = 0;
-    --   
-    --   virtual ULong getValueLength(
-    --     ULong i) const
-    --     throw (
-    --       ArrayIndexOutOfBounds) = 0;
-    --   
-    --   virtual void getValue(
-    --     ULong i,
-    --     char*      buff,
-    --     ULong&     valueLength) const
-    --     throw (
-    --       ArrayIndexOutOfBounds) = 0;
-    --   
+-- AttributeHandleValuePairSet:
+
+attributeHandleValuePairSet_size :: AttributeHandleValuePairSet -> IO ULong
+attributeHandleValuePairSet_size ahSet =
+    withAttributeHandleValuePairSet ahSet $ \ahSet ->
+        wrapExceptions (wrap_AttributeHandleValuePairSet_size ahSet)
+
+attributeHandleValuePairSet_getHandle :: AttributeHandleValuePairSet -> ULong -> IO Handle
+attributeHandleValuePairSet_getHandle ahSet i =
+    withAttributeHandleValuePairSet ahSet $ \ahSet ->
+        wrapExceptions (wrap_AttributeHandleValuePairSet_getHandle ahSet i)
+
+attributeHandleValuePairSet_getValueLength :: AttributeHandleValuePairSet -> ULong -> IO ULong
+attributeHandleValuePairSet_getValueLength ahSet i =
+    withAttributeHandleValuePairSet ahSet $ \ahSet ->
+        wrapExceptions (wrap_AttributeHandleValuePairSet_getValueLength ahSet i)
+
+attributeHandleValuePairSet_getValue :: AttributeHandleValuePairSet -> ULong -> IO BS.ByteString
+attributeHandleValuePairSet_getValue ahSet i = do
+    len <- attributeHandleValuePairSet_getValueLength ahSet i
+    
+    withAttributeHandleValuePairSet ahSet $ \ahSet ->
+        alloca $ \lenCell -> do
+            poke lenCell len
+            buf <- mallocBytes (fromIntegral len + 1)
+            wrapExceptions (wrap_AttributeHandleValuePairSet_getValue ahSet i buf lenCell)
+            
+            len <- peek lenCell
+            buf <- reallocBytes buf (fromIntegral len)
+            BS.unsafePackMallocCString buf
+
     --   virtual char *getValuePointer(
     --     ULong i,
     --     ULong&     valueLength) const
     --     throw (
     --       ArrayIndexOutOfBounds) = 0;
-    --   
-    --   virtual TransportType getTransportType( ULong i) const
-    --     throw (
-    --       ArrayIndexOutOfBounds,
-    --       InvalidHandleValuePairSetContext) = 0;
-    --   
-    --   virtual OrderType getOrderType( ULong i) const
-    --     throw (
-    --       ArrayIndexOutOfBounds,
-    --       InvalidHandleValuePairSetContext) = 0;
-    --   
+
+attributeHandleValuePairSet_getTransportType :: AttributeHandleValuePairSet -> ULong -> IO TransportType
+attributeHandleValuePairSet_getTransportType ahSet i = 
+    withAttributeHandleValuePairSet ahSet $ \ahSet ->
+        wrapExceptions (wrap_AttributeHandleValuePairSet_getTransportType ahSet i)
+
+attributeHandleValuePairSet_getOrderType :: AttributeHandleValuePairSet -> ULong -> IO OrderType
+attributeHandleValuePairSet_getOrderType ahSet i = 
+    withAttributeHandleValuePairSet ahSet $ \ahSet ->
+        wrapExceptions (wrap_AttributeHandleValuePairSet_getOrderType ahSet i)
+
     --   virtual Region *getRegion(
     --     ULong i) const
     --     throw (
     --       ArrayIndexOutOfBounds,
     --       InvalidHandleValuePairSetContext) = 0;
-    --   
-    --   virtual void add(
-    --     Handle      h,
-    --     const char* buff,
-    --     ULong       valueLength)
-    --     throw (
-    --       ValueLengthExceeded,
-    --       ValueCountExceeded) = 0;
-    --   
+
+instance Container AttributeHandleValuePairSet where
+    type Elem AttributeHandleValuePairSet = (Handle, BS.ByteString)
+
+instance Insert IO AttributeHandleValuePairSet where
+    insert ahSet (h, bs) =
+        withAttributeHandleValuePairSet ahSet $ \ahSet ->
+            BS.unsafeUseAsCString bs $ \buf -> 
+                wrapExceptions (wrap_AttributeHandleValuePairSet_add ahSet h buf len)
+        where len = fromIntegral (BS.length bs)
+
     --   virtual void remove(		// not guaranteed safe while iterating
     --     Handle      h)
     --     throw (
@@ -82,9 +92,12 @@ import Foreign.C
     --     throw (
     --       ValueCountExceeded,
     --       ArrayIndexOutOfBounds) = 0;
-    --   
-    --   virtual void empty() = 0; // Empty the Set without deallocating space.
-    -- 
+
+attributeHandleValuePairSet_empty :: AttributeHandleValuePairSet -> IO ()
+attributeHandleValuePairSet_empty ahSet =
+    withAttributeHandleValuePairSet ahSet $ \ahSet ->
+        wrapExceptions (wrap_AttributeHandleValuePairSet_empty ahSet)
+
     --   virtual ULong start() const = 0;
     --   virtual ULong valid(ULong i) const = 0;
     --   virtual ULong next(ULong i) const = 0;

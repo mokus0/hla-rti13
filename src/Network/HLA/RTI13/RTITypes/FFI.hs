@@ -54,90 +54,54 @@ rtiInternalRelease = fromIntegral wrap_RTI_INTERNAL_RELEASE
 
 
 
---data AttributeHandleValuePairSet
-    -- public:
-    --   virtual ~AttributeHandleValuePairSet() { ; }
-    -- 
-    --   virtual ULong size() const = 0;
-    --   
-    --   virtual Handle getHandle(
-    --     ULong i) const
-    --     throw (
-    --       ArrayIndexOutOfBounds) = 0;
-    --   
-    --   virtual ULong getValueLength(
-    --     ULong i) const
-    --     throw (
-    --       ArrayIndexOutOfBounds) = 0;
-    --   
-    --   virtual void getValue(
-    --     ULong i,
-    --     char*      buff,
-    --     ULong&     valueLength) const
-    --     throw (
-    --       ArrayIndexOutOfBounds) = 0;
-    --   
-    --   virtual char *getValuePointer(
-    --     ULong i,
-    --     ULong&     valueLength) const
-    --     throw (
-    --       ArrayIndexOutOfBounds) = 0;
-    --   
-    --   virtual TransportType getTransportType( ULong i) const
-    --     throw (
-    --       ArrayIndexOutOfBounds,
-    --       InvalidHandleValuePairSetContext) = 0;
-    --   
-    --   virtual OrderType getOrderType( ULong i) const
-    --     throw (
-    --       ArrayIndexOutOfBounds,
-    --       InvalidHandleValuePairSetContext) = 0;
-    --   
-    --   virtual Region *getRegion(
-    --     ULong i) const
-    --     throw (
-    --       ArrayIndexOutOfBounds,
-    --       InvalidHandleValuePairSetContext) = 0;
-    --   
-    --   virtual void add(
-    --     Handle      h,
-    --     const char* buff,
-    --     ULong       valueLength)
-    --     throw (
-    --       ValueLengthExceeded,
-    --       ValueCountExceeded) = 0;
-    --   
-    --   virtual void remove(		// not guaranteed safe while iterating
-    --     Handle      h)
-    --     throw (
-    --       ArrayIndexOutOfBounds) = 0;
-    --   
-    --   virtual void moveFrom(
-    --     const AttributeHandleValuePairSet& ahvps,
-    --     ULong&               i)
-    --     throw (
-    --       ValueCountExceeded,
-    --       ArrayIndexOutOfBounds) = 0;
-    --   
-    --   virtual void empty() = 0; // Empty the Set without deallocating space.
-    -- 
-    --   virtual ULong start() const = 0;
-    --   virtual ULong valid(ULong i) const = 0;
-    --   virtual ULong next(ULong i) const = 0;
-    -- };
+-- AttributeHandleValuePairSet:
 
+delete_AttributeHandleValuePairSet ahSet
+    = wrapExceptions (wrap_delete_AttributeHandleValuePairSet ahSet)
+foreign import ccall "wrap/RTItypes.h wrap_delete_AttributeHandleValuePairSet"
+    wrap_delete_AttributeHandleValuePairSet :: Ptr AttributeHandleValuePairSet -> Ptr (Ptr RTIException) -> IO ()
 
---data AttributeSetFactory
-    -- public:
-    --   static AttributeHandleValuePairSet* create(
-    --     ULong count)
-    --     throw (
-    --       MemoryExhausted,
-    --       ValueCountExceeded,
-    --       HandleValuePairMaximumExceeded);
-    -- };
+foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_size"
+    wrap_AttributeHandleValuePairSet_size :: Ptr AttributeHandleValuePairSet -> Ptr (Ptr RTIException) -> IO ULong
 
--- data AttributeHandleSet
+foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_getHandle"
+    wrap_AttributeHandleValuePairSet_getHandle :: Ptr AttributeHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO Handle
+foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_getValueLength"
+    wrap_AttributeHandleValuePairSet_getValueLength :: Ptr AttributeHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO ULong
+        
+foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_getValue"
+    wrap_AttributeHandleValuePairSet_getValue :: Ptr AttributeHandleValuePairSet -> ULong -> CString -> Ptr ULong -> Ptr (Ptr RTIException) -> IO ()
+foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_getValuePointer"
+    wrap_AttributeHandleValuePairSet_getValuePointer :: Ptr AttributeHandleValuePairSet -> ULong -> Ptr ULong -> Ptr (Ptr RTIException) -> IO CString
+foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_getTransportType"
+    wrap_AttributeHandleValuePairSet_getTransportType :: Ptr AttributeHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO TransportType
+foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_getOrderType"
+    wrap_AttributeHandleValuePairSet_getOrderType :: Ptr AttributeHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO OrderType
+foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_getRegion"
+    wrap_AttributeHandleValuePairSet_getRegion :: Ptr AttributeHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO (Ptr Region)
+
+foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_add"
+    wrap_AttributeHandleValuePairSet_add :: Ptr AttributeHandleValuePairSet -> Handle -> CString -> ULong -> Ptr (Ptr RTIException) -> IO ()
+foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_remove"
+    wrap_AttributeHandleValuePairSet_remove :: Ptr AttributeHandleValuePairSet -> Handle -> Ptr (Ptr RTIException) -> IO ()
+foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_moveFrom"
+    wrap_AttributeHandleValuePairSet_moveFrom  :: Ptr AttributeHandleValuePairSet -> Ptr AttributeHandleValuePairSet -> Ptr ULong -> Ptr (Ptr RTIException) -> IO ()
+
+foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_empty"
+    wrap_AttributeHandleValuePairSet_empty :: Ptr AttributeHandleValuePairSet -> Ptr (Ptr RTIException) -> IO ()
+
+foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_start"
+    wrap_AttributeHandleValuePairSet_start :: Ptr AttributeHandleValuePairSet -> Ptr (Ptr RTIException) -> IO ULong
+foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_valid"
+    wrap_AttributeHandleValuePairSet_valid :: Ptr AttributeHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO ULong
+foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_next"
+    wrap_AttributeHandleValuePairSet_next :: Ptr AttributeHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO ULong
+
+-- AttributeSetFactory:
+foreign import ccall "wrap/RTItypes.h wrap_AttributeSetFactory_create"
+    wrap_AttributeSetFactory_create :: ULong -> Ptr (Ptr RTIException) -> IO (Ptr AttributeHandleValuePairSet)
+
+-- AttributeHandleSet:
 
 delete_AttributeHandleSet :: Ptr AttributeHandleSet -> IO ()
 delete_AttributeHandleSet ahSet = 
