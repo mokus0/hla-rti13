@@ -65,7 +65,7 @@ foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_size"
     wrap_AttributeHandleValuePairSet_size :: Ptr AttributeHandleValuePairSet -> Ptr (Ptr RTIException) -> IO ULong
 
 foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_getHandle"
-    wrap_AttributeHandleValuePairSet_getHandle :: Ptr AttributeHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO Handle
+    wrap_AttributeHandleValuePairSet_getHandle :: Ptr AttributeHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO AttributeHandle
 foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_getValueLength"
     wrap_AttributeHandleValuePairSet_getValueLength :: Ptr AttributeHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO ULong
         
@@ -81,9 +81,9 @@ foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_getRegion
     wrap_AttributeHandleValuePairSet_getRegion :: Ptr AttributeHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO (Ptr Region)
 
 foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_add"
-    wrap_AttributeHandleValuePairSet_add :: Ptr AttributeHandleValuePairSet -> Handle -> CString -> ULong -> Ptr (Ptr RTIException) -> IO ()
+    wrap_AttributeHandleValuePairSet_add :: Ptr AttributeHandleValuePairSet -> AttributeHandle -> CString -> ULong -> Ptr (Ptr RTIException) -> IO ()
 foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_remove"
-    wrap_AttributeHandleValuePairSet_remove :: Ptr AttributeHandleValuePairSet -> Handle -> Ptr (Ptr RTIException) -> IO ()
+    wrap_AttributeHandleValuePairSet_remove :: Ptr AttributeHandleValuePairSet -> AttributeHandle -> Ptr (Ptr RTIException) -> IO ()
 foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_moveFrom"
     wrap_AttributeHandleValuePairSet_moveFrom  :: Ptr AttributeHandleValuePairSet -> Ptr AttributeHandleValuePairSet -> Ptr ULong -> Ptr (Ptr RTIException) -> IO ()
 
@@ -109,72 +109,62 @@ delete_AttributeHandleSet ahSet =
 foreign import ccall unsafe "wrap/RTItypes.h wrap_delete_AttributeHandleSet"
     wrap_delete_AttributeHandleSet :: Ptr AttributeHandleSet -> Ptr (Ptr RTIException) -> IO ()
 
+foreign import ccall unsafe "wrap/RTItypes.h wrap_AttributeHandleSet_size"
+    wrap_AttributeHandleSet_size :: Ptr AttributeHandleSet -> Ptr (Ptr RTIException) -> IO ULong
 
-    --   virtual ULong size() const = 0;
-    -- 
-    --   virtual AttributeHandle getHandle(ULong i) const
-    --     throw (
-    --       ArrayIndexOutOfBounds) = 0;
-    --   
+foreign import ccall unsafe "wrap/RTItypes.h wrap_AttributeHandleSet_getHandle"
+    wrap_AttributeHandleSet_getHandle :: Ptr AttributeHandleSet -> ULong -> Ptr (Ptr RTIException) -> IO AttributeHandle
+
 foreign import ccall unsafe "wrap/RTItypes.h wrap_AttributeHandleSet_add"
     wrap_AttributeHandleSet_add :: Ptr AttributeHandleSet -> AttributeHandle -> Ptr (Ptr RTIException) -> IO ()
 
-    --   virtual void add(AttributeHandle h)
-    --     throw (
-    --       ArrayIndexOutOfBounds,
-    --       AttributeNotDefined) = 0;
-    --   
-    --   virtual void remove(AttributeHandle h)
-    --     throw (			// not guaranteed safe while iterating
-    --       AttributeNotDefined) = 0;
-    --   
-    --   virtual void empty() = 0; // Empty the Set
-    -- 
-    --   virtual Boolean isEmpty() const = 0;  //is set empty?
-    --   virtual Boolean isMember(AttributeHandle h) const = 0;
-    -- };
+foreign import ccall unsafe "wrap/RTItypes.h wrap_AttributeHandleSet_remove"
+    wrap_AttributeHandleSet_remove :: Ptr AttributeHandleSet -> AttributeHandle -> Ptr (Ptr RTIException) -> IO ()
 
+foreign import ccall unsafe "wrap/RTItypes.h wrap_AttributeHandleSet_empty"
+    wrap_AttributeHandleSet_empty :: Ptr AttributeHandleSet -> Ptr (Ptr RTIException) -> IO ()
 
--- data AttributeHandleSetFactory
+foreign import ccall unsafe "wrap/RTItypes.h wrap_AttributeHandleSet_isEmpty"
+    wrap_AttributeHandleSet_isEmpty :: Ptr AttributeHandleSet -> Ptr (Ptr RTIException) -> IO Bool
 
-attributeHandleSetFactory_create :: ULong -> IO (Ptr AttributeHandleSet)
-attributeHandleSetFactory_create n = 
-    wrapExceptions (wrap_AttributeHandleSetFactory_create n)
+foreign import ccall unsafe "wrap/RTItypes.h wrap_AttributeHandleSet_isMember"
+    wrap_AttributeHandleSet_isMember :: Ptr AttributeHandleSet -> AttributeHandle -> Ptr (Ptr RTIException) -> IO Bool
+
+-- AttributeHandleSetFactory:
+
 foreign import ccall unsafe "wrap/RTItypes.h wrap_AttributeHandleSetFactory_create"
     wrap_AttributeHandleSetFactory_create :: ULong -> Ptr (Ptr RTIException) -> IO (Ptr AttributeHandleSet)
 
--- data FederateHandleSet
-    -- public:
-    -- 
-    --   virtual ~FederateHandleSet() {}
-    -- 
-    --   virtual ULong size() const = 0;
-    -- 
-    --   virtual FederateHandle getHandle(ULong i) const
-    --     throw (
-    --       ArrayIndexOutOfBounds) = 0;
-    --   
-    --   virtual void add(FederateHandle h)
-    --     throw (
-    --       ValueCountExceeded) = 0;
-    --   
-    --   virtual void remove(FederateHandle h)
-    --     throw (
-    --       ArrayIndexOutOfBounds) = 0;
-    --   
-    --   virtual void empty() = 0; // Empty the set without deallocating space.
-    -- 
-    --   virtual Boolean isMember(FederateHandle h) const = 0;
-    -- };
+-- FederateHandleSet:
 
--- data FederateHandleSetFactory
-    -- public:
-    --   static FederateHandleSet* create(ULong count)
-    --     throw (
-    --       MemoryExhausted,
-    --       ValueCountExceeded);
-    -- };
-    -- 
+delete_FederateHandleSet :: Ptr FederateHandleSet -> IO ()
+delete_FederateHandleSet fhSet = 
+    wrapExceptions (wrap_delete_FederateHandleSet fhSet)
+foreign import ccall unsafe "wrap/RTItypes.h wrap_delete_FederateHandleSet"
+    wrap_delete_FederateHandleSet :: Ptr FederateHandleSet -> Ptr (Ptr RTIException) -> IO ()
+
+foreign import ccall unsafe "wrap/RTItypes.h wrap_FederateHandleSet_size"
+    wrap_FederateHandleSet_size :: Ptr FederateHandleSet -> Ptr (Ptr RTIException) -> IO ULong
+
+foreign import ccall unsafe "wrap/RTItypes.h wrap_FederateHandleSet_getHandle"
+    wrap_FederateHandleSet_getHandle :: Ptr FederateHandleSet -> ULong -> Ptr (Ptr RTIException) -> IO FederateHandle
+
+foreign import ccall unsafe "wrap/RTItypes.h wrap_FederateHandleSet_add"
+    wrap_FederateHandleSet_add :: Ptr FederateHandleSet -> FederateHandle -> Ptr (Ptr RTIException) -> IO ()
+
+foreign import ccall unsafe "wrap/RTItypes.h wrap_FederateHandleSet_remove"
+    wrap_FederateHandleSet_remove :: Ptr FederateHandleSet -> FederateHandle -> Ptr (Ptr RTIException) -> IO ()
+
+foreign import ccall unsafe "wrap/RTItypes.h wrap_FederateHandleSet_empty"
+    wrap_FederateHandleSet_empty :: Ptr FederateHandleSet -> Ptr (Ptr RTIException) -> IO ()
+
+foreign import ccall unsafe "wrap/RTItypes.h wrap_FederateHandleSet_isMember"
+    wrap_FederateHandleSet_isMember :: Ptr FederateHandleSet -> FederateHandle -> Ptr (Ptr RTIException) -> IO Bool
+
+-- FederateHandleSetFactory:
+
+foreign import ccall unsafe "wrap/RTItypes.h wrap_FederateHandleSetFactory_create"
+    wrap_FederateHandleSetFactory_create :: ULong -> Ptr (Ptr RTIException) -> IO (Ptr FederateHandleSet)
 
 -- data ParameterHandleValuePairSet
     -- public:
@@ -184,190 +174,113 @@ delete_ParameterHandleValuePairSet pSet =
 foreign import ccall unsafe "wrap/RTItypes.h wrap_delete_ParameterHandleValuePairSet"
     wrap_delete_ParameterHandleValuePairSet :: Ptr ParameterHandleValuePairSet -> Ptr (Ptr RTIException) -> IO ()
 
-    --   virtual ULong size() const = 0;
-    --   
-    --   virtual Handle getHandle(
-    --     ULong i) const
-    --     throw (
-    --       ArrayIndexOutOfBounds) = 0;
-    --   
-    --   virtual ULong getValueLength(
-    --     ULong i) const
-    --     throw (
-    --       ArrayIndexOutOfBounds) = 0;
-    --   
-    --   virtual void getValue(
-    --     ULong i,
-    --     char*      buff,
-    --     ULong&     valueLength) const
-    --     throw (
-    --       ArrayIndexOutOfBounds) = 0;
-    --   
-    --   virtual char *getValuePointer(
-    --     ULong i,
-    --     ULong&     valueLength) const
-    --     throw (
-    --       ArrayIndexOutOfBounds) = 0;
-    --   
-    --   virtual TransportType getTransportType(void) const
-    --     throw ( InvalidHandleValuePairSetContext) = 0;
-    --   
-    --   virtual OrderType getOrderType(void) const
-    --     throw ( InvalidHandleValuePairSetContext) = 0;
-    --   
-    --   virtual Region *getRegion(void) const
-    --     throw ( InvalidHandleValuePairSetContext) = 0;
-    --   
+foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_size"
+    wrap_ParameterHandleValuePairSet_size :: Ptr ParameterHandleValuePairSet -> Ptr (Ptr RTIException) -> IO ULong
+
+foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_getHandle"
+    wrap_ParameterHandleValuePairSet_getHandle :: Ptr ParameterHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO ParameterHandle
+foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_getValueLength"
+    wrap_ParameterHandleValuePairSet_getValueLength :: Ptr ParameterHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO ULong
+        
+foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_getValue"
+    wrap_ParameterHandleValuePairSet_getValue :: Ptr ParameterHandleValuePairSet -> ULong -> CString -> Ptr ULong -> Ptr (Ptr RTIException) -> IO ()
+foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_getValuePointer"
+    wrap_ParameterHandleValuePairSet_getValuePointer :: Ptr ParameterHandleValuePairSet -> ULong -> Ptr ULong -> Ptr (Ptr RTIException) -> IO CString
+foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_getTransportType"
+    wrap_ParameterHandleValuePairSet_getTransportType :: Ptr ParameterHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO TransportType
+foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_getOrderType"
+    wrap_ParameterHandleValuePairSet_getOrderType :: Ptr ParameterHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO OrderType
+foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_getRegion"
+    wrap_ParameterHandleValuePairSet_getRegion :: Ptr ParameterHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO (Ptr Region)
 
 foreign import ccall unsafe "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_add"
     wrap_ParameterHandleValuePairSet_add :: Ptr ParameterHandleValuePairSet -> ParameterHandle -> CString -> ULong -> Ptr (Ptr RTIException) -> IO ()
+foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_remove"
+    wrap_ParameterHandleValuePairSet_remove :: Ptr ParameterHandleValuePairSet -> ParameterHandle -> Ptr (Ptr RTIException) -> IO ()
+foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_moveFrom"
+    wrap_ParameterHandleValuePairSet_moveFrom  :: Ptr ParameterHandleValuePairSet -> Ptr ParameterHandleValuePairSet -> Ptr ULong -> Ptr (Ptr RTIException) -> IO ()
 
-    --   virtual void remove(		// not guaranteed safe while iterating
-    --     Handle      h)
-    --     throw (
-    --       ArrayIndexOutOfBounds) = 0;
-    --   
-    --   virtual void moveFrom(
-    --     const ParameterHandleValuePairSet& phvps,
-    --     ULong&               i)
-    --     throw (
-    --       ValueCountExceeded,
-    --       ArrayIndexOutOfBounds) = 0;
-    --   
-    --   virtual void empty() = 0; // Empty the Set without deallocating space.
-    -- 
-    --   virtual ULong start() const = 0;
-    --   virtual ULong valid(ULong i) const = 0;
-    --   virtual ULong next(ULong i) const = 0;
-    -- };
+foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_empty"
+    wrap_ParameterHandleValuePairSet_empty :: Ptr ParameterHandleValuePairSet -> Ptr (Ptr RTIException) -> IO ()
 
--- data ParameterSetFactory
-parameterSetFactory_create :: ULong -> IO (Ptr ParameterHandleValuePairSet)
-parameterSetFactory_create count = 
-    wrapExceptions (wrap_ParameterSetFactory_create count)
+foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_start"
+    wrap_ParameterHandleValuePairSet_start :: Ptr ParameterHandleValuePairSet -> Ptr (Ptr RTIException) -> IO ULong
+foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_valid"
+    wrap_ParameterHandleValuePairSet_valid :: Ptr ParameterHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO ULong
+foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_next"
+    wrap_ParameterHandleValuePairSet_next :: Ptr ParameterHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO ULong
+
+-- ParameterSetFactory:
 foreign import ccall unsafe "wrap/RTItypes.h wrap_ParameterSetFactory_create"
     wrap_ParameterSetFactory_create :: ULong -> Ptr (Ptr RTIException) -> IO (Ptr ParameterHandleValuePairSet)
 
--- data Region
-    -- public:
-    -- 
+-- Region:
 delete_Region region = 
     wrapExceptions (wrap_delete_Region region)
 foreign import ccall "wrap/RTItypes.h wrap_delete_Region"
     wrap_delete_Region :: Ptr Region -> Ptr (Ptr RTIException) -> IO ()
 
-    --   virtual ULong getRangeLowerBound(
-    --     ExtentIndex     theExtent,
-    --     DimensionHandle theDimension) const
-    --     throw (
-    --       ArrayIndexOutOfBounds) = 0;
-    -- 
-    --   virtual ULong getRangeUpperBound(
-    --     ExtentIndex     theExtent,
-    --     DimensionHandle theDimension) const
-    --     throw (
-    --       ArrayIndexOutOfBounds) = 0;
+foreign import ccall "wrap/RTItypes.h wrap_Region_getRangeLowerBound"
+    wrap_Region_getRangeLowerBound :: Ptr Region -> ExtentIndex -> DimensionHandle -> Ptr (Ptr RTIException) -> IO ULong
+foreign import ccall "wrap/RTItypes.h wrap_Region_getRangeUpperBound"
+    wrap_Region_getRangeUpperBound :: Ptr Region -> ExtentIndex -> DimensionHandle -> Ptr (Ptr RTIException) -> IO ULong
 
 foreign import ccall "wrap/RTItypes.h wrap_Region_setRangeLowerBound"
     wrap_Region_setRangeLowerBound :: Ptr Region -> ExtentIndex -> DimensionHandle -> ULong -> Ptr (Ptr RTIException) -> IO ()
-
 foreign import ccall "wrap/RTItypes.h wrap_Region_setRangeUpperBound"
     wrap_Region_setRangeUpperBound :: Ptr Region -> ExtentIndex -> DimensionHandle -> ULong -> Ptr (Ptr RTIException) -> IO ()
 
-    --   virtual SpaceHandle getSpaceHandle() const
-    --     throw (
-    --       ) = 0;
-    -- 
-    --   virtual ULong getNumberOfExtents() const
-    --     throw (
-    --       ) = 0;
-    -- 
-    --   virtual ULong getRangeLowerBoundNotificationLimit(
-    --     ExtentIndex     theExtent,
-    --     DimensionHandle theDimension) const
-    --     throw (
-    --       ArrayIndexOutOfBounds) = 0;
-    -- 
-    --   virtual ULong getRangeUpperBoundNotificationLimit(
-    --     ExtentIndex     theExtent,
-    --     DimensionHandle theDimension) const
-    --     throw (
-    --       ArrayIndexOutOfBounds) = 0;
-    --       
-    --   static ULong getMaxExtent() 
-    --     throw ();
-    --   
-    --   static ULong getMinExtent() 
-    --     throw ();
-    -- 
-    -- };
+foreign import ccall "wrap/RTItypes.h wrap_Region_getSpaceHandle"
+    wrap_Region_getSpaceHandle :: Ptr Region -> Ptr (Ptr RTIException) -> IO SpaceHandle
 
--- data FedTime
-    -- public:
-    --   virtual ~FedTime();
-    -- 
-    --   virtual void setZero() = 0;
-    -- 
-    --   virtual Boolean isZero() = 0;
-    --   
-    --   virtual void setEpsilon() = 0;
-    -- 
-    --   virtual void setPositiveInfinity() = 0;
-    -- 
-    --   virtual Boolean isPositiveInfinity() = 0;
-    --   
+foreign import ccall "wrap/RTItypes.h wrap_Region_getNumberOfExtents"
+    wrap_Region_getNumberOfExtents :: Ptr Region -> Ptr (Ptr RTIException) -> IO ULong
+
+foreign import ccall "wrap/RTItypes.h wrap_Region_getRangeLowerBoundNotificationLimit"
+    wrap_Region_getRangeLowerBoundNotificationLimit :: Ptr Region -> ExtentIndex -> DimensionHandle -> Ptr (Ptr RTIException) -> IO ULong
+foreign import ccall "wrap/RTItypes.h wrap_Region_getRangeUpperBoundNotificationLimit"
+    wrap_Region_getRangeUpperBoundNotificationLimit :: Ptr Region -> ExtentIndex -> DimensionHandle -> Ptr (Ptr RTIException) -> IO ULong
+
+-- FedTime:
+delete_FedTime fedTime
+    = wrapExceptions (wrap_delete_FedTime fedTime)
+foreign import ccall "wrap/RTItypes.h wrap_delete_FedTime"
+    wrap_delete_FedTime :: Ptr SomeFedTime -> Ptr (Ptr RTIException) -> IO ()
+
+foreign import ccall "wrap/RTItypes.h wrap_FedTime_setZero"
+    wrap_FedTime_setZero :: Ptr SomeFedTime -> Ptr (Ptr RTIException) -> IO ()
+foreign import ccall "wrap/RTItypes.h wrap_FedTime_isZero"
+    wrap_FedTime_isZero :: Ptr SomeFedTime -> Ptr (Ptr RTIException) -> IO Bool
+
+foreign import ccall "wrap/RTItypes.h wrap_FedTime_setEpsilon"
+    wrap_FedTime_setEpsilon :: Ptr SomeFedTime -> Ptr (Ptr RTIException) -> IO ()
+
+foreign import ccall "wrap/RTItypes.h wrap_FedTime_setPositiveInfinity"
+    wrap_FedTime_setPositiveInfinity :: Ptr SomeFedTime -> Ptr (Ptr RTIException) -> IO ()
+foreign import ccall "wrap/RTItypes.h wrap_FedTime_isPositiveInfinity"
+    wrap_FedTime_isPositiveInfinity :: Ptr SomeFedTime -> Ptr (Ptr RTIException) -> IO Bool
+
     --   virtual FedTime& operator+= (const FedTime&)
-    --     throw (
-    --       InvalidFederationTime) = 0;
-    -- 
     --   virtual FedTime& operator-= (const FedTime&)
-    --     throw (
-    --       InvalidFederationTime) = 0;
-    --   
     --   virtual Boolean operator<= (const FedTime&) const
-    --     throw (
-    --       InvalidFederationTime) = 0;
-    -- 
     --   virtual Boolean operator< (const FedTime&) const
-    --     throw (
-    --       InvalidFederationTime) = 0;
-    -- 
     --    virtual Boolean operator>= (const FedTime&) const
-    --     throw (
-    --       InvalidFederationTime) = 0;
-    --   
     --   virtual Boolean operator> (const FedTime&) const
-    --     throw (
-    --       InvalidFederationTime) = 0;
-    -- 
     --   virtual Boolean operator== (const FedTime&) const
-    --     throw (
-    --       InvalidFederationTime) = 0;
-    --   
     --   virtual FedTime& operator= (const FedTime&)
-    --     throw (
-    --       InvalidFederationTime) = 0;
-    -- 
-    --   //return bytes needed to encode
-    --   virtual int encodedLength() const = 0;
-    --   
-    --   //encode into suppled buffer
-    --   virtual void encode(char *buff) const = 0;
-    --   
-    --   virtual int getPrintableLength() const = 0;
-    -- 
-    --   virtual void getPrintableString(char*) const = 0;
-    --   
-    -- };
 
---data FedTimeFactory
-    -- public:
-    --   static FedTime* makeZero()
-    --     throw (
-    --       MemoryExhausted);
-    -- 
-    --   static FedTime* decode(const char *buf)
-    --     throw (
-    --       MemoryExhausted);
-    -- };
+foreign import ccall "wrap/RTItypes.h wrap_FedTime_encodedLength"
+    wrap_FedTime_encodedLength :: Ptr SomeFedTime -> Ptr (Ptr RTIException) -> IO CInt
+foreign import ccall "wrap/RTItypes.h wrap_FedTime_encode"
+    wrap_FedTime_encode :: Ptr SomeFedTime -> CString -> Ptr (Ptr RTIException) -> IO ()
 
+foreign import ccall "wrap/RTItypes.h wrap_FedTime_getPrintableLength"
+    wrap_FedTime_getPrintableLength :: Ptr SomeFedTime -> Ptr (Ptr RTIException) -> IO CInt
+foreign import ccall "wrap/RTItypes.h wrap_FedTime_getPrintableString"
+    wrap_FedTime_getPrintableString :: Ptr SomeFedTime -> CString -> Ptr (Ptr RTIException) -> IO ()
+
+-- FedTimeFactory:
+foreign import ccall "wrap/RTItypes.h wrap_FedTimeFactory_makeZero"
+    wrap_FedTimeFactory_makeZero :: Ptr (Ptr RTIException) -> IO (Ptr SomeFedTime)
+foreign import ccall "wrap/RTItypes.h wrap_FedTimeFactory_decode"
+    wrap_FedTimeFactory_decode :: CString -> Ptr (Ptr RTIException) -> IO (Ptr SomeFedTime)

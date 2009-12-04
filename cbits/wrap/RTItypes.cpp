@@ -180,7 +180,9 @@ ccall HsBool    wrap_FederateHandleSet_isMember(void *fhSet, RTI_ULong h, void *
 #undef invoke
 
 ///// FederateHandleSetFactory
-ccall void     *wrap_FederateHandleSetFactory_create(RTI_ULong n, void **out_exc);
+ccall void     *wrap_FederateHandleSetFactory_create(RTI_ULong n, void **out_exc) {
+    wrap (return rti13::FederateHandleSetFactory::create(n))
+}
 
 ///// ParameterHandleValuePairSet
 #define invoke(method)  wrap(return ((rti13::ParameterHandleValuePairSet *)phvpSet)->method)
