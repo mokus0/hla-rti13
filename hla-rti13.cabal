@@ -3,7 +3,7 @@ version:                0.0.0.1
 stability:              experimental
 
 cabal-version:          >= 1.2
-build-type:             Simple
+build-type:             Custom
 
 author:                 James Cook <your email here>
 maintainer:             James Cook <your email here>
