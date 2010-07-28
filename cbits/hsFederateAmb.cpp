@@ -158,17 +158,25 @@ public:
     // Declaration Management Services //
     /////////////////////////////////////
 
+      ULong_to_Void hsStartRegistrationForObjectClass;
     virtual void startRegistrationForObjectClass (
             RTI::ObjectClassHandle   theClass)      // supplied C1
     throw (
       RTI::ObjectClassNotPublished,
-      RTI::FederateInternalError) {}
+      RTI::FederateInternalError) {
+          if (hsStartRegistrationForObjectClass)
+              hsStartRegistrationForObjectClass(theClass);
+      }
 
+      ULong_to_Void hsStopRegistrationForObjectClass;
     virtual void stopRegistrationForObjectClass (
             RTI::ObjectClassHandle   theClass)      // supplied C1
     throw (
       RTI::ObjectClassNotPublished,
-      RTI::FederateInternalError) {}
+      RTI::FederateInternalError) {
+          if (hsStopRegistrationForObjectClass)
+              hsStopRegistrationForObjectClass(theClass);
+      }
 
     ULong_to_Void hsTurnInteractionsOn;
     virtual void turnInteractionsOn (
@@ -536,6 +544,14 @@ ccall void hsfa_set_federationNotRestored(void *fedAmb, VoidFunc theFunPtr) {
     setFunPtr(hsFederationNotRestored)
 }
 
+ccall void hsfa_set_startRegistrationForObjectClass(void *fedAmb, ULong_to_Void theFunPtr) {
+    setFunPtr(hsStartRegistrationForObjectClass)
+}
+
+ccall void hsfa_set_stopRegistrationForObjectClass(void *fedAmb, ULong_to_Void theFunPtr) {
+    setFunPtr(hsStopRegistrationForObjectClass)
+}
+
 ccall void hsfa_set_turnUpdatesOnForObjectInstance(void *fedAmb, ULong_to_ConstPtr_to_Void theFunPtr) {
     setFunPtr(hsTurnUpdatesOnForObjectInstance)
 }
@@ -588,6 +604,8 @@ setter setters[] =
     (setter) &hsfa_set_initiateFederateRestore,
     (setter) &hsfa_set_federationRestored,
     (setter) &hsfa_set_federationNotRestored,
+    (setter) &hsfa_set_startRegistrationForObjectClass,
+    (setter) &hsfa_set_stopRegistrationForObjectClass,
     (setter) &hsfa_set_turnUpdatesOnForObjectInstance,
     (setter) &hsfa_set_discoverObjectInstance,
     (setter) &hsfa_set_timeRegulationEnabled,

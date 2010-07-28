@@ -310,6 +310,39 @@ set_turnInteractionsOff fedAmb turnInteractionsOff =
 -- Object Management --
 -----------------------
 
+-- hsfa_set_startRegistrationForObjectClass
+foreign import ccall "wrapper" mkObjectClassFunPtr :: (ObjectClassHandle -> IO ()) -> IO (FunPtr (ObjectClassHandle -> IO ()))
+
+foreign import ccall "hsFederateAmb.h hsfa_set_startRegistrationForObjectClass"
+    hsfa_set_startRegistrationForObjectClass :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectClassHandle -> IO ()) -> IO ()
+
+onStartRegistrationForObjectClass :: (ObjectClassHandle -> IO ()) -> FedHandlers t ()
+onStartRegistrationForObjectClass startRegistrationForObjectClass = do
+    fedAmb <- ask
+    liftIO (set_startRegistrationForObjectClass fedAmb startRegistrationForObjectClass)
+
+set_startRegistrationForObjectClass :: HsFederateAmbassador t -> (ObjectClassHandle -> IO ()) -> IO ()
+set_startRegistrationForObjectClass fedAmb startRegistrationForObjectClass = 
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkObjectClassFunPtr startRegistrationForObjectClass
+        hsfa_set_startRegistrationForObjectClass fedAmb funPtr
+
+
+foreign import ccall "hsFederateAmb.h hsfa_set_stopRegistrationForObjectClass"
+    hsfa_set_stopRegistrationForObjectClass :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectClassHandle -> IO ()) -> IO ()
+
+onStopRegistrationForObjectClass :: (ObjectClassHandle -> IO ()) -> FedHandlers t ()
+onStopRegistrationForObjectClass stopRegistrationForObjectClass = do
+    fedAmb <- ask
+    liftIO (set_stopRegistrationForObjectClass fedAmb stopRegistrationForObjectClass)
+
+set_stopRegistrationForObjectClass :: HsFederateAmbassador t -> (ObjectClassHandle -> IO ()) -> IO ()
+set_stopRegistrationForObjectClass fedAmb stopRegistrationForObjectClass = 
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkObjectClassFunPtr stopRegistrationForObjectClass
+        hsfa_set_stopRegistrationForObjectClass fedAmb funPtr
+
+
 foreign import ccall "hsFederateAmb.h hsfa_set_discoverObjectInstance"
     hsfa_set_discoverObjectInstance :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> ObjectClassHandle -> CString -> IO ()) -> IO ()
 
