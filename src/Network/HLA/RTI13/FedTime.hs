@@ -51,14 +51,14 @@ mkRTIFedTime t = do
     return (RTIFedTime fp)
 
 instance NewRef RTIFedTime IO Double where
-    newRef = mkRTIFedTime
+    newReference = mkRTIFedTime
 
 instance ReadRef RTIFedTime IO Double where
-    readRef (RTIFedTime fp) = withForeignPtr fp $ \rt -> do
+    readReference (RTIFedTime fp) = withForeignPtr fp $ \rt -> do
         getTime rt
 
 instance WriteRef RTIFedTime IO Double where
-    writeRef (RTIFedTime fp) t = withForeignPtr fp $ \rt -> do
+    writeReference (RTIFedTime fp) t = withForeignPtr fp $ \rt -> do
         setTime rt t
 
 instance FedTimeImpl RTIFedTime where

@@ -75,7 +75,7 @@ throwRTIException e = do
 -- table mapping "_ex" pointer value to "RTIExceptionName"s
 {-# NOINLINE exceptionNameTable #-}
 exceptionNameTable :: TVar (IM.IntMap RTIExceptionName)
-exceptionNameTable = unsafePerformIO (newRef IM.empty)
+exceptionNameTable = unsafePerformIO (newReference IM.empty)
 
 readRTIExceptionName :: CString -> IO RTIExceptionName
 readRTIExceptionName name = do
@@ -97,7 +97,7 @@ lookupRTIExceptionName name = do
         entry <- readsRef exceptionNameTable (IM.lookup ptr)
         case entry of 
             Nothing -> readName `seq` do
-                modifyRef exceptionNameTable (IM.insert ptr readName)
+                modifyReference exceptionNameTable (IM.insert ptr readName)
                 return readName
             Just name -> return name
 

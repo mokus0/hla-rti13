@@ -21,7 +21,7 @@ getRTIAmbassador :: IO (RTIAmbassador fedAmb)
 getRTIAmbassador = do
     rtiAmb <- new_RTIambassador
     rtiAmb <- newForeignPtr rtiAmb (delete_RTIambassador rtiAmb)
-    fedAmb <- newRef Nothing
+    fedAmb <- newReference Nothing
     return (RTIAmbassador rtiAmb fedAmb)
 
 ------------------------------------
@@ -48,14 +48,14 @@ joinFederationExecution rtiAmb yourName executionName fedAmb = do
             withCString executionName $ \executionName ->
                 withFederateAmbassador fedAmb $ \fedAmb ->
                     wrapExceptions (wrap_joinFederationExecution rtiAmb yourName executionName fedAmb)
-    writeRef (rtiFedAmb rtiAmb) (Just fedAmb)
+    writeReference (rtiFedAmb rtiAmb) (Just fedAmb)
     return fedHandle
 
 resignFederationExecution :: RTIAmbassador fedAmb -> ResignAction -> IO ()
 resignFederationExecution rtiAmb resignAction = do
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
         wrapExceptions (wrap_resignFederationExecution rtiAmb (fromIntegral (fromEnum resignAction)))
-    writeRef (rtiFedAmb rtiAmb) Nothing
+    writeReference (rtiFedAmb rtiAmb) Nothing
     performGC
 
     -- // 4.6
