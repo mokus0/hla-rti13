@@ -60,6 +60,43 @@ newHsFederateAmbassador = do
     where
         delete_HsFederateAmbassador fedAmb = wrapExceptions (wrap_delete_HsFederateAmbassador fedAmb)
 
+------------------------------------
+-- Federation Management Services --
+------------------------------------
+
+foreign import ccall "hsFederateAmb.h hsfa_set_synchronizationPointRegistrationSucceeded"
+    hsfa_set_synchronizationPointRegistrationSucceeded :: Ptr (HsFederateAmbassador t) -> FunPtr (CString -> IO ()) -> IO ()
+
+onSynchronizationPointRegistrationSucceeded :: (String -> IO ()) -> FedHandlers t ()
+onSynchronizationPointRegistrationSucceeded synchronizationPointRegistrationSucceeded = do
+    fedAmb <- ask
+    liftIO (set_synchronizationPointRegistrationSucceeded fedAmb synchronizationPointRegistrationSucceeded)
+
+set_synchronizationPointRegistrationSucceeded :: HsFederateAmbassador t -> (String -> IO ()) -> IO ()
+set_synchronizationPointRegistrationSucceeded fedAmb synchronizationPointRegistrationSucceeded =
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkPtrFunPtr $ \cstr -> do
+            str <- peekCString cstr
+            synchronizationPointRegistrationSucceeded str
+        hsfa_set_synchronizationPointRegistrationSucceeded fedAmb funPtr
+
+foreign import ccall "hsFederateAmb.h hsfa_set_synchronizationPointRegistrationFailed"
+    hsfa_set_synchronizationPointRegistrationFailed :: Ptr (HsFederateAmbassador t) -> FunPtr (CString -> IO ()) -> IO ()
+
+onSynchronizationPointRegistrationFailed :: (String -> IO ()) -> FedHandlers t ()
+onSynchronizationPointRegistrationFailed synchronizationPointRegistrationFailed = do
+    fedAmb <- ask
+    liftIO (set_synchronizationPointRegistrationFailed fedAmb synchronizationPointRegistrationFailed)
+
+set_synchronizationPointRegistrationFailed :: HsFederateAmbassador t -> (String -> IO ()) -> IO ()
+set_synchronizationPointRegistrationFailed fedAmb synchronizationPointRegistrationFailed =
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkPtrFunPtr $ \cstr -> do
+            str <- peekCString cstr
+            synchronizationPointRegistrationFailed str
+        hsfa_set_synchronizationPointRegistrationFailed fedAmb funPtr
+
+
 ----------------------------
 -- Declaration Management --
 ----------------------------

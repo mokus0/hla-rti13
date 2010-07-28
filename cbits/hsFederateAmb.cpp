@@ -38,15 +38,23 @@ public:
     // Federation Management Services //
     ////////////////////////////////////
 
+    ConstPtr_to_Void hsSynchronizationPointRegistrationSucceeded;
     virtual void synchronizationPointRegistrationSucceeded (
       const char *label) // supplied C4)
     throw (
-      RTI::FederateInternalError) {}
+      RTI::FederateInternalError) {
+          if (hsSynchronizationPointRegistrationSucceeded)
+              hsSynchronizationPointRegistrationSucceeded(label);
+      }
 
+    ConstPtr_to_Void hsSynchronizationPointRegistrationFailed;
     virtual void synchronizationPointRegistrationFailed (
       const char *label) // supplied C4)
     throw (
-      RTI::FederateInternalError) {}
+      RTI::FederateInternalError) {
+          if (hsSynchronizationPointRegistrationFailed)
+              hsSynchronizationPointRegistrationFailed(label);
+      }
 
     virtual void announceSynchronizationPoint (
       const char *label, // supplied C4
@@ -434,6 +442,14 @@ ccall void *wrap_delete_HsFederateAmbassador(void *fedAmb, void **out_exc) {
                                 fa->releaseFun(tmp);                                    \
                             }
 
+ccall void hsfa_set_synchronizationPointRegistrationSucceeded(void *fedAmb, ConstPtr_to_Void theFunPtr) {
+    setFunPtr(hsSynchronizationPointRegistrationSucceeded)
+}
+
+ccall void hsfa_set_synchronizationPointRegistrationFailed(void *fedAmb, ConstPtr_to_Void theFunPtr) {
+    setFunPtr(hsSynchronizationPointRegistrationFailed)
+}
+
 ccall void hsfa_set_turnUpdatesOnForObjectInstance(void *fedAmb, ULong_to_ConstPtr_to_Void theFunPtr) {
     setFunPtr(hsTurnUpdatesOnForObjectInstance)
 }
@@ -473,7 +489,9 @@ ccall void hsfa_set_receiveInteraction(void *fedAmb, ULong_to_ConstPtrX3_to_ULon
 // this array is scanned through when constructing and destructing HsFederateAmbassador.
 // all function pointer setters should be here.
 setter setters[] =
-{   (setter) &hsfa_set_turnUpdatesOnForObjectInstance,
+{   (setter) &hsfa_set_synchronizationPointRegistrationSucceeded,
+    (setter) &hsfa_set_synchronizationPointRegistrationFailed,
+    (setter) &hsfa_set_turnUpdatesOnForObjectInstance,
     (setter) &hsfa_set_discoverObjectInstance,
     (setter) &hsfa_set_timeRegulationEnabled,
     (setter) &hsfa_set_turnInteractionsOn,
