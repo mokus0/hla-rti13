@@ -75,19 +75,31 @@ public:
               hsFederationSynchronized(label);
       }
 
+      ConstPtr_to_Void hsInitiateFederateSave;
     virtual void initiateFederateSave (
       const char *label) // supplied C4
     throw (
       RTI::UnableToPerformSave,
-      RTI::FederateInternalError) {}
+      RTI::FederateInternalError) {
+          if (hsInitiateFederateSave)
+              hsInitiateFederateSave(label);
+      }
 
+      VoidFunc hsFederationSaved;
     virtual void federationSaved ()
     throw (
-      RTI::FederateInternalError) {}
+      RTI::FederateInternalError) {
+          if (hsFederationSaved)
+              hsFederationSaved();
+      }
 
+      VoidFunc hsFederationNotSaved;
     virtual void federationNotSaved ()
     throw (
-      RTI::FederateInternalError) {}
+      RTI::FederateInternalError) {
+          if (hsFederationNotSaved)
+              hsFederationNotSaved();
+      }
 
     virtual void requestFederationRestoreSucceeded (
       const char *label) // supplied C4
@@ -466,6 +478,18 @@ ccall void hsfa_set_federationSynchronized(void *fedAmb, ConstPtr_to_Void theFun
     setFunPtr(hsFederationSynchronized)
 }
 
+ccall void hsfa_set_initiateFederateSave(void *fedAmb, ConstPtr_to_Void theFunPtr) {
+    setFunPtr(hsInitiateFederateSave)
+}
+
+ccall void hsfa_set_federationSaved(void *fedAmb, VoidFunc theFunPtr) {
+    setFunPtr(hsFederationSaved)
+}
+
+ccall void hsfa_set_federationNotSaved(void *fedAmb, VoidFunc theFunPtr) {
+    setFunPtr(hsFederationNotSaved)
+}
+
 ccall void hsfa_set_turnUpdatesOnForObjectInstance(void *fedAmb, ULong_to_ConstPtr_to_Void theFunPtr) {
     setFunPtr(hsTurnUpdatesOnForObjectInstance)
 }
@@ -509,6 +533,9 @@ setter setters[] =
     (setter) &hsfa_set_synchronizationPointRegistrationFailed,
     (setter) &hsfa_set_announceSynchronizationPoint,
     (setter) &hsfa_set_federationSynchronized,
+    (setter) &hsfa_set_initiateFederateSave,
+    (setter) &hsfa_set_federationSaved,
+    (setter) &hsfa_set_federationNotSaved,
     (setter) &hsfa_set_turnUpdatesOnForObjectInstance,
     (setter) &hsfa_set_discoverObjectInstance,
     (setter) &hsfa_set_timeRegulationEnabled,

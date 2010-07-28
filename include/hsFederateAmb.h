@@ -3,6 +3,7 @@
 
 #include "wrap/common.h"
 
+typedef void (*VoidFunc)();
 typedef void (*ConstPtr_to_Void)(const void *);
 typedef void (*ConstPtrX2_to_Void)(const void *, const void *);
 typedef void (*ULong_to_Void)(RTI_ULong);

@@ -36,6 +36,7 @@ foreign import ccall "hsFederateAmb.h wrap_delete_HsFederateAmbassador"
     wrap_delete_HsFederateAmbassador :: Ptr (HsFederateAmbassador t) -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrapper" mkFreeFunPtr  :: (FunPtr a                -> IO ()) -> IO (FunPtr (FunPtr a               -> IO ()))
+foreign import ccall "wrapper" mkVoidFunPtr  :: (                           IO ()) -> IO (FunPtr (                          IO ()))
 foreign import ccall "wrapper" mkPtrFunPtr   :: (Ptr a                   -> IO ()) -> IO (FunPtr (Ptr a                  -> IO ()))
 foreign import ccall "wrapper" mkPtrX2FunPtr :: (Ptr a -> Ptr a          -> IO ()) -> IO (FunPtr (Ptr a -> Ptr a         -> IO ()))
 foreign import ccall "wrapper" mkICHFunPtr   :: (InteractionClassHandle  -> IO ()) -> IO (FunPtr (InteractionClassHandle -> IO ()))
@@ -129,6 +130,51 @@ set_federationSynchronized fedAmb federationSynchronized =
             str <- peekCString cstr
             federationSynchronized str
         hsfa_set_federationSynchronized fedAmb funPtr
+
+foreign import ccall "hsFederateAmb.h hsfa_set_initiateFederateSave"
+    hsfa_set_initiateFederateSave :: Ptr (HsFederateAmbassador t) -> FunPtr (CString -> IO ()) -> IO ()
+
+onInitiateFederateSave :: (String -> IO ()) -> FedHandlers t ()
+onInitiateFederateSave initiateFederateSave = do
+    fedAmb <- ask
+    liftIO (set_initiateFederateSave fedAmb initiateFederateSave)
+
+set_initiateFederateSave :: HsFederateAmbassador t -> (String -> IO ()) -> IO ()
+set_initiateFederateSave fedAmb initiateFederateSave =
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkPtrFunPtr $ \cstr -> do
+            str <- peekCString cstr
+            initiateFederateSave str
+        hsfa_set_initiateFederateSave fedAmb funPtr
+
+
+foreign import ccall "hsFederateAmb.h hsfa_set_federationSaved"
+    hsfa_set_federationSaved :: Ptr (HsFederateAmbassador t) -> FunPtr (IO ()) -> IO ()
+
+onFederationSaved :: IO () -> FedHandlers t ()
+onFederationSaved federationSaved = do
+    fedAmb <- ask
+    liftIO (set_federationSaved fedAmb federationSaved)
+
+set_federationSaved :: HsFederateAmbassador t -> IO () -> IO ()
+set_federationSaved fedAmb federationSaved =
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkVoidFunPtr federationSaved
+        hsfa_set_federationSaved fedAmb funPtr
+
+foreign import ccall "hsFederateAmb.h hsfa_set_federationNotSaved"
+    hsfa_set_federationNotSaved :: Ptr (HsFederateAmbassador t) -> FunPtr (IO ()) -> IO ()
+
+onFederationNotSaved :: IO () -> FedHandlers t ()
+onFederationNotSaved federationNotSaved = do
+    fedAmb <- ask
+    liftIO (set_federationSaved fedAmb federationNotSaved)
+
+set_federationNotSaved :: HsFederateAmbassador t -> IO () -> IO ()
+set_federationNotSaved fedAmb federationNotSaved =
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkVoidFunPtr federationNotSaved
+        hsfa_set_federationNotSaved fedAmb funPtr
 
 
 ----------------------------
