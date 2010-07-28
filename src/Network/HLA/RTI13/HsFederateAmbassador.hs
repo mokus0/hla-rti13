@@ -225,6 +225,24 @@ set_federationRestoreBegun fedAmb federationRestoreBegun =
         funPtr <- mkVoidFunPtr federationRestoreBegun
         hsfa_set_federationRestoreBegun fedAmb funPtr
 
+foreign import ccall "wrapper"
+    mkInitiateFederateRestoreFunPtr :: (CString -> FederateHandle -> IO ()) -> IO (FunPtr (CString -> FederateHandle -> IO ()))
+
+foreign import ccall "hsFederateAmb.h hsfa_set_initiateFederateRestore"
+    hsfa_set_initiateFederateRestore :: Ptr (HsFederateAmbassador t) -> FunPtr (CString -> FederateHandle -> IO ()) -> IO ()
+
+onInitiateFederateRestore :: (String -> FederateHandle -> IO ()) -> FedHandlers t ()
+onInitiateFederateRestore initiateFederateRestore = do
+    fedAmb <- ask
+    liftIO (set_initiateFederateRestore fedAmb initiateFederateRestore)
+
+set_initiateFederateRestore :: HsFederateAmbassador t -> (String -> FederateHandle -> IO ()) -> IO ()
+set_initiateFederateRestore fedAmb initiateFederateRestore =
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkInitiateFederateRestoreFunPtr $ \cstr fh -> do
+            str <- peekCString cstr
+            initiateFederateRestore str fh
+        hsfa_set_initiateFederateRestore fedAmb funPtr
 
 
 ----------------------------

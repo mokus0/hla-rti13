@@ -128,13 +128,17 @@ public:
               hsFederationRestoreBegun();
       }
 
+      ConstPtr_to_ULong_to_Void hsInitiateFederateRestore;
     virtual void initiateFederateRestore (
       const char               *label,   // supplied C4
             RTI::FederateHandle handle)  // supplied C1
     throw (
       RTI::SpecifiedSaveLabelDoesNotExist,
       RTI::CouldNotRestore,
-      RTI::FederateInternalError) {}
+      RTI::FederateInternalError) {
+          if (hsInitiateFederateRestore)
+              hsInitiateFederateRestore(label, handle);
+      }
 
     virtual void federationRestored ()
     throw (
@@ -514,6 +518,10 @@ ccall void hsfa_set_federationRestoreBegun(void *fedAmb, VoidFunc theFunPtr) {
     setFunPtr(hsFederationRestoreBegun)
 }
 
+ccall void hsfa_set_initiateFederateRestore(void *fedAmb, ConstPtr_to_ULong_to_Void theFunPtr) {
+    setFunPtr(hsInitiateFederateRestore)
+}
+
 ccall void hsfa_set_turnUpdatesOnForObjectInstance(void *fedAmb, ULong_to_ConstPtr_to_Void theFunPtr) {
     setFunPtr(hsTurnUpdatesOnForObjectInstance)
 }
@@ -563,6 +571,7 @@ setter setters[] =
     (setter) &hsfa_set_requestFederationRestoreSucceeded,
     (setter) &hsfa_set_requestFederationRestoreFailed,
     (setter) &hsfa_set_federationRestoreBegun,
+    (setter) &hsfa_set_initiateFederateRestore,
     (setter) &hsfa_set_turnUpdatesOnForObjectInstance,
     (setter) &hsfa_set_discoverObjectInstance,
     (setter) &hsfa_set_timeRegulationEnabled,

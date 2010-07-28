@@ -5,6 +5,7 @@
 
 typedef void (*VoidFunc)();
 typedef void (*ConstPtr_to_Void)(const void *);
+typedef void (*ConstPtr_to_ULong_to_Void)(const void *, RTI_ULong);
 typedef void (*ConstPtrX2_to_Void)(const void *, const void *);
 typedef void (*ULong_to_Void)(RTI_ULong);
 typedef void (*ULong_to_ConstPtr_to_Void)(RTI_ULong, const void *);
