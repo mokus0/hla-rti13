@@ -176,6 +176,41 @@ set_federationNotSaved fedAmb federationNotSaved =
         funPtr <- mkVoidFunPtr federationNotSaved
         hsfa_set_federationNotSaved fedAmb funPtr
 
+foreign import ccall "hsFederateAmb.h hsfa_set_requestFederationRestoreSucceeded"
+    hsfa_set_requestFederationRestoreSucceeded :: Ptr (HsFederateAmbassador t) -> FunPtr (CString -> IO ()) -> IO ()
+
+onRequestFederationRestoreSucceeded :: (String -> IO ()) -> FedHandlers t ()
+onRequestFederationRestoreSucceeded requestFederationRestoreSucceeded = do
+    fedAmb <- ask
+    liftIO (set_requestFederationRestoreSucceeded fedAmb requestFederationRestoreSucceeded)
+
+set_requestFederationRestoreSucceeded :: HsFederateAmbassador t -> (String -> IO ()) -> IO ()
+set_requestFederationRestoreSucceeded fedAmb requestFederationRestoreSucceeded =
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkPtrFunPtr $ \cstr -> do
+            str <- peekCString cstr
+            requestFederationRestoreSucceeded str
+        hsfa_set_requestFederationRestoreSucceeded fedAmb funPtr
+
+
+foreign import ccall "hsFederateAmb.h hsfa_set_requestFederationRestoreFailed"
+    hsfa_set_requestFederationRestoreFailed :: Ptr (HsFederateAmbassador t) -> FunPtr (CString -> CString -> IO ()) -> IO ()
+
+onRequestFederationRestoreFailed :: (String -> String -> IO ()) -> FedHandlers t ()
+onRequestFederationRestoreFailed requestFederationRestoreFailed = do
+    fedAmb <- ask
+    liftIO (set_requestFederationRestoreFailed fedAmb requestFederationRestoreFailed)
+
+set_requestFederationRestoreFailed :: HsFederateAmbassador t -> (String -> String -> IO ()) -> IO ()
+set_requestFederationRestoreFailed fedAmb requestFederationRestoreFailed =
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkPtrX2FunPtr $ \cstr1 cstr2 -> do
+            str1 <- peekCString cstr1
+            str2 <- peekCString cstr2
+            requestFederationRestoreFailed str1 str2
+        hsfa_set_requestFederationRestoreFailed fedAmb funPtr
+
+
 
 ----------------------------
 -- Declaration Management --
