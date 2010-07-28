@@ -245,6 +245,35 @@ set_initiateFederateRestore fedAmb initiateFederateRestore =
         hsfa_set_initiateFederateRestore fedAmb funPtr
 
 
+foreign import ccall "hsFederateAmb.h hsfa_set_federationRestored"
+    hsfa_set_federationRestored :: Ptr (HsFederateAmbassador t) -> FunPtr (IO ()) -> IO ()
+
+onFederationRestored :: IO () -> FedHandlers t ()
+onFederationRestored federationRestored = do
+    fedAmb <- ask
+    liftIO (set_federationRestored fedAmb federationRestored)
+
+set_federationRestored :: HsFederateAmbassador t -> IO () -> IO ()
+set_federationRestored fedAmb federationRestored =
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkVoidFunPtr federationRestored
+        hsfa_set_federationRestored fedAmb funPtr
+
+foreign import ccall "hsFederateAmb.h hsfa_set_federationNotRestored"
+    hsfa_set_federationNotRestored :: Ptr (HsFederateAmbassador t) -> FunPtr (IO ()) -> IO ()
+
+onFederationNotRestored :: IO () -> FedHandlers t ()
+onFederationNotRestored federationNotRestored = do
+    fedAmb <- ask
+    liftIO (set_federationNotRestored fedAmb federationNotRestored)
+
+set_federationNotRestored :: HsFederateAmbassador t -> IO () -> IO ()
+set_federationNotRestored fedAmb federationNotRestored =
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkVoidFunPtr federationNotRestored
+        hsfa_set_federationNotRestored fedAmb funPtr
+
+
 ----------------------------
 -- Declaration Management --
 ----------------------------
