@@ -4,6 +4,7 @@
 #include "wrap/common.h"
 
 typedef void (*ConstPtr_to_Void)(const void *);
+typedef void (*ConstPtrX2_to_Void)(const void *, const void *);
 typedef void (*ULong_to_Void)(RTI_ULong);
 typedef void (*ULong_to_ConstPtr_to_Void)(RTI_ULong, const void *);
 typedef void (*ULong_to_ULong_to_ConstPtr_to_Void)(RTI_ULong, RTI_ULong, const void *);

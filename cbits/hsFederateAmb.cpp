@@ -56,16 +56,24 @@ public:
               hsSynchronizationPointRegistrationFailed(label);
       }
 
+    ConstPtrX2_to_Void hsAnnounceSynchronizationPoint;
     virtual void announceSynchronizationPoint (
       const char *label, // supplied C4
       const char *tag)   // supplied C4
     throw (
-      RTI::FederateInternalError) {}
+      RTI::FederateInternalError) {
+          if (hsAnnounceSynchronizationPoint)
+              hsAnnounceSynchronizationPoint(label, tag);
+      }
 
+    ConstPtr_to_Void hsFederationSynchronized;
     virtual void federationSynchronized (
       const char *label) // supplied C4)
     throw (
-      RTI::FederateInternalError) {}
+      RTI::FederateInternalError) {
+          if (hsFederationSynchronized)
+              hsFederationSynchronized(label);
+      }
 
     virtual void initiateFederateSave (
       const char *label) // supplied C4
@@ -450,6 +458,14 @@ ccall void hsfa_set_synchronizationPointRegistrationFailed(void *fedAmb, ConstPt
     setFunPtr(hsSynchronizationPointRegistrationFailed)
 }
 
+ccall void hsfa_set_announceSynchronizationPoint(void *fedAmb, ConstPtrX2_to_Void theFunPtr) {
+    setFunPtr(hsAnnounceSynchronizationPoint)
+}
+
+ccall void hsfa_set_federationSynchronized(void *fedAmb, ConstPtr_to_Void theFunPtr) {
+    setFunPtr(hsFederationSynchronized)
+}
+
 ccall void hsfa_set_turnUpdatesOnForObjectInstance(void *fedAmb, ULong_to_ConstPtr_to_Void theFunPtr) {
     setFunPtr(hsTurnUpdatesOnForObjectInstance)
 }
@@ -491,6 +507,8 @@ ccall void hsfa_set_receiveInteraction(void *fedAmb, ULong_to_ConstPtrX3_to_ULon
 setter setters[] =
 {   (setter) &hsfa_set_synchronizationPointRegistrationSucceeded,
     (setter) &hsfa_set_synchronizationPointRegistrationFailed,
+    (setter) &hsfa_set_announceSynchronizationPoint,
+    (setter) &hsfa_set_federationSynchronized,
     (setter) &hsfa_set_turnUpdatesOnForObjectInstance,
     (setter) &hsfa_set_discoverObjectInstance,
     (setter) &hsfa_set_timeRegulationEnabled,

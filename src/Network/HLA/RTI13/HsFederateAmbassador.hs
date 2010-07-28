@@ -35,9 +35,10 @@ foreign import ccall unsafe "hsFederateAmb.h wrap_new_HsFederateAmbassador"
 foreign import ccall "hsFederateAmb.h wrap_delete_HsFederateAmbassador"
     wrap_delete_HsFederateAmbassador :: Ptr (HsFederateAmbassador t) -> Ptr (Ptr RTIException) -> IO ()
 
-foreign import ccall "wrapper" mkFreeFunPtr :: (FunPtr a                -> IO ()) -> IO (FunPtr (FunPtr a               -> IO ()))
-foreign import ccall "wrapper" mkPtrFunPtr  :: (Ptr a                   -> IO ()) -> IO (FunPtr (Ptr a                  -> IO ()))
-foreign import ccall "wrapper" mkICHFunPtr  :: (InteractionClassHandle  -> IO ()) -> IO (FunPtr (InteractionClassHandle -> IO ()))
+foreign import ccall "wrapper" mkFreeFunPtr  :: (FunPtr a                -> IO ()) -> IO (FunPtr (FunPtr a               -> IO ()))
+foreign import ccall "wrapper" mkPtrFunPtr   :: (Ptr a                   -> IO ()) -> IO (FunPtr (Ptr a                  -> IO ()))
+foreign import ccall "wrapper" mkPtrX2FunPtr :: (Ptr a -> Ptr a          -> IO ()) -> IO (FunPtr (Ptr a -> Ptr a         -> IO ()))
+foreign import ccall "wrapper" mkICHFunPtr   :: (InteractionClassHandle  -> IO ()) -> IO (FunPtr (InteractionClassHandle -> IO ()))
 
 foreign import ccall "wrapper" mkObjectInstanceFunPtr :: 
     (ObjectHandle -> ObjectClassHandle -> CString -> IO ())
@@ -95,6 +96,39 @@ set_synchronizationPointRegistrationFailed fedAmb synchronizationPointRegistrati
             str <- peekCString cstr
             synchronizationPointRegistrationFailed str
         hsfa_set_synchronizationPointRegistrationFailed fedAmb funPtr
+
+foreign import ccall "hsFederateAmb.h hsfa_set_announceSynchronizationPoint"
+    hsfa_set_announceSynchronizationPoint :: Ptr (HsFederateAmbassador t) -> FunPtr (CString -> CString -> IO ()) -> IO ()
+
+onAnnounceSynchronizationPoint :: (String -> String -> IO ()) -> FedHandlers t ()
+onAnnounceSynchronizationPoint announceSynchronizationPoint = do
+    fedAmb <- ask
+    liftIO (set_announceSynchronizationPoint fedAmb announceSynchronizationPoint)
+
+set_announceSynchronizationPoint :: HsFederateAmbassador t -> (String -> String -> IO ()) -> IO ()
+set_announceSynchronizationPoint fedAmb announceSynchronizationPoint =
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkPtrX2FunPtr $ \cstr1 cstr2 -> do
+            str1 <- peekCString cstr1
+            str2 <- peekCString cstr2
+            announceSynchronizationPoint str1 str2
+        hsfa_set_announceSynchronizationPoint fedAmb funPtr
+
+foreign import ccall "hsFederateAmb.h hsfa_set_federationSynchronized"
+    hsfa_set_federationSynchronized :: Ptr (HsFederateAmbassador t) -> FunPtr (CString -> IO ()) -> IO ()
+
+onFederationSynchronized :: (String -> IO ()) -> FedHandlers t ()
+onFederationSynchronized federationSynchronized = do
+    fedAmb <- ask
+    liftIO (set_federationSynchronized fedAmb federationSynchronized)
+
+set_federationSynchronized :: HsFederateAmbassador t -> (String -> IO ()) -> IO ()
+set_federationSynchronized fedAmb federationSynchronized =
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkPtrFunPtr $ \cstr -> do
+            str <- peekCString cstr
+            federationSynchronized str
+        hsfa_set_federationSynchronized fedAmb funPtr
 
 
 ----------------------------
