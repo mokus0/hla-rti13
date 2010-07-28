@@ -49,12 +49,10 @@ Library
   include-dirs:         include
   
   if flag(dlc-api)
-    include-dirs:       include/dlc
     cc-options:         -DDLC_API
     extra-libraries:    rti13, fedtime13
 
   if flag(rti-ng-matrex)
-    include-dirs:       include/rti-ng-matrex
     cc-options:         -DRTI_NG_MATREX_API
     extra-libraries:    RTI-NG, fedtime
   

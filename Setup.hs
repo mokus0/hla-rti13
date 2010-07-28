@@ -16,10 +16,13 @@ hook_RTI_HOME hooks@UserHooks{preConf, confHook, postConf} = do
             rti_type <- lookup "RTI_BUILD_TYPE" env
             return (rti_home </> rti_type)
         
-        rtiLibDir = fmap (</> "lib") rtiRoot
+        rtiLibDir = fmap (</> "lib")     rtiRoot
+        rtiIncDir = fmap (</> "include") rtiRoot
         
-        addLib f x flags@ConfigFlags{configExtraLibDirs} = f x flags
-            { configExtraLibDirs = maybe id (:) rtiLibDir configExtraLibDirs }
+        addLib f x flags@ConfigFlags{configExtraLibDirs, configExtraIncludeDirs} = f x flags
+            { configExtraLibDirs     = maybe id (:) rtiLibDir configExtraLibDirs 
+            , configExtraIncludeDirs = maybe id (:) rtiIncDir configExtraIncludeDirs 
+            }
     
     return hooks
         { preConf  = addLib preConf
