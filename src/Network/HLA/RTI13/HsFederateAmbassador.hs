@@ -211,6 +211,21 @@ set_requestFederationRestoreFailed fedAmb requestFederationRestoreFailed =
         hsfa_set_requestFederationRestoreFailed fedAmb funPtr
 
 
+foreign import ccall "hsFederateAmb.h hsfa_set_federationRestoreBegun"
+    hsfa_set_federationRestoreBegun :: Ptr (HsFederateAmbassador t) -> FunPtr (IO ()) -> IO ()
+
+onFederationRestoreBegun :: IO () -> FedHandlers t ()
+onFederationRestoreBegun federationRestoreBegun = do
+    fedAmb <- ask
+    liftIO (set_federationRestoreBegun fedAmb federationRestoreBegun)
+
+set_federationRestoreBegun :: HsFederateAmbassador t -> IO () -> IO ()
+set_federationRestoreBegun fedAmb federationRestoreBegun =
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkVoidFunPtr federationRestoreBegun
+        hsfa_set_federationRestoreBegun fedAmb funPtr
+
+
 
 ----------------------------
 -- Declaration Management --
