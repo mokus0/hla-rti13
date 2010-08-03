@@ -1,4 +1,4 @@
-{-# LANGUAGE TypeFamilies, GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE TypeFamilies, GeneralizedNewtypeDeriving, RankNTypes, FlexibleContexts #-}
 module Network.HLA.RTI13.HsFederateAmbassador.Types where
 
 import Network.HLA.RTI13.FedTime
@@ -16,9 +16,9 @@ instance FedTimeImpl t => FederateAmbassador (HsFederateAmbassador t) where
 
 withHsFederateAmbassador (HsFederateAmbassador fedAmb) = withForeignPtr fedAmb
 
-newtype FedHandlers t a = FedHandlers (ReaderT (HsFederateAmbassador t) IO a)
-    deriving (Functor, Monad, MonadIO, MonadReader (HsFederateAmbassador t))
+type FedHandlers t a = forall m. (MonadReader (HsFederateAmbassador t) m, MonadIO m) => m a
+--    deriving (Functor, Monad, MonadIO, MonadReader (HsFederateAmbassador t))
 
 setHandlers :: HsFederateAmbassador t -> FedHandlers t () -> IO ()
-setHandlers fedAmb (FedHandlers handlers) = runReaderT handlers fedAmb
+setHandlers fedAmb handlers = runReaderT handlers fedAmb
 
