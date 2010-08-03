@@ -392,33 +392,23 @@ setRangeUpperBound theRegion theExtent theDimension theUpperBound =
     withRegion theRegion $ \theRegion -> 
         wrapExceptions (wrap_Region_setRangeUpperBound theRegion theExtent theDimension theUpperBound)
 
-    --   virtual SpaceHandle getSpaceHandle() const
-    --     throw (
-    --       ) = 0;
-    -- 
-    --   virtual ULong getNumberOfExtents() const
-    --     throw (
-    --       ) = 0;
-    -- 
-    --   virtual ULong getRangeLowerBoundNotificationLimit(
-    --     ExtentIndex     theExtent,
-    --     DimensionHandle theDimension) const
-    --     throw (
-    --       ArrayIndexOutOfBounds) = 0;
-    -- 
-    --   virtual ULong getRangeUpperBoundNotificationLimit(
-    --     ExtentIndex     theExtent,
-    --     DimensionHandle theDimension) const
-    --     throw (
-    --       ArrayIndexOutOfBounds) = 0;
-    --       
-    --   static ULong getMaxExtent() 
-    --     throw ();
-    --   
-    --   static ULong getMinExtent() 
-    --     throw ();
-    -- 
-    -- };
+getSpaceHandle :: Region -> IO SpaceHandle
+getSpaceHandle theRegion = withRegion theRegion
+    (wrapExceptions . wrap_Region_getSpaceHandle)
+    
+getNumberOfExtents :: Region -> IO ULong
+getNumberOfExtents theRegion = withRegion theRegion
+    (wrapExceptions . wrap_Region_getNumberOfExtents)
+
+getRangeLowerBoundNotificationLimit :: Region -> ExtentIndex -> DimensionHandle -> IO ULong
+getRangeLowerBoundNotificationLimit theRegion theExtent theDimension =
+    withRegion theRegion $ \theRegion -> 
+        wrapExceptions (wrap_Region_getRangeLowerBoundNotificationLimit theRegion theExtent theDimension)
+
+getRangeUpperBoundNotificationLimit :: Region -> ExtentIndex -> DimensionHandle -> IO ULong
+getRangeUpperBoundNotificationLimit theRegion theExtent theDimension =
+    withRegion theRegion $ \theRegion -> 
+        wrapExceptions (wrap_Region_getRangeUpperBoundNotificationLimit theRegion theExtent theDimension)
 
 -- data FedTime
     -- public:
