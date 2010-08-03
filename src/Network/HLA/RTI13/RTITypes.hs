@@ -46,24 +46,13 @@ attributeHandleValuePairSet_getValueLength ahSet i =
         wrapExceptions (wrap_AttributeHandleValuePairSet_getValueLength ahSet i)
 
 attributeHandleValuePairSet_getValue :: AttributeHandleValuePairSet -> ULong -> IO BS.ByteString
-attributeHandleValuePairSet_getValue ahSet i = do
-    len <- attributeHandleValuePairSet_getValueLength ahSet i
-    
+attributeHandleValuePairSet_getValue ahSet i =
     withAttributeHandleValuePairSet ahSet $ \ahSet ->
         alloca $ \lenCell -> do
-            poke lenCell len
-            buf <- mallocBytes (fromIntegral len + 1)
-            wrapExceptions (wrap_AttributeHandleValuePairSet_getValue ahSet i buf lenCell)
+            buf <- wrapExceptions (wrap_AttributeHandleValuePairSet_getValuePointer ahSet i lenCell)
             
             len <- peek lenCell
-            buf <- reallocBytes buf (fromIntegral len)
-            BS.unsafePackMallocCString buf
-
-    --   virtual char *getValuePointer(
-    --     ULong i,
-    --     ULong&     valueLength) const
-    --     throw (
-    --       ArrayIndexOutOfBounds) = 0;
+            BS.packCStringLen (buf, fromIntegral len)
 
 attributeHandleValuePairSet_getTransportType :: AttributeHandleValuePairSet -> ULong -> IO TransportType
 attributeHandleValuePairSet_getTransportType ahSet i = 
