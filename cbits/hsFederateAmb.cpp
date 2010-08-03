@@ -448,6 +448,7 @@ public:
               hsConfirmAttributeOwnershipAcquisitionCancellation(theObject, &theAttributes);
       }
 
+      ULongX3_to_Void hsInformAttributeOwnership;
     virtual void informAttributeOwnership (
       RTI::ObjectHandle    theObject,    // supplied C1
       RTI::AttributeHandle theAttribute, // supplied C1
@@ -455,7 +456,10 @@ public:
     throw (
       RTI::ObjectNotKnown,
       RTI::AttributeNotKnown,
-      RTI::FederateInternalError) {}
+      RTI::FederateInternalError) {
+          if(hsInformAttributeOwnership)
+              hsInformAttributeOwnership(theObject, theAttribute, theOwner);
+      }
 
     virtual void attributeIsNotOwned (
       RTI::ObjectHandle    theObject,    // supplied C1
@@ -618,6 +622,10 @@ ccall void hsfa_set_confirmAttributeOwnershipAcquisitionCancellation(void *fedAm
     setFunPtr(hsConfirmAttributeOwnershipAcquisitionCancellation)
 }
 
+ccall void hsfa_set_informAttributeOwnership(void *fedAmb, ULongX3_to_Void theFunPtr) {
+    setFunPtr(hsInformAttributeOwnership)
+}
+
 ccall void hsfa_set_discoverObjectInstance(void *fedAmb, ULong_to_ULong_to_ConstPtr_to_Void theFunPtr) {
     setFunPtr(hsDiscoverObjectInstance)
 }
@@ -684,6 +692,7 @@ setter setters[] =
     (setter) &hsfa_set_attributeOwnershipUnavailable,
     (setter) &hsfa_set_requestAttributeOwnershipRelease,
     (setter) &hsfa_set_confirmAttributeOwnershipAcquisitionCancellation,
+    (setter) &hsfa_set_informAttributeOwnership,
     (setter) &hsfa_set_discoverObjectInstance,
     (setter) &hsfa_set_timeRegulationEnabled,
     (setter) &hsfa_set_turnInteractionsOn,

@@ -628,6 +628,23 @@ set_confirmAttributeOwnershipAcquisitionCancellation fedAmb confirmAttributeOwne
             confirmAttributeOwnershipAcquisitionCancellation theObject (AttributeHandleSet theAttrs)
         hsfa_set_confirmAttributeOwnershipAcquisitionCancellation fedAmb funPtr
 
+foreign import ccall "hsFederateAmb.h hsfa_set_informAttributeOwnership"
+    hsfa_set_informAttributeOwnership :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> AttributeHandle -> FederateHandle -> IO ()) -> IO ()
+
+onInformAttributeOwnership :: (ObjectHandle -> AttributeHandle -> FederateHandle -> IO ()) -> FedHandlers t ()
+onInformAttributeOwnership informAttributeOwnership = do
+    fedAmb <- ask
+    liftIO (set_informAttributeOwnership fedAmb informAttributeOwnership)
+
+foreign import ccall "wrapper" mkFunPtr_ObjectHandle_to_AttributeHandle_to_FederateHandle_to_Void :: 
+    (ObjectHandle -> AttributeHandle -> FederateHandle -> IO ())
+    -> IO (FunPtr (ObjectHandle -> AttributeHandle -> FederateHandle -> IO ()))
+
+set_informAttributeOwnership :: HsFederateAmbassador t -> (ObjectHandle -> AttributeHandle -> FederateHandle -> IO ()) -> IO ()
+set_informAttributeOwnership fedAmb informAttributeOwnership = 
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkFunPtr_ObjectHandle_to_AttributeHandle_to_FederateHandle_to_Void informAttributeOwnership
+        hsfa_set_informAttributeOwnership fedAmb funPtr
 
 ---------------------
 -- Time Management --
