@@ -56,28 +56,16 @@ resignFederationExecution rtiAmb resignAction = do
     writeReference (rtiFedAmb rtiAmb) Nothing
     performGC
 
-    -- // 4.6
-    -- void registerFederationSynchronizationPoint (       
-    --   const char *label,  // supplied C4
-    --   const char *theTag) // supplied C4
-    -- throw (
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
-    -- void registerFederationSynchronizationPoint (       
-    --   const char                *label,    // supplied C4
-    --   const char                *theTag,   // supplied C4
-    --   const FederateHandleSet&   syncSet)  // supplied C4      
-    -- throw (
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
+registerFederationSynchronizationPoint :: RTIAmbassador fedAmb -> String -> String -> Maybe FederateHandleSet -> IO ()
+registerFederationSynchronizationPoint rtiAmb label theTag mbSyncSet = do
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        withCString label $ \label ->
+            withCString theTag $ \theTag -> case mbSyncSet of
+                    Nothing ->
+                        wrapExceptions (wrap_registerFederationSynchronizationPoint rtiAmb label theTag)
+                    Just syncSet -> withFederateHandleSet syncSet $ \syncSet ->
+                        wrapExceptions (wrap_registerFederationSynchronizationPoint_with_syncSet rtiAmb label theTag syncSet)
+
     -- // 4.9
     -- void synchronizationPointAchieved (      
     --   const char *label) // supplied C4
