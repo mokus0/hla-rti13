@@ -64,11 +64,12 @@ attributeHandleValuePairSet_getOrderType ahSet i =
     withAttributeHandleValuePairSet ahSet $ \ahSet ->
         wrapExceptions (wrap_AttributeHandleValuePairSet_getOrderType ahSet i)
 
-    --   virtual Region *getRegion(
-    --     ULong i) const
-    --     throw (
-    --       ArrayIndexOutOfBounds,
-    --       InvalidHandleValuePairSetContext) = 0;
+attributeHandleValuePairSet_getRegion :: AttributeHandleValuePairSet -> ULong -> IO Region
+attributeHandleValuePairSet_getRegion ahSet i =
+    withAttributeHandleValuePairSet ahSet $ \ahSet -> do
+        region <- wrapExceptions (wrap_AttributeHandleValuePairSet_getRegion ahSet i)
+        regionPtr <- newForeignPtr_ region
+        return (Region regionPtr)
 
 instance Insert IO AttributeHandleValuePairSet where
     insert ahSet (h, bs) =
