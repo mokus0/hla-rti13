@@ -5,8 +5,8 @@ stability:              experimental
 cabal-version:          >= 1.2
 build-type:             Custom
 
-author:                 James Cook <your email here>
-maintainer:             James Cook <your email here>
+author:                 James Cook <james.cook@usma.edu>
+maintainer:             James Cook <james.cook@usma.edu>
 license:                PublicDomain
 homepage:               /dev/null
 
@@ -21,7 +21,7 @@ Flag dlc-api
 
 Flag rti-ng-matrex
   description:          Use the RTI-NG API version included with the MATREX 
-                        tools (v4.1.1 is what I developed against)
+                        tools (v4.1.1 and v4.3.4 are what I developed against)
   default:              True
 
 Flag debug
