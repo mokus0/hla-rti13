@@ -36,10 +36,6 @@ foreign import ccall unsafe "hsFederateAmb.h wrap_new_HsFederateAmbassador"
 foreign import ccall "hsFederateAmb.h wrap_delete_HsFederateAmbassador"
     wrap_delete_HsFederateAmbassador :: Ptr (HsFederateAmbassador t) -> Ptr (Ptr RTIException) -> IO ()
 
-{-# NOINLINE freeHaskellFunPtrPtr #-}
-freeHaskellFunPtrPtr :: FunPtr (FunPtr a -> IO ())
-freeHaskellFunPtrPtr = unsafePerformIO (mkFreeFunPtr freeHaskellFunPtr)
-
 newHsFederateAmbassador :: IO (HsFederateAmbassador t)
 newHsFederateAmbassador = do
     fedAmb <- wrapExceptions (wrap_new_HsFederateAmbassador freeHaskellFunPtrPtr)

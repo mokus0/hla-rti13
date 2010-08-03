@@ -7,6 +7,10 @@ import Foreign.C
 import Network.HLA.RTI13.RTITypes.Types
 import Network.HLA.RTI13.FedTime
 
+{-# NOINLINE freeHaskellFunPtrPtr #-}
+freeHaskellFunPtrPtr :: FunPtr (FunPtr a -> IO ())
+freeHaskellFunPtrPtr = unsafePerformIO (mkFreeFunPtr freeHaskellFunPtr)
+
 foreign import ccall "wrapper" mkFreeFunPtr
     ::            (FunPtr a -> IO ()) 
     -> IO (FunPtr (FunPtr a -> IO ()))
