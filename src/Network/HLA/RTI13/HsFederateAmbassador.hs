@@ -562,6 +562,22 @@ set_attributeOwnershipDivestitureNotification fedAmb attributeOwnershipDivestitu
             attributeOwnershipDivestitureNotification theObject (AttributeHandleSet theAttrs)
         hsfa_set_attributeOwnershipDivestitureNotification fedAmb funPtr
 
+foreign import ccall "hsFederateAmb.h hsfa_set_attributeOwnershipAcquisitionNotification"
+    hsfa_set_attributeOwnershipAcquisitionNotification :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> IO ()) -> IO ()
+
+onAttributeOwnershipAcquisitionNotification :: (ObjectHandle -> AttributeHandleSet -> IO ()) -> FedHandlers t ()
+onAttributeOwnershipAcquisitionNotification attributeOwnershipAcquisitionNotification = do
+    fedAmb <- ask
+    liftIO (set_attributeOwnershipAcquisitionNotification fedAmb attributeOwnershipAcquisitionNotification)
+
+set_attributeOwnershipAcquisitionNotification :: HsFederateAmbassador t -> (ObjectHandle -> AttributeHandleSet -> IO ()) -> IO ()
+set_attributeOwnershipAcquisitionNotification fedAmb attributeOwnershipAcquisitionNotification = 
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkObjectPtrFunPtr $ \theObject theAttrs -> do
+            theAttrs <- newForeignPtr_ theAttrs
+            attributeOwnershipAcquisitionNotification theObject (AttributeHandleSet theAttrs)
+        hsfa_set_attributeOwnershipAcquisitionNotification fedAmb funPtr
+
 ---------------------
 -- Time Management --
 ---------------------
