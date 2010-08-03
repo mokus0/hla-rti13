@@ -2,7 +2,7 @@
 #   include <iostream>
 #   define dprint(str) std::cout << str << std::endl
 #else
-#define dprint(str)  
+#define dprint(str)
 #endif
 
 #include "wrap/rti.h"
@@ -82,496 +82,496 @@ public:
     ////////////////////////////////////
     // Federation Management Services //
     ////////////////////////////////////
-
+    
     ConstPtr_to_Void hsSynchronizationPointRegistrationSucceeded;
     virtual void synchronizationPointRegistrationSucceeded (
-      const char *label) // supplied C4)
+        const char *label) // supplied C4)
     throw (
-      RTI::FederateInternalError) {
-          if (hsSynchronizationPointRegistrationSucceeded)
-              hsSynchronizationPointRegistrationSucceeded(label);
-      }
-
+        RTI::FederateInternalError) {
+        if (hsSynchronizationPointRegistrationSucceeded)
+            hsSynchronizationPointRegistrationSucceeded(label);
+    }
+    
     ConstPtr_to_Void hsSynchronizationPointRegistrationFailed;
     virtual void synchronizationPointRegistrationFailed (
-      const char *label) // supplied C4)
+        const char *label) // supplied C4)
     throw (
-      RTI::FederateInternalError) {
-          if (hsSynchronizationPointRegistrationFailed)
-              hsSynchronizationPointRegistrationFailed(label);
-      }
-
+        RTI::FederateInternalError) {
+        if (hsSynchronizationPointRegistrationFailed)
+            hsSynchronizationPointRegistrationFailed(label);
+    }
+    
     ConstPtrX2_to_Void hsAnnounceSynchronizationPoint;
     virtual void announceSynchronizationPoint (
-      const char *label, // supplied C4
-      const char *tag)   // supplied C4
+        const char *label, // supplied C4
+        const char *tag)   // supplied C4
     throw (
-      RTI::FederateInternalError) {
-          if (hsAnnounceSynchronizationPoint)
-              hsAnnounceSynchronizationPoint(label, tag);
-      }
-
+        RTI::FederateInternalError) {
+        if (hsAnnounceSynchronizationPoint)
+            hsAnnounceSynchronizationPoint(label, tag);
+    }
+    
     ConstPtr_to_Void hsFederationSynchronized;
     virtual void federationSynchronized (
-      const char *label) // supplied C4)
+        const char *label) // supplied C4)
     throw (
-      RTI::FederateInternalError) {
-          if (hsFederationSynchronized)
-              hsFederationSynchronized(label);
-      }
-
-      ConstPtr_to_Void hsInitiateFederateSave;
+        RTI::FederateInternalError) {
+        if (hsFederationSynchronized)
+            hsFederationSynchronized(label);
+    }
+    
+    ConstPtr_to_Void hsInitiateFederateSave;
     virtual void initiateFederateSave (
-      const char *label) // supplied C4
+        const char *label) // supplied C4
     throw (
-      RTI::UnableToPerformSave,
-      RTI::FederateInternalError) {
-          if (hsInitiateFederateSave)
-              hsInitiateFederateSave(label);
-      }
-
-      VoidFunc hsFederationSaved;
+        RTI::UnableToPerformSave,
+        RTI::FederateInternalError) {
+        if (hsInitiateFederateSave)
+            hsInitiateFederateSave(label);
+    }
+    
+    VoidFunc hsFederationSaved;
     virtual void federationSaved ()
     throw (
-      RTI::FederateInternalError) {
-          if (hsFederationSaved)
-              hsFederationSaved();
-      }
-
-      VoidFunc hsFederationNotSaved;
+        RTI::FederateInternalError) {
+        if (hsFederationSaved)
+            hsFederationSaved();
+    }
+    
+    VoidFunc hsFederationNotSaved;
     virtual void federationNotSaved ()
     throw (
-      RTI::FederateInternalError) {
-          if (hsFederationNotSaved)
-              hsFederationNotSaved();
-      }
-
-      ConstPtr_to_Void hsRequestFederationRestoreSucceeded;
+        RTI::FederateInternalError) {
+        if (hsFederationNotSaved)
+            hsFederationNotSaved();
+    }
+    
+    ConstPtr_to_Void hsRequestFederationRestoreSucceeded;
     virtual void requestFederationRestoreSucceeded (
-      const char *label) // supplied C4
+        const char *label) // supplied C4
     throw (
-      RTI::FederateInternalError) {
-          if (hsRequestFederationRestoreSucceeded)
-              hsRequestFederationRestoreSucceeded(label);
-      }
-
-      ConstPtrX2_to_Void hsRequestFederationRestoreFailed;
+        RTI::FederateInternalError) {
+        if (hsRequestFederationRestoreSucceeded)
+            hsRequestFederationRestoreSucceeded(label);
+    }
+    
+    ConstPtrX2_to_Void hsRequestFederationRestoreFailed;
     virtual void requestFederationRestoreFailed (
-      const char *label,
-      const char *reason) // supplied C4
+        const char *label,
+        const char *reason) // supplied C4
     throw (
-      RTI::FederateInternalError) {
-          if (hsRequestFederationRestoreFailed)
-              hsRequestFederationRestoreFailed(label,reason);
-      }
-
-      VoidFunc hsFederationRestoreBegun;
+        RTI::FederateInternalError) {
+        if (hsRequestFederationRestoreFailed)
+            hsRequestFederationRestoreFailed(label,reason);
+    }
+    
+    VoidFunc hsFederationRestoreBegun;
     virtual void federationRestoreBegun ()
     throw (
-      RTI::FederateInternalError) {
-          if (hsFederationRestoreBegun)
-              hsFederationRestoreBegun();
-      }
-
-      ConstPtr_to_ULong_to_Void hsInitiateFederateRestore;
+        RTI::FederateInternalError) {
+        if (hsFederationRestoreBegun)
+            hsFederationRestoreBegun();
+    }
+    
+    ConstPtr_to_ULong_to_Void hsInitiateFederateRestore;
     virtual void initiateFederateRestore (
-      const char               *label,   // supplied C4
-            RTI::FederateHandle handle)  // supplied C1
+        const char               *label,   // supplied C4
+        RTI::FederateHandle handle)  // supplied C1
     throw (
-      RTI::SpecifiedSaveLabelDoesNotExist,
-      RTI::CouldNotRestore,
-      RTI::FederateInternalError) {
-          if (hsInitiateFederateRestore)
-              hsInitiateFederateRestore(label, handle);
-      }
-
-      VoidFunc hsFederationRestored;
+        RTI::SpecifiedSaveLabelDoesNotExist,
+        RTI::CouldNotRestore,
+        RTI::FederateInternalError) {
+        if (hsInitiateFederateRestore)
+            hsInitiateFederateRestore(label, handle);
+    }
+    
+    VoidFunc hsFederationRestored;
     virtual void federationRestored ()
     throw (
-      RTI::FederateInternalError) {
-          if (hsFederationRestored) hsFederationRestored();
-      }
-
-      VoidFunc hsFederationNotRestored;
+        RTI::FederateInternalError) {
+        if (hsFederationRestored) hsFederationRestored();
+    }
+    
+    VoidFunc hsFederationNotRestored;
     virtual void federationNotRestored ()
     throw (
-      RTI::FederateInternalError) {
-          if (hsFederationNotRestored) hsFederationNotRestored();
-      }
-
+        RTI::FederateInternalError) {
+        if (hsFederationNotRestored) hsFederationNotRestored();
+    }
+    
     /////////////////////////////////////
     // Declaration Management Services //
     /////////////////////////////////////
-
-      ULong_to_Void hsStartRegistrationForObjectClass;
+    
+    ULong_to_Void hsStartRegistrationForObjectClass;
     virtual void startRegistrationForObjectClass (
-            RTI::ObjectClassHandle   theClass)      // supplied C1
+        RTI::ObjectClassHandle   theClass)      // supplied C1
     throw (
-      RTI::ObjectClassNotPublished,
-      RTI::FederateInternalError) {
-          if (hsStartRegistrationForObjectClass)
-              hsStartRegistrationForObjectClass(theClass);
-      }
-
-      ULong_to_Void hsStopRegistrationForObjectClass;
+        RTI::ObjectClassNotPublished,
+        RTI::FederateInternalError) {
+        if (hsStartRegistrationForObjectClass)
+            hsStartRegistrationForObjectClass(theClass);
+    }
+    
+    ULong_to_Void hsStopRegistrationForObjectClass;
     virtual void stopRegistrationForObjectClass (
-            RTI::ObjectClassHandle   theClass)      // supplied C1
+        RTI::ObjectClassHandle   theClass)      // supplied C1
     throw (
-      RTI::ObjectClassNotPublished,
-      RTI::FederateInternalError) {
-          if (hsStopRegistrationForObjectClass)
-              hsStopRegistrationForObjectClass(theClass);
-      }
-
+        RTI::ObjectClassNotPublished,
+        RTI::FederateInternalError) {
+        if (hsStopRegistrationForObjectClass)
+            hsStopRegistrationForObjectClass(theClass);
+    }
+    
     ULong_to_Void hsTurnInteractionsOn;
     virtual void turnInteractionsOn (
-      RTI::InteractionClassHandle theHandle) // supplied C1
+        RTI::InteractionClassHandle theHandle) // supplied C1
     throw (
-      RTI::InteractionClassNotPublished,
-      RTI::FederateInternalError) {
-          if (hsTurnInteractionsOn)
-              hsTurnInteractionsOn(theHandle);
-      }
-
-      ULong_to_Void hsTurnInteractionsOff;
+        RTI::InteractionClassNotPublished,
+        RTI::FederateInternalError) {
+        if (hsTurnInteractionsOn)
+            hsTurnInteractionsOn(theHandle);
+    }
+    
+    ULong_to_Void hsTurnInteractionsOff;
     virtual void turnInteractionsOff (
-      RTI::InteractionClassHandle theHandle) // supplied C1
+        RTI::InteractionClassHandle theHandle) // supplied C1
     throw (
-      RTI::InteractionClassNotPublished,
-      RTI::FederateInternalError) {
-          if (hsTurnInteractionsOff)
-              hsTurnInteractionsOff(theHandle);
-      }
-
+        RTI::InteractionClassNotPublished,
+        RTI::FederateInternalError) {
+        if (hsTurnInteractionsOff)
+            hsTurnInteractionsOff(theHandle);
+    }
+    
     ////////////////////////////////
     // Object Management Services //
     ////////////////////////////////
-
+    
     ULong_to_ULong_to_ConstPtr_to_Void hsDiscoverObjectInstance;
     virtual void discoverObjectInstance (
-            RTI::ObjectHandle          theObject,      // supplied C1
-            RTI::ObjectClassHandle     theObjectClass, // supplied C1
-      const char*                      theObjectName)  // supplied C4  
+        RTI::ObjectHandle          theObject,      // supplied C1
+        RTI::ObjectClassHandle     theObjectClass, // supplied C1
+        const char*                      theObjectName)  // supplied C4
     throw (
-      RTI::CouldNotDiscover,
-      RTI::ObjectClassNotKnown,
-      RTI::FederateInternalError) {
-          dprint("discoverObjectInstance: " << (void *) hsDiscoverObjectInstance);
-          if (hsDiscoverObjectInstance)
-              hsDiscoverObjectInstance(theObject, theObjectClass, theObjectName);
-      }
-
-      ULong_to_ConstPtrX3_to_ULongX2_to_Void hsReflectAttributeValues;
+        RTI::CouldNotDiscover,
+        RTI::ObjectClassNotKnown,
+        RTI::FederateInternalError) {
+        dprint("discoverObjectInstance: " << (void *) hsDiscoverObjectInstance);
+        if (hsDiscoverObjectInstance)
+            hsDiscoverObjectInstance(theObject, theObjectClass, theObjectName);
+    }
+    
+    ULong_to_ConstPtrX3_to_ULongX2_to_Void hsReflectAttributeValues;
     virtual void reflectAttributeValues (
-            RTI::ObjectHandle                 theObject,     // supplied C1
-      const RTI::AttributeHandleValuePairSet& theAttributes, // supplied C4
-      const RTI::FedTime&                     theTime,       // supplied C1
-      const char                             *theTag,        // supplied C4
-            RTI::EventRetractionHandle        theHandle)     // supplied C1
+        RTI::ObjectHandle                 theObject,     // supplied C1
+        const RTI::AttributeHandleValuePairSet& theAttributes, // supplied C4
+        const RTI::FedTime&                     theTime,       // supplied C1
+        const char                             *theTag,        // supplied C4
+        RTI::EventRetractionHandle        theHandle)     // supplied C1
     throw (
-      RTI::ObjectNotKnown,
-      RTI::AttributeNotKnown,
-      RTI::FederateOwnsAttributes,
-      RTI::InvalidFederationTime,
-      RTI::FederateInternalError) {
-          if (hsReflectAttributeValues)
-              hsReflectAttributeValues(theObject, &theAttributes, &theTime, theTag, theHandle.theSerialNumber, theHandle.sendingFederate);
-      }
-
+        RTI::ObjectNotKnown,
+        RTI::AttributeNotKnown,
+        RTI::FederateOwnsAttributes,
+        RTI::InvalidFederationTime,
+        RTI::FederateInternalError) {
+        if (hsReflectAttributeValues)
+            hsReflectAttributeValues(theObject, &theAttributes, &theTime, theTag, theHandle.theSerialNumber, theHandle.sendingFederate);
+    }
+    
     virtual void reflectAttributeValues (
-            RTI::ObjectHandle                 theObject,     // supplied C1
-      const RTI::AttributeHandleValuePairSet& theAttributes, // supplied C4
-      const char                             *theTag)        // supplied C4
+        RTI::ObjectHandle                 theObject,     // supplied C1
+        const RTI::AttributeHandleValuePairSet& theAttributes, // supplied C4
+        const char                             *theTag)        // supplied C4
     throw (
-      RTI::ObjectNotKnown,
-      RTI::AttributeNotKnown,
-      RTI::FederateOwnsAttributes,
-      RTI::FederateInternalError) {
-          if (hsReflectAttributeValues)
-              hsReflectAttributeValues(theObject, &theAttributes, NULL, theTag, 0, 0);
-      }
-
-      ULong_to_ConstPtrX3_to_ULongX2_to_Void hsReceiveInteraction;
+        RTI::ObjectNotKnown,
+        RTI::AttributeNotKnown,
+        RTI::FederateOwnsAttributes,
+        RTI::FederateInternalError) {
+        if (hsReflectAttributeValues)
+            hsReflectAttributeValues(theObject, &theAttributes, NULL, theTag, 0, 0);
+    }
+    
+    ULong_to_ConstPtrX3_to_ULongX2_to_Void hsReceiveInteraction;
     // 4.6
     virtual void receiveInteraction (
-            RTI::InteractionClassHandle       theInteraction, // supplied C1
-      const RTI::ParameterHandleValuePairSet& theParameters,  // supplied C4
-      const RTI::FedTime&                     theTime,        // supplied C4
-      const char                             *theTag,         // supplied C4
-            RTI::EventRetractionHandle        theHandle)      // supplied C1
+        RTI::InteractionClassHandle       theInteraction, // supplied C1
+        const RTI::ParameterHandleValuePairSet& theParameters,  // supplied C4
+        const RTI::FedTime&                     theTime,        // supplied C4
+        const char                             *theTag,         // supplied C4
+        RTI::EventRetractionHandle        theHandle)      // supplied C1
     throw (
-      RTI::InteractionClassNotKnown,
-      RTI::InteractionParameterNotKnown,
-      RTI::InvalidFederationTime,
-      RTI::FederateInternalError) {
-          if (hsReceiveInteraction)
-              hsReceiveInteraction(theInteraction, &theParameters, &theTime, theTag, theHandle.theSerialNumber, theHandle.sendingFederate);
-      }
-
+        RTI::InteractionClassNotKnown,
+        RTI::InteractionParameterNotKnown,
+        RTI::InvalidFederationTime,
+        RTI::FederateInternalError) {
+        if (hsReceiveInteraction)
+            hsReceiveInteraction(theInteraction, &theParameters, &theTime, theTag, theHandle.theSerialNumber, theHandle.sendingFederate);
+    }
+    
     virtual void receiveInteraction (
-            RTI::InteractionClassHandle       theInteraction, // supplied C1
-      const RTI::ParameterHandleValuePairSet& theParameters,  // supplied C4
-      const char                             *theTag)         // supplied C4
+        RTI::InteractionClassHandle       theInteraction, // supplied C1
+        const RTI::ParameterHandleValuePairSet& theParameters,  // supplied C4
+        const char                             *theTag)         // supplied C4
     throw (
-      RTI::InteractionClassNotKnown,
-      RTI::InteractionParameterNotKnown,
-      RTI::FederateInternalError) {
-          if (hsReceiveInteraction)
-              hsReceiveInteraction(theInteraction, &theParameters, NULL, theTag, 0, 0);
-      }
-
+        RTI::InteractionClassNotKnown,
+        RTI::InteractionParameterNotKnown,
+        RTI::FederateInternalError) {
+        if (hsReceiveInteraction)
+            hsReceiveInteraction(theInteraction, &theParameters, NULL, theTag, 0, 0);
+    }
+    
     ULong_to_ConstPtrX2_to_ULongX2_to_Void hsRemoveObjectInstance;
     virtual void removeObjectInstance (
-            RTI::ObjectHandle          theObject, // supplied C1
-      const RTI::FedTime&              theTime,   // supplied C4
-      const char                      *theTag,    // supplied C4
-            RTI::EventRetractionHandle theHandle) // supplied C1
+        RTI::ObjectHandle          theObject, // supplied C1
+        const RTI::FedTime&              theTime,   // supplied C4
+        const char                      *theTag,    // supplied C4
+        RTI::EventRetractionHandle theHandle) // supplied C1
     throw (
-      RTI::ObjectNotKnown,
-      RTI::InvalidFederationTime,
-      RTI::FederateInternalError) {
-          if (hsRemoveObjectInstance)
-              hsRemoveObjectInstance(theObject, &theTime, theTag, theHandle.theSerialNumber, theHandle.sendingFederate);
-      }
-
-    virtual void removeObjectInstance (
-            RTI::ObjectHandle          theObject, // supplied C1
-      const char                      *theTag)    // supplied C4
-    throw (
-      RTI::ObjectNotKnown,
-      RTI::FederateInternalError) {
+        RTI::ObjectNotKnown,
+        RTI::InvalidFederationTime,
+        RTI::FederateInternalError) {
         if (hsRemoveObjectInstance)
-              hsRemoveObjectInstance(theObject, NULL, theTag, 0, 0);
-      }
-
-      ULong_to_ConstPtr_to_Void hsAttributesInScope;
+            hsRemoveObjectInstance(theObject, &theTime, theTag, theHandle.theSerialNumber, theHandle.sendingFederate);
+    }
+    
+    virtual void removeObjectInstance (
+        RTI::ObjectHandle          theObject, // supplied C1
+        const char                      *theTag)    // supplied C4
+    throw (
+        RTI::ObjectNotKnown,
+        RTI::FederateInternalError) {
+        if (hsRemoveObjectInstance)
+            hsRemoveObjectInstance(theObject, NULL, theTag, 0, 0);
+    }
+    
+    ULong_to_ConstPtr_to_Void hsAttributesInScope;
     virtual void attributesInScope (
-            RTI::ObjectHandle        theObject,     // supplied C1
-      const RTI::AttributeHandleSet& theAttributes) // supplied C4
+        RTI::ObjectHandle        theObject,     // supplied C1
+        const RTI::AttributeHandleSet& theAttributes) // supplied C4
     throw (
-      RTI::ObjectNotKnown,
-      RTI::AttributeNotKnown,
-      RTI::FederateInternalError) {
-          if (hsAttributesInScope) hsAttributesInScope(theObject, &theAttributes);
-      }
-
-      ULong_to_ConstPtr_to_Void hsAttributesOutOfScope;
+        RTI::ObjectNotKnown,
+        RTI::AttributeNotKnown,
+        RTI::FederateInternalError) {
+        if (hsAttributesInScope) hsAttributesInScope(theObject, &theAttributes);
+    }
+    
+    ULong_to_ConstPtr_to_Void hsAttributesOutOfScope;
     virtual void attributesOutOfScope (
-            RTI::ObjectHandle        theObject,     // supplied C1
-      const RTI::AttributeHandleSet& theAttributes) // supplied C4
+        RTI::ObjectHandle        theObject,     // supplied C1
+        const RTI::AttributeHandleSet& theAttributes) // supplied C4
     throw (
-      RTI::ObjectNotKnown,
-      RTI::AttributeNotKnown,
-      RTI::FederateInternalError) {
-          if (hsAttributesOutOfScope) hsAttributesOutOfScope(theObject, &theAttributes);
-      }
-
+        RTI::ObjectNotKnown,
+        RTI::AttributeNotKnown,
+        RTI::FederateInternalError) {
+        if (hsAttributesOutOfScope) hsAttributesOutOfScope(theObject, &theAttributes);
+    }
+    
     ULong_to_ConstPtr_to_Void hsProvideAttributeValueUpdate;
     virtual void provideAttributeValueUpdate (
-            RTI::ObjectHandle        theObject,     // supplied C1
-      const RTI::AttributeHandleSet& theAttributes) // supplied C4
+        RTI::ObjectHandle        theObject,     // supplied C1
+        const RTI::AttributeHandleSet& theAttributes) // supplied C4
     throw (
-      RTI::ObjectNotKnown,
-      RTI::AttributeNotKnown,
-      RTI::AttributeNotOwned,
-      RTI::FederateInternalError) {
-          if (hsProvideAttributeValueUpdate)
-              hsProvideAttributeValueUpdate(theObject, &theAttributes);
-      }
-
+        RTI::ObjectNotKnown,
+        RTI::AttributeNotKnown,
+        RTI::AttributeNotOwned,
+        RTI::FederateInternalError) {
+        if (hsProvideAttributeValueUpdate)
+            hsProvideAttributeValueUpdate(theObject, &theAttributes);
+    }
+    
     ULong_to_ConstPtr_to_Void hsTurnUpdatesOnForObjectInstance;
     virtual void turnUpdatesOnForObjectInstance (
-            RTI::ObjectHandle        theObject,     // supplied C1
-      const RTI::AttributeHandleSet& theAttributes) // supplied C4
+        RTI::ObjectHandle        theObject,     // supplied C1
+        const RTI::AttributeHandleSet& theAttributes) // supplied C4
     throw (
-      RTI::ObjectNotKnown,
-      RTI::AttributeNotOwned,
-      RTI::FederateInternalError) {
-          if(hsTurnUpdatesOnForObjectInstance)
-              hsTurnUpdatesOnForObjectInstance(theObject, &theAttributes);
-      }
-
+        RTI::ObjectNotKnown,
+        RTI::AttributeNotOwned,
+        RTI::FederateInternalError) {
+        if(hsTurnUpdatesOnForObjectInstance)
+            hsTurnUpdatesOnForObjectInstance(theObject, &theAttributes);
+    }
+    
     ULong_to_ConstPtr_to_Void hsTurnUpdatesOffForObjectInstance;
     virtual void turnUpdatesOffForObjectInstance (
-            RTI::ObjectHandle        theObject,      // supplied C1
-      const RTI::AttributeHandleSet& theAttributes) // supplied C4
+        RTI::ObjectHandle        theObject,      // supplied C1
+        const RTI::AttributeHandleSet& theAttributes) // supplied C4
     throw (
-      RTI::ObjectNotKnown,
-      RTI::AttributeNotOwned,
-      RTI::FederateInternalError) {
-          if(hsTurnUpdatesOffForObjectInstance)
-              hsTurnUpdatesOffForObjectInstance(theObject, &theAttributes);
-      }
-
+        RTI::ObjectNotKnown,
+        RTI::AttributeNotOwned,
+        RTI::FederateInternalError) {
+        if(hsTurnUpdatesOffForObjectInstance)
+            hsTurnUpdatesOffForObjectInstance(theObject, &theAttributes);
+    }
+    
     ///////////////////////////////////
     // Ownership Management Services //
     ///////////////////////////////////
-
-      ULong_to_ConstPtrX2_to_Void hsRequestAttributeOwnershipAssumption;
+    
+    ULong_to_ConstPtrX2_to_Void hsRequestAttributeOwnershipAssumption;
     virtual void requestAttributeOwnershipAssumption (
-            RTI::ObjectHandle        theObject,         // supplied C1
-      const RTI::AttributeHandleSet& offeredAttributes, // supplied C4
-      const char                    *theTag)            // supplied C4
+        RTI::ObjectHandle        theObject,         // supplied C1
+        const RTI::AttributeHandleSet& offeredAttributes, // supplied C4
+        const char                    *theTag)            // supplied C4
     throw (
-      RTI::ObjectNotKnown,
-      RTI::AttributeNotKnown,
-      RTI::AttributeAlreadyOwned,
-      RTI::AttributeNotPublished,
-      RTI::FederateInternalError) {
-          if (hsRequestAttributeOwnershipAssumption)
-              hsRequestAttributeOwnershipAssumption(theObject, &offeredAttributes, theTag);
-      }
-
-      ULong_to_ConstPtr_to_Void hsAttributeOwnershipDivestitureNotification;
+        RTI::ObjectNotKnown,
+        RTI::AttributeNotKnown,
+        RTI::AttributeAlreadyOwned,
+        RTI::AttributeNotPublished,
+        RTI::FederateInternalError) {
+        if (hsRequestAttributeOwnershipAssumption)
+            hsRequestAttributeOwnershipAssumption(theObject, &offeredAttributes, theTag);
+    }
+    
+    ULong_to_ConstPtr_to_Void hsAttributeOwnershipDivestitureNotification;
     virtual void attributeOwnershipDivestitureNotification (
-            RTI::ObjectHandle        theObject,          // supplied C1
-      const RTI::AttributeHandleSet& releasedAttributes) // supplied C4
+        RTI::ObjectHandle        theObject,          // supplied C1
+        const RTI::AttributeHandleSet& releasedAttributes) // supplied C4
     throw (
-      RTI::ObjectNotKnown,
-      RTI::AttributeNotKnown,
-      RTI::AttributeNotOwned,
-      RTI::AttributeDivestitureWasNotRequested,
-      RTI::FederateInternalError) {
-          if (hsAttributeOwnershipDivestitureNotification)
-              hsAttributeOwnershipDivestitureNotification(theObject, &releasedAttributes);
-      }
-
-      ULong_to_ConstPtr_to_Void hsAttributeOwnershipAcquisitionNotification;
+        RTI::ObjectNotKnown,
+        RTI::AttributeNotKnown,
+        RTI::AttributeNotOwned,
+        RTI::AttributeDivestitureWasNotRequested,
+        RTI::FederateInternalError) {
+        if (hsAttributeOwnershipDivestitureNotification)
+            hsAttributeOwnershipDivestitureNotification(theObject, &releasedAttributes);
+    }
+    
+    ULong_to_ConstPtr_to_Void hsAttributeOwnershipAcquisitionNotification;
     virtual void attributeOwnershipAcquisitionNotification (
-            RTI::ObjectHandle        theObject,         // supplied C1
-      const RTI::AttributeHandleSet& securedAttributes) // supplied C4
+        RTI::ObjectHandle        theObject,         // supplied C1
+        const RTI::AttributeHandleSet& securedAttributes) // supplied C4
     throw (
-      RTI::ObjectNotKnown,
-      RTI::AttributeNotKnown,
-      RTI::AttributeAcquisitionWasNotRequested,
-      RTI::AttributeAlreadyOwned,
-      RTI::AttributeNotPublished,
-      RTI::FederateInternalError) {
-          if (hsAttributeOwnershipAcquisitionNotification)
-              hsAttributeOwnershipAcquisitionNotification(theObject, &securedAttributes);
-      }
-
-      ULong_to_ConstPtr_to_Void hsAttributeOwnershipUnavailable;
+        RTI::ObjectNotKnown,
+        RTI::AttributeNotKnown,
+        RTI::AttributeAcquisitionWasNotRequested,
+        RTI::AttributeAlreadyOwned,
+        RTI::AttributeNotPublished,
+        RTI::FederateInternalError) {
+        if (hsAttributeOwnershipAcquisitionNotification)
+            hsAttributeOwnershipAcquisitionNotification(theObject, &securedAttributes);
+    }
+    
+    ULong_to_ConstPtr_to_Void hsAttributeOwnershipUnavailable;
     virtual void attributeOwnershipUnavailable (
-            RTI::ObjectHandle        theObject,         // supplied C1
-      const RTI::AttributeHandleSet& theAttributes) // supplied C4
+        RTI::ObjectHandle        theObject,         // supplied C1
+        const RTI::AttributeHandleSet& theAttributes) // supplied C4
     throw (
-      RTI::ObjectNotKnown,
-      RTI::AttributeNotKnown,
-      RTI::AttributeAlreadyOwned,
-      RTI::AttributeAcquisitionWasNotRequested,
-      RTI::FederateInternalError) {
-          if (hsAttributeOwnershipUnavailable)
-              hsAttributeOwnershipUnavailable(theObject, &theAttributes);
-      }
-
-      ULong_to_ConstPtrX2_to_Void hsRequestAttributeOwnershipRelease;
+        RTI::ObjectNotKnown,
+        RTI::AttributeNotKnown,
+        RTI::AttributeAlreadyOwned,
+        RTI::AttributeAcquisitionWasNotRequested,
+        RTI::FederateInternalError) {
+        if (hsAttributeOwnershipUnavailable)
+            hsAttributeOwnershipUnavailable(theObject, &theAttributes);
+    }
+    
+    ULong_to_ConstPtrX2_to_Void hsRequestAttributeOwnershipRelease;
     virtual void requestAttributeOwnershipRelease (
-            RTI::ObjectHandle        theObject,           // supplied C1
-      const RTI::AttributeHandleSet& candidateAttributes, // supplied C4
-      const char                    *theTag)              // supplied C4
+        RTI::ObjectHandle        theObject,           // supplied C1
+        const RTI::AttributeHandleSet& candidateAttributes, // supplied C4
+        const char                    *theTag)              // supplied C4
     throw (
-      RTI::ObjectNotKnown,
-      RTI::AttributeNotKnown,
-      RTI::AttributeNotOwned,
-      RTI::FederateInternalError) {
-          if (hsRequestAttributeOwnershipRelease)
-              hsRequestAttributeOwnershipRelease(theObject, &candidateAttributes, theTag);
-      }
-
-      ULong_to_ConstPtr_to_Void hsConfirmAttributeOwnershipAcquisitionCancellation;
+        RTI::ObjectNotKnown,
+        RTI::AttributeNotKnown,
+        RTI::AttributeNotOwned,
+        RTI::FederateInternalError) {
+        if (hsRequestAttributeOwnershipRelease)
+            hsRequestAttributeOwnershipRelease(theObject, &candidateAttributes, theTag);
+    }
+    
+    ULong_to_ConstPtr_to_Void hsConfirmAttributeOwnershipAcquisitionCancellation;
     virtual void confirmAttributeOwnershipAcquisitionCancellation (
-            RTI::ObjectHandle        theObject,         // supplied C1
-      const RTI::AttributeHandleSet& theAttributes) // supplied C4
+        RTI::ObjectHandle        theObject,         // supplied C1
+        const RTI::AttributeHandleSet& theAttributes) // supplied C4
     throw (
-      RTI::ObjectNotKnown,
-      RTI::AttributeNotKnown,
-      RTI::AttributeAlreadyOwned,
-      RTI::AttributeAcquisitionWasNotCanceled,
-      RTI::FederateInternalError) {
-          if(hsConfirmAttributeOwnershipAcquisitionCancellation)
-              hsConfirmAttributeOwnershipAcquisitionCancellation(theObject, &theAttributes);
-      }
-
-      ULongX3_to_Void hsInformAttributeOwnership;
+        RTI::ObjectNotKnown,
+        RTI::AttributeNotKnown,
+        RTI::AttributeAlreadyOwned,
+        RTI::AttributeAcquisitionWasNotCanceled,
+        RTI::FederateInternalError) {
+        if(hsConfirmAttributeOwnershipAcquisitionCancellation)
+            hsConfirmAttributeOwnershipAcquisitionCancellation(theObject, &theAttributes);
+    }
+    
+    ULongX3_to_Void hsInformAttributeOwnership;
     virtual void informAttributeOwnership (
-      RTI::ObjectHandle    theObject,    // supplied C1
-      RTI::AttributeHandle theAttribute, // supplied C1
-      RTI::FederateHandle  theOwner)     // supplied C1
+        RTI::ObjectHandle    theObject,    // supplied C1
+        RTI::AttributeHandle theAttribute, // supplied C1
+        RTI::FederateHandle  theOwner)     // supplied C1
     throw (
-      RTI::ObjectNotKnown,
-      RTI::AttributeNotKnown,
-      RTI::FederateInternalError) {
-          if(hsInformAttributeOwnership)
-              hsInformAttributeOwnership(theObject, theAttribute, theOwner);
-      }
-
-      ULongX2_to_Void hsAttributeIsNotOwned;
+        RTI::ObjectNotKnown,
+        RTI::AttributeNotKnown,
+        RTI::FederateInternalError) {
+        if(hsInformAttributeOwnership)
+            hsInformAttributeOwnership(theObject, theAttribute, theOwner);
+    }
+    
+    ULongX2_to_Void hsAttributeIsNotOwned;
     virtual void attributeIsNotOwned (
-      RTI::ObjectHandle    theObject,    // supplied C1
-      RTI::AttributeHandle theAttribute) // supplied C1
+        RTI::ObjectHandle    theObject,    // supplied C1
+        RTI::AttributeHandle theAttribute) // supplied C1
     throw (
-      RTI::ObjectNotKnown,
-      RTI::AttributeNotKnown,
-      RTI::FederateInternalError) {
-          if(hsAttributeIsNotOwned)
-              hsAttributeIsNotOwned(theObject, theAttribute);
-      }
-
-      ULongX2_to_Void hsAttributeOwnedByRTI;
+        RTI::ObjectNotKnown,
+        RTI::AttributeNotKnown,
+        RTI::FederateInternalError) {
+        if(hsAttributeIsNotOwned)
+            hsAttributeIsNotOwned(theObject, theAttribute);
+    }
+    
+    ULongX2_to_Void hsAttributeOwnedByRTI;
     virtual void attributeOwnedByRTI (
-      RTI::ObjectHandle    theObject,    // supplied C1
-      RTI::AttributeHandle theAttribute) // supplied C1
+        RTI::ObjectHandle    theObject,    // supplied C1
+        RTI::AttributeHandle theAttribute) // supplied C1
     throw (
-      RTI::ObjectNotKnown,
-      RTI::AttributeNotKnown,
-      RTI::FederateInternalError) {
-          if(hsAttributeOwnedByRTI)
-              hsAttributeOwnedByRTI(theObject, theAttribute);
-      }
-
+        RTI::ObjectNotKnown,
+        RTI::AttributeNotKnown,
+        RTI::FederateInternalError) {
+        if(hsAttributeOwnedByRTI)
+            hsAttributeOwnedByRTI(theObject, theAttribute);
+    }
+    
     //////////////////////////////
     // Time Management Services //
     //////////////////////////////
-
+    
     ConstPtr_to_Void hsTimeRegulationEnabled;
     virtual void timeRegulationEnabled (
-     const  RTI::FedTime& theFederateTime) // supplied C4
+        const  RTI::FedTime& theFederateTime) // supplied C4
     throw (
-      RTI::InvalidFederationTime,
-      RTI::EnableTimeRegulationWasNotPending,
-      RTI::FederateInternalError) {
-          if (hsTimeRegulationEnabled) hsTimeRegulationEnabled(&theFederateTime);
-      }
-
+        RTI::InvalidFederationTime,
+        RTI::EnableTimeRegulationWasNotPending,
+        RTI::FederateInternalError) {
+        if (hsTimeRegulationEnabled) hsTimeRegulationEnabled(&theFederateTime);
+    }
+    
     ConstPtr_to_Void hsTimeConstrainedEnabled;
     virtual void timeConstrainedEnabled (
-      const RTI::FedTime& theFederateTime) // supplied C4
+        const RTI::FedTime& theFederateTime) // supplied C4
     throw (
-      RTI::InvalidFederationTime,
-      RTI::EnableTimeConstrainedWasNotPending,
-      RTI::FederateInternalError) {
-          if (hsTimeConstrainedEnabled) hsTimeConstrainedEnabled(&theFederateTime);
-      }
-
-      ConstPtr_to_Void hsTimeAdvanceGrant;
+        RTI::InvalidFederationTime,
+        RTI::EnableTimeConstrainedWasNotPending,
+        RTI::FederateInternalError) {
+        if (hsTimeConstrainedEnabled) hsTimeConstrainedEnabled(&theFederateTime);
+    }
+    
+    ConstPtr_to_Void hsTimeAdvanceGrant;
     virtual void timeAdvanceGrant (
-      const RTI::FedTime& theTime) // supplied C4
+        const RTI::FedTime& theTime) // supplied C4
     throw (
-      RTI::InvalidFederationTime,
-      RTI::TimeAdvanceWasNotInProgress,
-      RTI::FederateInternalError) {
-          if (hsTimeAdvanceGrant) hsTimeAdvanceGrant(&theTime);
-      }
-
-      ULongX2_to_Void hsRequestRetraction;
+        RTI::InvalidFederationTime,
+        RTI::TimeAdvanceWasNotInProgress,
+        RTI::FederateInternalError) {
+        if (hsTimeAdvanceGrant) hsTimeAdvanceGrant(&theTime);
+    }
+    
+    ULongX2_to_Void hsRequestRetraction;
     virtual void requestRetraction (
-      RTI::EventRetractionHandle theHandle) // supplied C1
+        RTI::EventRetractionHandle theHandle) // supplied C1
     throw (
-      RTI::EventNotKnown,
-      RTI::FederateInternalError) {
-          if(hsRequestRetraction)hsRequestRetraction(theHandle.theSerialNumber, theHandle.sendingFederate);
-      }
+        RTI::EventNotKnown,
+        RTI::FederateInternalError) {
+        if(hsRequestRetraction)hsRequestRetraction(theHandle.theSerialNumber, theHandle.sendingFederate);
+    }
 };
 
 ccall void *wrap_new_HsFederateAmbassador(FunPtrFn releaseFunPtr, void **out_exc) {
