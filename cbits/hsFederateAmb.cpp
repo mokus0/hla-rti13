@@ -346,13 +346,17 @@ public:
               hsTurnUpdatesOnForObjectInstance(theObject, &theAttributes);
       }
 
+    ULong_to_ConstPtr_to_Void hsTurnUpdatesOffForObjectInstance;
     virtual void turnUpdatesOffForObjectInstance (
             RTI::ObjectHandle        theObject,      // supplied C1
       const RTI::AttributeHandleSet& theAttributes) // supplied C4
     throw (
       RTI::ObjectNotKnown,
       RTI::AttributeNotOwned,
-      RTI::FederateInternalError) {}
+      RTI::FederateInternalError) {
+          if(hsTurnUpdatesOffForObjectInstance)
+              hsTurnUpdatesOffForObjectInstance(theObject, &theAttributes);
+      }
 
     ///////////////////////////////////
     // Ownership Management Services //
@@ -562,6 +566,10 @@ ccall void hsfa_set_turnUpdatesOnForObjectInstance(void *fedAmb, ULong_to_ConstP
     setFunPtr(hsTurnUpdatesOnForObjectInstance)
 }
 
+ccall void hsfa_set_turnUpdatesOffForObjectInstance(void *fedAmb, ULong_to_ConstPtr_to_Void theFunPtr) {
+    setFunPtr(hsTurnUpdatesOffForObjectInstance)
+}
+
 ccall void hsfa_set_discoverObjectInstance(void *fedAmb, ULong_to_ULong_to_ConstPtr_to_Void theFunPtr) {
     setFunPtr(hsDiscoverObjectInstance)
 }
@@ -621,6 +629,7 @@ setter setters[] =
     (setter) &hsfa_set_startRegistrationForObjectClass,
     (setter) &hsfa_set_stopRegistrationForObjectClass,
     (setter) &hsfa_set_turnUpdatesOnForObjectInstance,
+    (setter) &hsfa_set_turnUpdatesOffForObjectInstance,
     (setter) &hsfa_set_discoverObjectInstance,
     (setter) &hsfa_set_timeRegulationEnabled,
     (setter) &hsfa_set_turnInteractionsOn,

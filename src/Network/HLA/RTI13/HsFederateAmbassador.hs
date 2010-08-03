@@ -506,6 +506,22 @@ set_turnUpdatesOnForObjectInstance fedAmb turnUpdatesOnForObjectInstance =
             turnUpdatesOnForObjectInstance theObject (AttributeHandleSet theAttrs)
         hsfa_set_turnUpdatesOnForObjectInstance fedAmb funPtr
 
+foreign import ccall "hsFederateAmb.h hsfa_set_turnUpdatesOffForObjectInstance"
+    hsfa_set_turnUpdatesOffForObjectInstance :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> IO ()) -> IO ()
+
+onTurnUpdatesOffForObjectInstance :: (ObjectHandle -> AttributeHandleSet -> IO ()) -> FedHandlers t ()
+onTurnUpdatesOffForObjectInstance turnUpdatesOffForObjectInstance = do
+    fedAmb <- ask
+    liftIO (set_turnUpdatesOffForObjectInstance fedAmb turnUpdatesOffForObjectInstance)
+
+set_turnUpdatesOffForObjectInstance :: HsFederateAmbassador t -> (ObjectHandle -> AttributeHandleSet -> IO ()) -> IO ()
+set_turnUpdatesOffForObjectInstance fedAmb turnUpdatesOffForObjectInstance = 
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkObjectPtrFunPtr $ \theObject theAttrs -> do
+            theAttrs <- newForeignPtr_ theAttrs
+            turnUpdatesOffForObjectInstance theObject (AttributeHandleSet theAttrs)
+        hsfa_set_turnUpdatesOffForObjectInstance fedAmb funPtr
+
 
 -----------------------------------
 -- Ownership Management Services --
