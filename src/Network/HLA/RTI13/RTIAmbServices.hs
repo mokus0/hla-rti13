@@ -72,28 +72,16 @@ synchronizationPointAchieved rtiAmb label =
         withCString label $ \label ->
             wrapExceptions (wrap_synchronizationPointAchieved rtiAmb label)
 
-    -- // 4.11
-    -- void requestFederationSave (    
-    --   const char     *label,   // supplied C4
-    --   const FedTime&  theTime) // supplied C4
-    -- throw (
-    --   FederationTimeAlreadyPassed, 
-    --   InvalidFederationTime,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
-    -- void requestFederationSave ( 
-    --   const char *label)     // supplied C4
-    --   throw (
-    --     FederateNotExecutionMember,
-    --     ConcurrentAccessAttempted,
-    --     SaveInProgress,
-    --     RestoreInProgress,
-    --     RTIinternalError);
-    -- 
+requestFederationSave :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> String -> Maybe (FedTime fedAmb) -> IO ()
+requestFederationSave rtiAmb label mbTime =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        withCString label $ \label -> case mbTime of
+            Nothing ->
+                wrapExceptions (wrap_requestFederationSave rtiAmb label)
+            Just theTime -> 
+                withFedTime_ theTime $ \theTime ->
+                    wrapExceptions (wrap_requestFederationSaveAtTime rtiAmb label theTime)
+
     -- // 4.13
     -- void federateSaveBegun ()
     -- throw (

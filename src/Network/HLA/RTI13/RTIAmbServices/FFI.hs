@@ -55,6 +55,12 @@ foreign import ccall unsafe "wrap/RTIambServices.h wrap_registerFederationSynchr
 foreign import ccall unsafe "wrap/RTIambServices.h wrap_synchronizationPointAchieved"
     wrap_synchronizationPointAchieved :: Ptr (RTIAmbassador fedAmb) -> CString -> Ptr (Ptr RTIException) -> IO ()
 
+foreign import ccall unsafe "wrap/RTIambServices.h wrap_requestFederationSave"
+    wrap_requestFederationSave :: Ptr (RTIAmbassador fedAmb) -> CString -> Ptr (Ptr RTIException) -> IO ()
+
+foreign import ccall unsafe "wrap/RTIambServices.h wrap_requestFederationSaveAtTime"
+    wrap_requestFederationSaveAtTime :: Ptr (RTIAmbassador fedAmb) -> CString -> Ptr (FedAmbTime fedAmb) -> Ptr (Ptr RTIException) -> IO ()
+
 -------------------------------------
 -- Declaration Management Services --
 -------------------------------------
