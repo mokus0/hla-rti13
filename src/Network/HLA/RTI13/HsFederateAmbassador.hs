@@ -646,6 +646,24 @@ set_informAttributeOwnership fedAmb informAttributeOwnership =
         funPtr <- mkFunPtr_ObjectHandle_to_AttributeHandle_to_FederateHandle_to_Void informAttributeOwnership
         hsfa_set_informAttributeOwnership fedAmb funPtr
 
+foreign import ccall "hsFederateAmb.h hsfa_set_attributeIsNotOwned"
+    hsfa_set_attributeIsNotOwned :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> AttributeHandle -> IO ()) -> IO ()
+
+onAttributeIsNotOwned :: (ObjectHandle -> AttributeHandle -> IO ()) -> FedHandlers t ()
+onAttributeIsNotOwned attributeIsNotOwned = do
+    fedAmb <- ask
+    liftIO (set_attributeIsNotOwned fedAmb attributeIsNotOwned)
+
+foreign import ccall "wrapper" mkFunPtr_ObjectHandle_to_AttributeHandle_to_Void :: 
+    (ObjectHandle -> AttributeHandle -> IO ())
+    -> IO (FunPtr (ObjectHandle -> AttributeHandle -> IO ()))
+
+set_attributeIsNotOwned :: HsFederateAmbassador t -> (ObjectHandle -> AttributeHandle -> IO ()) -> IO ()
+set_attributeIsNotOwned fedAmb attributeIsNotOwned = 
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkFunPtr_ObjectHandle_to_AttributeHandle_to_Void attributeIsNotOwned
+        hsfa_set_attributeIsNotOwned fedAmb funPtr
+
 ---------------------
 -- Time Management --
 ---------------------
