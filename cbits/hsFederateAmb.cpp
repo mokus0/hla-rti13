@@ -473,13 +473,17 @@ public:
               hsAttributeIsNotOwned(theObject, theAttribute);
       }
 
+      ULongX2_to_Void hsAttributeOwnedByRTI;
     virtual void attributeOwnedByRTI (
       RTI::ObjectHandle    theObject,    // supplied C1
       RTI::AttributeHandle theAttribute) // supplied C1
     throw (
       RTI::ObjectNotKnown,
       RTI::AttributeNotKnown,
-      RTI::FederateInternalError) {}
+      RTI::FederateInternalError) {
+          if(hsAttributeOwnedByRTI)
+              hsAttributeOwnedByRTI(theObject, theAttribute);
+      }
 
     //////////////////////////////
     // Time Management Services //
@@ -634,6 +638,10 @@ ccall void hsfa_set_attributeIsNotOwned(void *fedAmb, ULongX2_to_Void theFunPtr)
     setFunPtr(hsAttributeIsNotOwned)
 }
 
+ccall void hsfa_set_attributeOwnedByRTI(void *fedAmb, ULongX2_to_Void theFunPtr) {
+    setFunPtr(hsAttributeOwnedByRTI)
+}
+
 ccall void hsfa_set_discoverObjectInstance(void *fedAmb, ULong_to_ULong_to_ConstPtr_to_Void theFunPtr) {
     setFunPtr(hsDiscoverObjectInstance)
 }
@@ -702,6 +710,7 @@ setter setters[] =
     (setter) &hsfa_set_confirmAttributeOwnershipAcquisitionCancellation,
     (setter) &hsfa_set_informAttributeOwnership,
     (setter) &hsfa_set_attributeIsNotOwned,
+    (setter) &hsfa_set_attributeOwnedByRTI,
     (setter) &hsfa_set_discoverObjectInstance,
     (setter) &hsfa_set_timeRegulationEnabled,
     (setter) &hsfa_set_turnInteractionsOn,
