@@ -714,3 +714,19 @@ set_timeConstrainedEnabled fedAmb timeConstrainedEnabled =
             someFedTime <- importFedTime ftPtr
             timeConstrainedEnabled someFedTime
         hsfa_set_timeConstrainedEnabled fedAmb funPtr
+
+foreign import ccall "hsFederateAmb.h hsfa_set_timeAdvanceGrant"
+    hsfa_set_timeAdvanceGrant :: Ptr (HsFederateAmbassador t) -> FunPtr (Ptr t -> IO ()) -> IO ()
+
+onTimeAdvanceGrant :: FedTimeImpl t => (FedTimeRepr t -> IO ()) -> FedHandlers t ()
+onTimeAdvanceGrant timeAdvanceGrant = do
+    fedAmb <- ask
+    liftIO (set_timeAdvanceGrant fedAmb timeAdvanceGrant)
+
+set_timeAdvanceGrant :: FedTimeImpl t => HsFederateAmbassador t -> (FedTimeRepr t -> IO ()) -> IO ()
+set_timeAdvanceGrant fedAmb timeAdvanceGrant = 
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkPtrFunPtr $ \ftPtr -> do
+            someFedTime <- importFedTime ftPtr
+            timeAdvanceGrant someFedTime
+        hsfa_set_timeAdvanceGrant fedAmb funPtr
