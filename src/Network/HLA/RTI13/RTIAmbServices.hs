@@ -82,15 +82,10 @@ requestFederationSave rtiAmb label mbTime =
                 withFedTime_ theTime $ \theTime ->
                     wrapExceptions (wrap_requestFederationSaveAtTime rtiAmb label theTime)
 
-    -- // 4.13
-    -- void federateSaveBegun ()
-    -- throw (
-    --   SaveNotInitiated,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
+federateSaveBegun :: RTIAmbassador fedAmb -> IO ()
+federateSaveBegun rtiAmb = withRTIAmbassador rtiAmb
+    (wrapExceptions . wrap_federateSaveBegun)
+
     -- // 4.14
     -- void federateSaveComplete ()
     -- throw (
