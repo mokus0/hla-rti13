@@ -1,5 +1,9 @@
-{-# LANGUAGE FlexibleContexts #-}
-module Network.HLA.RTI13.HsFederateAmbassador where
+{-# LANGUAGE FlexibleContexts, RankNTypes #-}
+module Network.HLA.RTI13.HsFederateAmbassador
+    ( HsFederateAmbassador
+    , FedHandlers, setHandlers
+    , module Network.HLA.RTI13.HsFederateAmbassador
+    ) where
 
 import Foreign hiding (newForeignPtr)
 import Foreign.Concurrent
@@ -22,6 +26,12 @@ newHsFederateAmbassador = do
     
     where
         delete_HsFederateAmbassador fedAmb = wrapExceptions (wrap_delete_HsFederateAmbassador fedAmb)
+
+newFedAmbWithHandlers :: FedHandlers t () -> IO (HsFederateAmbassador t)
+newFedAmbWithHandlers handlers = do
+    fedAmb <- newHsFederateAmbassador
+    setHandlers fedAmb handlers
+    return fedAmb
 
 ------------------------------------
 -- Federation Management Services --
