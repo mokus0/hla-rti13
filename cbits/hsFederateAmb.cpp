@@ -519,11 +519,14 @@ public:
           if (hsTimeAdvanceGrant) hsTimeAdvanceGrant(&theTime);
       }
 
+      ULongX2_to_Void hsRequestRetraction;
     virtual void requestRetraction (
       RTI::EventRetractionHandle theHandle) // supplied C1
     throw (
       RTI::EventNotKnown,
-      RTI::FederateInternalError) {}
+      RTI::FederateInternalError) {
+          if(hsRequestRetraction)hsRequestRetraction(theHandle.theSerialNumber, theHandle.sendingFederate);
+      }
 };
 
 ccall void *wrap_new_HsFederateAmbassador(FunPtrFn releaseFunPtr, void **out_exc) {
@@ -664,6 +667,10 @@ ccall void hsfa_set_timeAdvanceGrant(void *fedAmb, ConstPtr_to_Void theFunPtr) {
     setFunPtr(hsTimeAdvanceGrant)
 }
 
+ccall void hsfa_set_requestRetraction(void *fedAmb, ULongX2_to_Void theFunPtr) {
+    setFunPtr(hsRequestRetraction)
+}
+
 ccall void hsfa_set_turnInteractionsOn(void *fedAmb, ULong_to_Void theFunPtr) {
     setFunPtr(hsTurnInteractionsOn)
 }
@@ -729,6 +736,7 @@ setter setters[] =
     (setter) &hsfa_set_timeRegulationEnabled,
     (setter) &hsfa_set_timeConstrainedEnabled,
     (setter) &hsfa_set_timeAdvanceGrant,
+    (setter) &hsfa_set_requestRetraction,
     (setter) &hsfa_set_turnInteractionsOn,
     (setter) &hsfa_set_turnInteractionsOff,
     (setter) &hsfa_set_removeObjectInstance,

@@ -730,3 +730,21 @@ set_timeAdvanceGrant fedAmb timeAdvanceGrant =
             someFedTime <- importFedTime ftPtr
             timeAdvanceGrant someFedTime
         hsfa_set_timeAdvanceGrant fedAmb funPtr
+
+foreign import ccall "hsFederateAmb.h hsfa_set_requestRetraction"
+    hsfa_set_requestRetraction :: Ptr (HsFederateAmbassador t) -> FunPtr (UniqueID -> FederateHandle -> IO ()) -> IO ()
+
+onRequestRetraction :: (EventRetractionHandle -> IO ()) -> FedHandlers t ()
+onRequestRetraction requestRetraction = do
+    fedAmb <- ask
+    liftIO (set_requestRetraction fedAmb requestRetraction)
+
+foreign import ccall "wrapper"
+    mkFunPtr_UniqueID_to_FederateHandle_to_Void :: (UniqueID -> FederateHandle -> IO ()) -> IO (FunPtr (UniqueID -> FederateHandle -> IO ()))
+
+set_requestRetraction :: HsFederateAmbassador t -> (EventRetractionHandle -> IO ()) -> IO ()
+set_requestRetraction fedAmb requestRetraction =
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkFunPtr_UniqueID_to_FederateHandle_to_Void $ \serial federate -> do
+            requestRetraction (EventRetractionHandle serial federate)
+        hsfa_set_requestRetraction fedAmb funPtr
