@@ -611,6 +611,24 @@ set_requestAttributeOwnershipRelease fedAmb requestAttributeOwnershipRelease =
             requestAttributeOwnershipRelease theObject (AttributeHandleSet theAttrs) theTag
         hsfa_set_requestAttributeOwnershipRelease fedAmb funPtr
 
+
+foreign import ccall "hsFederateAmb.h hsfa_set_confirmAttributeOwnershipAcquisitionCancellation"
+    hsfa_set_confirmAttributeOwnershipAcquisitionCancellation :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> IO ()) -> IO ()
+
+onConfirmAttributeOwnershipAcquisitionCancellation :: (ObjectHandle -> AttributeHandleSet -> IO ()) -> FedHandlers t ()
+onConfirmAttributeOwnershipAcquisitionCancellation confirmAttributeOwnershipAcquisitionCancellation = do
+    fedAmb <- ask
+    liftIO (set_confirmAttributeOwnershipAcquisitionCancellation fedAmb confirmAttributeOwnershipAcquisitionCancellation)
+
+set_confirmAttributeOwnershipAcquisitionCancellation :: HsFederateAmbassador t -> (ObjectHandle -> AttributeHandleSet -> IO ()) -> IO ()
+set_confirmAttributeOwnershipAcquisitionCancellation fedAmb confirmAttributeOwnershipAcquisitionCancellation = 
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkObjectPtrFunPtr $ \theObject theAttrs -> do
+            theAttrs <- newForeignPtr_ theAttrs
+            confirmAttributeOwnershipAcquisitionCancellation theObject (AttributeHandleSet theAttrs)
+        hsfa_set_confirmAttributeOwnershipAcquisitionCancellation fedAmb funPtr
+
+
 ---------------------
 -- Time Management --
 ---------------------
