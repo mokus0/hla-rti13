@@ -537,6 +537,7 @@ onRequestAttributeOwnershipAssumption requestAttributeOwnershipAssumption = do
 
 foreign import ccall "wrapper"
     mkFunPtr_ObjectHandle_to_ConstPtrX2_to_Void :: (ObjectHandle -> Ptr a -> Ptr b -> IO ()) -> IO (FunPtr (ObjectHandle -> Ptr a -> Ptr b -> IO ()))
+set_requestAttributeOwnershipAssumption :: HsFederateAmbassador t -> (ObjectHandle -> AttributeHandleSet -> String -> IO ()) -> IO ()
 set_requestAttributeOwnershipAssumption fedAmb requestAttributeOwnershipAssumption = 
     withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_ObjectHandle_to_ConstPtrX2_to_Void $ \theObject theAttrs theTag -> do
@@ -544,6 +545,22 @@ set_requestAttributeOwnershipAssumption fedAmb requestAttributeOwnershipAssumpti
             theTag <- peekCString theTag
             requestAttributeOwnershipAssumption theObject (AttributeHandleSet theAttrs) theTag
         hsfa_set_requestAttributeOwnershipAssumption fedAmb funPtr
+
+foreign import ccall "hsFederateAmb.h hsfa_set_attributeOwnershipDivestitureNotification"
+    hsfa_set_attributeOwnershipDivestitureNotification :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> IO ()) -> IO ()
+
+onAttributeOwnershipDivestitureNotification :: (ObjectHandle -> AttributeHandleSet -> IO ()) -> FedHandlers t ()
+onAttributeOwnershipDivestitureNotification attributeOwnershipDivestitureNotification = do
+    fedAmb <- ask
+    liftIO (set_attributeOwnershipDivestitureNotification fedAmb attributeOwnershipDivestitureNotification)
+
+set_attributeOwnershipDivestitureNotification :: HsFederateAmbassador t -> (ObjectHandle -> AttributeHandleSet -> IO ()) -> IO ()
+set_attributeOwnershipDivestitureNotification fedAmb attributeOwnershipDivestitureNotification = 
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkObjectPtrFunPtr $ \theObject theAttrs -> do
+            theAttrs <- newForeignPtr_ theAttrs
+            attributeOwnershipDivestitureNotification theObject (AttributeHandleSet theAttrs)
+        hsfa_set_attributeOwnershipDivestitureNotification fedAmb funPtr
 
 ---------------------
 -- Time Management --
