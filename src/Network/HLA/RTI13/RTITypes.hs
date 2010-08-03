@@ -293,8 +293,12 @@ parameterHandleValuePairSet_getOrderType phSet i =
     withParameterHandleValuePairSet phSet $ \phSet ->
         wrapExceptions (wrap_ParameterHandleValuePairSet_getOrderType phSet i)
 
-    --   virtual Region *getRegion(void) const
-    --     throw ( InvalidHandleValuePairSetContext) = 0;
+parameterHandleValuePairSet_getRegion :: ParameterHandleValuePairSet -> ULong -> IO Region
+parameterHandleValuePairSet_getRegion phSet i =
+    withParameterHandleValuePairSet phSet $ \phSet -> do
+        region <- wrapExceptions (wrap_ParameterHandleValuePairSet_getRegion phSet i)
+        regionPtr <- newForeignPtr_ region
+        return (Region regionPtr)
 
 instance Insert IO ParameterHandleValuePairSet where
     insert pSet (h,buff) = withParameterHandleValuePairSet pSet $ \pSet ->
