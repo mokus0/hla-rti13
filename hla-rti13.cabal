@@ -41,6 +41,7 @@ Library
                         Network.HLA.RTI13.RTITypes
                         Network.HLA.RTI13.RTITypes.Types
                         Network.HLA.RTI13.RTITypes.FFI
+  other-modules:        Network.HLA.RTI13.HsFederateAmbassador.FunPtrWrappers
                         
   build-depends:        base >= 4, containers, syb, mtl,
                         bytestring,
