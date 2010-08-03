@@ -699,3 +699,18 @@ set_timeRegulationEnabled fedAmb timeRegulationEnabled =
             timeRegulationEnabled someFedTime
         hsfa_set_timeRegulationEnabled fedAmb funPtr
 
+foreign import ccall "hsFederateAmb.h hsfa_set_timeConstrainedEnabled"
+    hsfa_set_timeConstrainedEnabled :: Ptr (HsFederateAmbassador t) -> FunPtr (Ptr t -> IO ()) -> IO ()
+
+onTimeConstrainedEnabled :: FedTimeImpl t => (FedTimeRepr t -> IO ()) -> FedHandlers t ()
+onTimeConstrainedEnabled timeConstrainedEnabled = do
+    fedAmb <- ask
+    liftIO (set_timeConstrainedEnabled fedAmb timeConstrainedEnabled)
+
+set_timeConstrainedEnabled :: FedTimeImpl t => HsFederateAmbassador t -> (FedTimeRepr t -> IO ()) -> IO ()
+set_timeConstrainedEnabled fedAmb timeConstrainedEnabled = 
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkPtrFunPtr $ \ftPtr -> do
+            someFedTime <- importFedTime ftPtr
+            timeConstrainedEnabled someFedTime
+        hsfa_set_timeConstrainedEnabled fedAmb funPtr

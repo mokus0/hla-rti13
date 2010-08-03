@@ -499,12 +499,15 @@ public:
           if (hsTimeRegulationEnabled) hsTimeRegulationEnabled(&theFederateTime);
       }
 
+    ConstPtr_to_Void hsTimeConstrainedEnabled;
     virtual void timeConstrainedEnabled (
       const RTI::FedTime& theFederateTime) // supplied C4
     throw (
       RTI::InvalidFederationTime,
       RTI::EnableTimeConstrainedWasNotPending,
-      RTI::FederateInternalError) {}
+      RTI::FederateInternalError) {
+          if (hsTimeConstrainedEnabled) hsTimeConstrainedEnabled(&theFederateTime);
+      }
 
     virtual void timeAdvanceGrant (
       const RTI::FedTime& theTime) // supplied C4
@@ -650,6 +653,10 @@ ccall void hsfa_set_timeRegulationEnabled(void *fedAmb, ConstPtr_to_Void theFunP
     setFunPtr(hsTimeRegulationEnabled)
 }
 
+ccall void hsfa_set_timeConstrainedEnabled(void *fedAmb, ConstPtr_to_Void theFunPtr) {
+    setFunPtr(hsTimeConstrainedEnabled)
+}
+
 ccall void hsfa_set_turnInteractionsOn(void *fedAmb, ULong_to_Void theFunPtr) {
     setFunPtr(hsTurnInteractionsOn)
 }
@@ -713,6 +720,7 @@ setter setters[] =
     (setter) &hsfa_set_attributeOwnedByRTI,
     (setter) &hsfa_set_discoverObjectInstance,
     (setter) &hsfa_set_timeRegulationEnabled,
+    (setter) &hsfa_set_timeConstrainedEnabled,
     (setter) &hsfa_set_turnInteractionsOn,
     (setter) &hsfa_set_turnInteractionsOff,
     (setter) &hsfa_set_removeObjectInstance,
