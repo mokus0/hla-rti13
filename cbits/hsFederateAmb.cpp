@@ -362,6 +362,7 @@ public:
     // Ownership Management Services //
     ///////////////////////////////////
 
+      ULong_to_ConstPtrX2_to_Void hsRequestAttributeOwnershipAssumption;
     virtual void requestAttributeOwnershipAssumption (
             RTI::ObjectHandle        theObject,         // supplied C1
       const RTI::AttributeHandleSet& offeredAttributes, // supplied C4
@@ -371,7 +372,10 @@ public:
       RTI::AttributeNotKnown,
       RTI::AttributeAlreadyOwned,
       RTI::AttributeNotPublished,
-      RTI::FederateInternalError) {}
+      RTI::FederateInternalError) {
+          if (hsRequestAttributeOwnershipAssumption)
+              hsRequestAttributeOwnershipAssumption(theObject, &offeredAttributes, theTag);
+      }
 
     virtual void attributeOwnershipDivestitureNotification (
             RTI::ObjectHandle        theObject,          // supplied C1
@@ -568,6 +572,10 @@ ccall void hsfa_set_turnUpdatesOnForObjectInstance(void *fedAmb, ULong_to_ConstP
 
 ccall void hsfa_set_turnUpdatesOffForObjectInstance(void *fedAmb, ULong_to_ConstPtr_to_Void theFunPtr) {
     setFunPtr(hsTurnUpdatesOffForObjectInstance)
+}
+
+ccall void hsfa_set_requestAttributeOwnershipAssumption(void *fedAmb, ULong_to_ConstPtrX2_to_Void theFunPtr) {
+    setFunPtr(hsRequestAttributeOwnershipAssumption)
 }
 
 ccall void hsfa_set_discoverObjectInstance(void *fedAmb, ULong_to_ULong_to_ConstPtr_to_Void theFunPtr) {

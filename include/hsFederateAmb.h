@@ -9,6 +9,7 @@ typedef void (*ConstPtr_to_ULong_to_Void)(const void *, RTI_ULong);
 typedef void (*ConstPtrX2_to_Void)(const void *, const void *);
 typedef void (*ULong_to_Void)(RTI_ULong);
 typedef void (*ULong_to_ConstPtr_to_Void)(RTI_ULong, const void *);
+typedef void (*ULong_to_ConstPtrX2_to_Void)(RTI_ULong, const void *, const void *);
 typedef void (*ULong_to_ULong_to_ConstPtr_to_Void)(RTI_ULong, RTI_ULong, const void *);
 typedef void (*ULong_to_ConstPtr_to_ConstPtr_to_ULong_to_Void)(RTI_ULong, const void *, const void *, RTI_ULong);
 typedef void (*ULong_to_ConstPtrX2_to_ULongX2_to_Void)(RTI_ULong, const void *, const void *, RTI_ULong, RTI_ULong);

@@ -527,6 +527,23 @@ set_turnUpdatesOffForObjectInstance fedAmb turnUpdatesOffForObjectInstance =
 -- Ownership Management Services --
 -----------------------------------
 
+foreign import ccall "hsFederateAmb.h hsfa_set_requestAttributeOwnershipAssumption"
+    hsfa_set_requestAttributeOwnershipAssumption :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> CString -> IO ()) -> IO ()
+
+onRequestAttributeOwnershipAssumption :: (ObjectHandle -> AttributeHandleSet -> String -> IO ()) -> FedHandlers t ()
+onRequestAttributeOwnershipAssumption requestAttributeOwnershipAssumption = do
+    fedAmb <- ask
+    liftIO (set_requestAttributeOwnershipAssumption fedAmb requestAttributeOwnershipAssumption)
+
+foreign import ccall "wrapper"
+    mkFunPtr_ObjectHandle_to_ConstPtrX2_to_Void :: (ObjectHandle -> Ptr a -> Ptr b -> IO ()) -> IO (FunPtr (ObjectHandle -> Ptr a -> Ptr b -> IO ()))
+set_requestAttributeOwnershipAssumption fedAmb requestAttributeOwnershipAssumption = 
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkFunPtr_ObjectHandle_to_ConstPtrX2_to_Void $ \theObject theAttrs theTag -> do
+            theAttrs <- newForeignPtr_ theAttrs
+            theTag <- peekCString theTag
+            requestAttributeOwnershipAssumption theObject (AttributeHandleSet theAttrs) theTag
+        hsfa_set_requestAttributeOwnershipAssumption fedAmb funPtr
 
 ---------------------
 -- Time Management --
