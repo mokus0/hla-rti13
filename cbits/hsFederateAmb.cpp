@@ -299,21 +299,27 @@ public:
               hsRemoveObjectInstance(theObject, NULL, theTag, 0, 0);
       }
 
+      ULong_to_ConstPtr_to_Void hsAttributesInScope;
     virtual void attributesInScope (
             RTI::ObjectHandle        theObject,     // supplied C1
       const RTI::AttributeHandleSet& theAttributes) // supplied C4
     throw (
       RTI::ObjectNotKnown,
       RTI::AttributeNotKnown,
-      RTI::FederateInternalError) {}
+      RTI::FederateInternalError) {
+          if (hsAttributesInScope) hsAttributesInScope(theObject, &theAttributes);
+      }
 
+      ULong_to_ConstPtr_to_Void hsAttributesOutOfScope;
     virtual void attributesOutOfScope (
             RTI::ObjectHandle        theObject,     // supplied C1
       const RTI::AttributeHandleSet& theAttributes) // supplied C4
     throw (
       RTI::ObjectNotKnown,
       RTI::AttributeNotKnown,
-      RTI::FederateInternalError) {}
+      RTI::FederateInternalError) {
+          if (hsAttributesOutOfScope) hsAttributesOutOfScope(theObject, &theAttributes);
+      }
 
     ULong_to_ConstPtr_to_Void hsProvideAttributeValueUpdate;
     virtual void provideAttributeValueUpdate (
@@ -576,6 +582,14 @@ ccall void hsfa_set_removeObjectInstance(void * fedAmb, ULong_to_ConstPtrX2_to_U
     setFunPtr(hsRemoveObjectInstance)
 }
 
+ccall void hsfa_set_attributesInScope(void * fedAmb, ULong_to_ConstPtr_to_Void theFunPtr) {
+    setFunPtr(hsAttributesInScope)
+}
+
+ccall void hsfa_set_attributesOutOfScope(void * fedAmb, ULong_to_ConstPtr_to_Void theFunPtr) {
+    setFunPtr(hsAttributesOutOfScope)
+}
+
 ccall void hsfa_set_provideAttributeValueUpdate(void *fedAmb, ULong_to_ConstPtr_to_Void theFunPtr) {
     setFunPtr(hsProvideAttributeValueUpdate)
 }
@@ -612,6 +626,8 @@ setter setters[] =
     (setter) &hsfa_set_turnInteractionsOn,
     (setter) &hsfa_set_turnInteractionsOff,
     (setter) &hsfa_set_removeObjectInstance,
+    (setter) &hsfa_set_attributesInScope,
+    (setter) &hsfa_set_attributesOutOfScope,
     (setter) &hsfa_set_provideAttributeValueUpdate,
     (setter) &hsfa_set_reflectAttributeValues,
     (setter) &hsfa_set_receiveInteraction,

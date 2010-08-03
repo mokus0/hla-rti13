@@ -437,6 +437,39 @@ set_removeObjectInstance fedAmb removeObjectInstance =
         
         hsfa_set_removeObjectInstance fedAmb funPtr
 
+foreign import ccall "hsFederateAmb.h hsfa_set_attributesInScope"
+    hsfa_set_attributesInScope :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> IO ()) -> IO ()
+
+onAttributesInScope :: (ObjectHandle -> AttributeHandleSet -> IO ()) -> FedHandlers t ()
+onAttributesInScope attributesInScope = do
+    fedAmb <- ask
+    liftIO (set_attributesInScope fedAmb attributesInScope)
+
+set_attributesInScope :: HsFederateAmbassador t -> (ObjectHandle -> AttributeHandleSet -> IO ()) -> IO ()
+set_attributesInScope fedAmb attributesInScope = 
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkProvideAttributeValueFunPtr $ \theObject theAttrs -> do
+            theAttrs <- newForeignPtr_ theAttrs
+            attributesInScope theObject (AttributeHandleSet theAttrs)
+        hsfa_set_attributesInScope fedAmb funPtr
+
+foreign import ccall "hsFederateAmb.h hsfa_set_attributesOutOfScope"
+    hsfa_set_attributesOutOfScope :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> IO ()) -> IO ()
+
+onAttributesOutOfScope :: (ObjectHandle -> AttributeHandleSet -> IO ()) -> FedHandlers t ()
+onAttributesOutOfScope attributesOutOfScope = do
+    fedAmb <- ask
+    liftIO (set_attributesOutOfScope fedAmb attributesOutOfScope)
+
+set_attributesOutOfScope :: HsFederateAmbassador t -> (ObjectHandle -> AttributeHandleSet -> IO ()) -> IO ()
+set_attributesOutOfScope fedAmb attributesOutOfScope = 
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkProvideAttributeValueFunPtr $ \theObject theAttrs -> do
+            theAttrs <- newForeignPtr_ theAttrs
+            attributesOutOfScope theObject (AttributeHandleSet theAttrs)
+        hsfa_set_attributesOutOfScope fedAmb funPtr
+
+
 foreign import ccall "hsFederateAmb.h hsfa_set_provideAttributeValueUpdate"
     hsfa_set_provideAttributeValueUpdate :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> IO ()) -> IO ()
 
