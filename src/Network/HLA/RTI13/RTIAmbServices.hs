@@ -86,15 +86,10 @@ federateSaveBegun :: RTIAmbassador fedAmb -> IO ()
 federateSaveBegun rtiAmb = withRTIAmbassador rtiAmb
     (wrapExceptions . wrap_federateSaveBegun)
 
-    -- // 4.14
-    -- void federateSaveComplete ()
-    -- throw (
-    --   SaveNotInitiated,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
+federateSaveComplete :: RTIAmbassador fedAmb -> IO ()
+federateSaveComplete rtiAmb = withRTIAmbassador rtiAmb
+    (wrapExceptions . wrap_federateSaveComplete)
+
     -- void federateSaveNotComplete ()
     -- throw (
     --   SaveNotInitiated,
