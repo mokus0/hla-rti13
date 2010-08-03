@@ -66,17 +66,12 @@ registerFederationSynchronizationPoint rtiAmb label theTag mbSyncSet = do
                     Just syncSet -> withFederateHandleSet syncSet $ \syncSet ->
                         wrapExceptions (wrap_registerFederationSynchronizationPoint_with_syncSet rtiAmb label theTag syncSet)
 
-    -- // 4.9
-    -- void synchronizationPointAchieved (      
-    --   const char *label) // supplied C4
-    -- throw (
-    --   SynchronizationPointLabelWasNotAnnounced,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
+synchronizationPointAchieved :: RTIAmbassador fedAmb -> String -> IO ()
+synchronizationPointAchieved rtiAmb label =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        withCString label $ \label ->
+            wrapExceptions (wrap_synchronizationPointAchieved rtiAmb label)
+
     -- // 4.11
     -- void requestFederationSave (    
     --   const char     *label,   // supplied C4
