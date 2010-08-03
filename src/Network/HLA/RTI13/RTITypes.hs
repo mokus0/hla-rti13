@@ -276,23 +276,12 @@ parameterHandleValuePairSet_getValueLength phSet i =
 
 parameterHandleValuePairSet_getValue :: ParameterHandleValuePairSet -> ULong -> IO BS.ByteString
 parameterHandleValuePairSet_getValue phSet i = do
-    len <- parameterHandleValuePairSet_getValueLength phSet i
-    
     withParameterHandleValuePairSet phSet $ \phSet ->
         alloca $ \lenCell -> do
-            poke lenCell len
-            buf <- mallocBytes (fromIntegral len + 1)
-            wrapExceptions (wrap_ParameterHandleValuePairSet_getValue phSet i buf lenCell)
+            buf <- wrapExceptions (wrap_ParameterHandleValuePairSet_getValuePointer phSet i lenCell)
             
             len <- peek lenCell
-            buf <- reallocBytes buf (fromIntegral len)
-            BS.unsafePackMallocCString buf
-
-    --   virtual char *getValuePointer(
-    --     ULong i,
-    --     ULong&     valueLength) const
-    --     throw (
-    --       ArrayIndexOutOfBounds) = 0;
+            BS.packCStringLen (buf, fromIntegral len)
 
 parameterHandleValuePairSet_getTransportType :: ParameterHandleValuePairSet -> ULong -> IO TransportType
 parameterHandleValuePairSet_getTransportType phSet i = 
