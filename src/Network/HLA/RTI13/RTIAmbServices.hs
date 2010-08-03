@@ -5,8 +5,6 @@ module Network.HLA.RTI13.RTIAmbServices
 
 import Network.HLA.RTI13.BaseTypes
 import Network.HLA.RTI13.RTITypes
-import Network.HLA.RTI13.RTITypes.FFI
-import Network.HLA.RTI13.FedTime
 import Network.HLA.RTI13.RTIAmbServices.FFI as FFI
 import Network.HLA.RTI13.RTIException
 import Foreign hiding (newForeignPtr)
