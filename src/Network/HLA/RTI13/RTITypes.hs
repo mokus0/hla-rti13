@@ -372,17 +372,15 @@ parameterSetFactory_create count = do
 
 -- Region:
 
-    --   virtual ULong getRangeLowerBound(
-    --     ExtentIndex     theExtent,
-    --     DimensionHandle theDimension) const
-    --     throw (
-    --       ArrayIndexOutOfBounds) = 0;
-    -- 
-    --   virtual ULong getRangeUpperBound(
-    --     ExtentIndex     theExtent,
-    --     DimensionHandle theDimension) const
-    --     throw (
-    --       ArrayIndexOutOfBounds) = 0;
+getRangeLowerBound :: Region -> ExtentIndex -> DimensionHandle -> IO ULong
+getRangeLowerBound theRegion theExtent theDimension =
+    withRegion theRegion $ \theRegion -> 
+        wrapExceptions (wrap_Region_getRangeLowerBound theRegion theExtent theDimension)
+
+getRangeUpperBound :: Region -> ExtentIndex -> DimensionHandle -> IO ULong
+getRangeUpperBound theRegion theExtent theDimension =
+    withRegion theRegion $ \theRegion -> 
+        wrapExceptions (wrap_Region_getRangeUpperBound theRegion theExtent theDimension)
 
 setRangeLowerBound :: Region -> ExtentIndex -> DimensionHandle -> ULong -> IO ()
 setRangeLowerBound theRegion theExtent theDimension theLowerBound = 
