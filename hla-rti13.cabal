@@ -28,12 +28,15 @@ Flag debug
   default:              True
 
 Library
+  ghc-options:          -fwarn-unused-imports
   hs-source-dirs:       src
   exposed-modules:      Network.HLA.RTI13
                         Network.HLA.RTI13.BaseTypes
                         Network.HLA.RTI13.FederateAmbServices
                         Network.HLA.RTI13.FedTime
                         Network.HLA.RTI13.HsFederateAmbassador
+                        Network.HLA.RTI13.HsFederateAmbassador.FFI
+                        Network.HLA.RTI13.HsFederateAmbassador.Types
                         Network.HLA.RTI13.NullFederateAmbassador
                         Network.HLA.RTI13.RTIAmbServices
                         Network.HLA.RTI13.RTIAmbServices.FFI

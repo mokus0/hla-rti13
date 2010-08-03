@@ -1,40 +1,17 @@
-{-# LANGUAGE
-        ForeignFunctionInterface, GeneralizedNewtypeDeriving, TypeFamilies, FlexibleContexts, UndecidableInstances
-  #-}
 module Network.HLA.RTI13.HsFederateAmbassador where
 
 import Foreign hiding (newForeignPtr)
 import Foreign.Concurrent
 import Foreign.C.String
-import System.IO.Unsafe
 import Control.Monad.Reader
 import Control.Exception
 
+import Network.HLA.RTI13.HsFederateAmbassador.FFI
 import Network.HLA.RTI13.HsFederateAmbassador.FunPtrWrappers
-import Network.HLA.RTI13.BaseTypes
+import Network.HLA.RTI13.HsFederateAmbassador.Types
+
 import Network.HLA.RTI13.RTITypes
 import Network.HLA.RTI13.RTIException
-
--- |Parameterized over type of FedTime
-newtype HsFederateAmbassador t = HsFederateAmbassador (ForeignPtr (HsFederateAmbassador t))
-instance FedTimeImpl t => FederateAmbassador (HsFederateAmbassador t) where
-    type FedAmbTime (HsFederateAmbassador t) = t
-    withFederateAmbassador fedAmb action = 
-        withHsFederateAmbassador fedAmb (action . castPtr)
-
-withHsFederateAmbassador (HsFederateAmbassador fedAmb) = withForeignPtr fedAmb
-
-newtype FedHandlers t a = FedHandlers (ReaderT (HsFederateAmbassador t) IO a)
-    deriving (Functor, Monad, MonadIO, MonadReader (HsFederateAmbassador t))
-
-setHandlers :: HsFederateAmbassador t -> FedHandlers t () -> IO ()
-setHandlers fedAmb (FedHandlers handlers) = runReaderT handlers fedAmb
-
-foreign import ccall unsafe "hsFederateAmb.h wrap_new_HsFederateAmbassador"
-    wrap_new_HsFederateAmbassador :: FunPtr (FunPtr a -> IO ()) -> Ptr (Ptr RTIException) -> IO (Ptr (HsFederateAmbassador t))
-
-foreign import ccall "hsFederateAmb.h wrap_delete_HsFederateAmbassador"
-    wrap_delete_HsFederateAmbassador :: Ptr (HsFederateAmbassador t) -> Ptr (Ptr RTIException) -> IO ()
 
 newHsFederateAmbassador :: IO (HsFederateAmbassador t)
 newHsFederateAmbassador = do
@@ -49,9 +26,6 @@ newHsFederateAmbassador = do
 -- Federation Management Services --
 ------------------------------------
 
-foreign import ccall "hsFederateAmb.h hsfa_set_synchronizationPointRegistrationSucceeded"
-    hsfa_set_synchronizationPointRegistrationSucceeded :: Ptr (HsFederateAmbassador t) -> FunPtr (CString -> IO ()) -> IO ()
-
 onSynchronizationPointRegistrationSucceeded :: (String -> IO ()) -> FedHandlers t ()
 onSynchronizationPointRegistrationSucceeded synchronizationPointRegistrationSucceeded = do
     fedAmb <- ask
@@ -65,9 +39,6 @@ set_synchronizationPointRegistrationSucceeded fedAmb synchronizationPointRegistr
             synchronizationPointRegistrationSucceeded str
         hsfa_set_synchronizationPointRegistrationSucceeded fedAmb funPtr
 
-foreign import ccall "hsFederateAmb.h hsfa_set_synchronizationPointRegistrationFailed"
-    hsfa_set_synchronizationPointRegistrationFailed :: Ptr (HsFederateAmbassador t) -> FunPtr (CString -> IO ()) -> IO ()
-
 onSynchronizationPointRegistrationFailed :: (String -> IO ()) -> FedHandlers t ()
 onSynchronizationPointRegistrationFailed synchronizationPointRegistrationFailed = do
     fedAmb <- ask
@@ -80,9 +51,6 @@ set_synchronizationPointRegistrationFailed fedAmb synchronizationPointRegistrati
             str <- peekCString cstr
             synchronizationPointRegistrationFailed str
         hsfa_set_synchronizationPointRegistrationFailed fedAmb funPtr
-
-foreign import ccall "hsFederateAmb.h hsfa_set_announceSynchronizationPoint"
-    hsfa_set_announceSynchronizationPoint :: Ptr (HsFederateAmbassador t) -> FunPtr (CString -> CString -> IO ()) -> IO ()
 
 onAnnounceSynchronizationPoint :: (String -> String -> IO ()) -> FedHandlers t ()
 onAnnounceSynchronizationPoint announceSynchronizationPoint = do
@@ -98,9 +66,6 @@ set_announceSynchronizationPoint fedAmb announceSynchronizationPoint =
             announceSynchronizationPoint str1 str2
         hsfa_set_announceSynchronizationPoint fedAmb funPtr
 
-foreign import ccall "hsFederateAmb.h hsfa_set_federationSynchronized"
-    hsfa_set_federationSynchronized :: Ptr (HsFederateAmbassador t) -> FunPtr (CString -> IO ()) -> IO ()
-
 onFederationSynchronized :: (String -> IO ()) -> FedHandlers t ()
 onFederationSynchronized federationSynchronized = do
     fedAmb <- ask
@@ -113,9 +78,6 @@ set_federationSynchronized fedAmb federationSynchronized =
             str <- peekCString cstr
             federationSynchronized str
         hsfa_set_federationSynchronized fedAmb funPtr
-
-foreign import ccall "hsFederateAmb.h hsfa_set_initiateFederateSave"
-    hsfa_set_initiateFederateSave :: Ptr (HsFederateAmbassador t) -> FunPtr (CString -> IO ()) -> IO ()
 
 onInitiateFederateSave :: (String -> IO ()) -> FedHandlers t ()
 onInitiateFederateSave initiateFederateSave = do
@@ -131,9 +93,6 @@ set_initiateFederateSave fedAmb initiateFederateSave =
         hsfa_set_initiateFederateSave fedAmb funPtr
 
 
-foreign import ccall "hsFederateAmb.h hsfa_set_federationSaved"
-    hsfa_set_federationSaved :: Ptr (HsFederateAmbassador t) -> FunPtr (IO ()) -> IO ()
-
 onFederationSaved :: IO () -> FedHandlers t ()
 onFederationSaved federationSaved = do
     fedAmb <- ask
@@ -145,9 +104,6 @@ set_federationSaved fedAmb federationSaved =
         funPtr <- mkFunPtr_V federationSaved
         hsfa_set_federationSaved fedAmb funPtr
 
-foreign import ccall "hsFederateAmb.h hsfa_set_federationNotSaved"
-    hsfa_set_federationNotSaved :: Ptr (HsFederateAmbassador t) -> FunPtr (IO ()) -> IO ()
-
 onFederationNotSaved :: IO () -> FedHandlers t ()
 onFederationNotSaved federationNotSaved = do
     fedAmb <- ask
@@ -158,9 +114,6 @@ set_federationNotSaved fedAmb federationNotSaved =
     withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_V federationNotSaved
         hsfa_set_federationNotSaved fedAmb funPtr
-
-foreign import ccall "hsFederateAmb.h hsfa_set_requestFederationRestoreSucceeded"
-    hsfa_set_requestFederationRestoreSucceeded :: Ptr (HsFederateAmbassador t) -> FunPtr (CString -> IO ()) -> IO ()
 
 onRequestFederationRestoreSucceeded :: (String -> IO ()) -> FedHandlers t ()
 onRequestFederationRestoreSucceeded requestFederationRestoreSucceeded = do
@@ -175,9 +128,6 @@ set_requestFederationRestoreSucceeded fedAmb requestFederationRestoreSucceeded =
             requestFederationRestoreSucceeded str
         hsfa_set_requestFederationRestoreSucceeded fedAmb funPtr
 
-
-foreign import ccall "hsFederateAmb.h hsfa_set_requestFederationRestoreFailed"
-    hsfa_set_requestFederationRestoreFailed :: Ptr (HsFederateAmbassador t) -> FunPtr (CString -> CString -> IO ()) -> IO ()
 
 onRequestFederationRestoreFailed :: (String -> String -> IO ()) -> FedHandlers t ()
 onRequestFederationRestoreFailed requestFederationRestoreFailed = do
@@ -194,9 +144,6 @@ set_requestFederationRestoreFailed fedAmb requestFederationRestoreFailed =
         hsfa_set_requestFederationRestoreFailed fedAmb funPtr
 
 
-foreign import ccall "hsFederateAmb.h hsfa_set_federationRestoreBegun"
-    hsfa_set_federationRestoreBegun :: Ptr (HsFederateAmbassador t) -> FunPtr (IO ()) -> IO ()
-
 onFederationRestoreBegun :: IO () -> FedHandlers t ()
 onFederationRestoreBegun federationRestoreBegun = do
     fedAmb <- ask
@@ -207,9 +154,6 @@ set_federationRestoreBegun fedAmb federationRestoreBegun =
     withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_V federationRestoreBegun
         hsfa_set_federationRestoreBegun fedAmb funPtr
-
-foreign import ccall "hsFederateAmb.h hsfa_set_initiateFederateRestore"
-    hsfa_set_initiateFederateRestore :: Ptr (HsFederateAmbassador t) -> FunPtr (CString -> FederateHandle -> IO ()) -> IO ()
 
 onInitiateFederateRestore :: (String -> FederateHandle -> IO ()) -> FedHandlers t ()
 onInitiateFederateRestore initiateFederateRestore = do
@@ -225,9 +169,6 @@ set_initiateFederateRestore fedAmb initiateFederateRestore =
         hsfa_set_initiateFederateRestore fedAmb funPtr
 
 
-foreign import ccall "hsFederateAmb.h hsfa_set_federationRestored"
-    hsfa_set_federationRestored :: Ptr (HsFederateAmbassador t) -> FunPtr (IO ()) -> IO ()
-
 onFederationRestored :: IO () -> FedHandlers t ()
 onFederationRestored federationRestored = do
     fedAmb <- ask
@@ -238,9 +179,6 @@ set_federationRestored fedAmb federationRestored =
     withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_V federationRestored
         hsfa_set_federationRestored fedAmb funPtr
-
-foreign import ccall "hsFederateAmb.h hsfa_set_federationNotRestored"
-    hsfa_set_federationNotRestored :: Ptr (HsFederateAmbassador t) -> FunPtr (IO ()) -> IO ()
 
 onFederationNotRestored :: IO () -> FedHandlers t ()
 onFederationNotRestored federationNotRestored = do
@@ -258,9 +196,6 @@ set_federationNotRestored fedAmb federationNotRestored =
 -- Declaration Management --
 ----------------------------
 
-foreign import ccall "hsFederateAmb.h hsfa_set_turnInteractionsOn"
-    hsfa_set_turnInteractionsOn :: Ptr (HsFederateAmbassador t) -> FunPtr (InteractionClassHandle -> IO ()) -> IO ()
-
 onTurnInteractionsOn :: (InteractionClassHandle -> IO ()) -> FedHandlers t ()
 onTurnInteractionsOn turnInteractionsOn = do
     fedAmb <- ask
@@ -271,9 +206,6 @@ set_turnInteractionsOn fedAmb turnInteractionsOn =
     withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_IC_V turnInteractionsOn
         hsfa_set_turnInteractionsOn fedAmb funPtr
-
-foreign import ccall "hsFederateAmb.h hsfa_set_turnInteractionsOff"
-    hsfa_set_turnInteractionsOff :: Ptr (HsFederateAmbassador t) -> FunPtr (InteractionClassHandle -> IO ()) -> IO ()
 
 onTurnInteractionsOff :: (InteractionClassHandle -> IO ()) -> FedHandlers t ()
 onTurnInteractionsOff turnInteractionsOff = do
@@ -290,9 +222,6 @@ set_turnInteractionsOff fedAmb turnInteractionsOff =
 -- Object Management --
 -----------------------
 
-foreign import ccall "hsFederateAmb.h hsfa_set_startRegistrationForObjectClass"
-    hsfa_set_startRegistrationForObjectClass :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectClassHandle -> IO ()) -> IO ()
-
 onStartRegistrationForObjectClass :: (ObjectClassHandle -> IO ()) -> FedHandlers t ()
 onStartRegistrationForObjectClass startRegistrationForObjectClass = do
     fedAmb <- ask
@@ -305,9 +234,6 @@ set_startRegistrationForObjectClass fedAmb startRegistrationForObjectClass =
         hsfa_set_startRegistrationForObjectClass fedAmb funPtr
 
 
-foreign import ccall "hsFederateAmb.h hsfa_set_stopRegistrationForObjectClass"
-    hsfa_set_stopRegistrationForObjectClass :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectClassHandle -> IO ()) -> IO ()
-
 onStopRegistrationForObjectClass :: (ObjectClassHandle -> IO ()) -> FedHandlers t ()
 onStopRegistrationForObjectClass stopRegistrationForObjectClass = do
     fedAmb <- ask
@@ -319,9 +245,6 @@ set_stopRegistrationForObjectClass fedAmb stopRegistrationForObjectClass =
         funPtr <- mkFunPtr_OC_V stopRegistrationForObjectClass
         hsfa_set_stopRegistrationForObjectClass fedAmb funPtr
 
-
-foreign import ccall "hsFederateAmb.h hsfa_set_discoverObjectInstance"
-    hsfa_set_discoverObjectInstance :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> ObjectClassHandle -> CString -> IO ()) -> IO ()
 
 onDiscoverObjectInstance :: (ObjectHandle -> ObjectClassHandle -> String -> IO ()) -> FedHandlers t ()
 onDiscoverObjectInstance discoverObjectInstance = do
@@ -336,9 +259,6 @@ set_discoverObjectInstance fedAmb discoverObjectInstance =
             evaluate (length theName)
             discoverObjectInstance theObject theObjectHandle theName
         hsfa_set_discoverObjectInstance fedAmb funPtr
-
-foreign import ccall "hsFederateAmb.h hsfa_set_reflectAttributeValues"
-    hsfa_set_reflectAttributeValues :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleValuePairSet -> Ptr t -> CString -> UniqueID -> FederateHandle -> IO ()) -> IO ()
 
 onReflectAttributeValues :: FedTimeImpl t => (ObjectHandle -> AttributeHandleValuePairSet -> String -> Maybe (FedTimeRepr t, EventRetractionHandle) -> IO ()) -> FedHandlers t ()
 onReflectAttributeValues reflectAttributeValues = do
@@ -359,9 +279,6 @@ set_reflectAttributeValues fedAmb reflectAttributeValues =
                     reflectAttributeValues theObject theAttrs theTag (Just (theTime, EventRetractionHandle theHandleSerial theHandleFed))
         hsfa_set_reflectAttributeValues fedAmb funPtr
 
-foreign import ccall "hsFederateAmb.h hsfa_set_receiveInteraction"
-    hsfa_set_receiveInteraction :: Ptr (HsFederateAmbassador t) -> FunPtr (InteractionClassHandle -> Ptr ParameterHandleValuePairSet -> Ptr t -> CString -> UniqueID -> FederateHandle -> IO ()) -> IO ()
-
 onReceiveInteraction :: FedTimeImpl t => (InteractionClassHandle -> ParameterHandleValuePairSet -> String -> Maybe (FedTimeRepr t, EventRetractionHandle) -> IO ()) -> FedHandlers t ()
 onReceiveInteraction receiveInteraction = do
     fedAmb <- ask
@@ -381,9 +298,6 @@ set_receiveInteraction fedAmb receiveInteraction =
                     receiveInteraction theInteraction theParameters theTag $ Just (theTime, EventRetractionHandle theHandleSerial theHandleFed)
         hsfa_set_receiveInteraction fedAmb funPtr
 
-foreign import ccall "hsFederateAmb.h hsfa_set_removeObjectInstance"
-    hsfa_set_removeObjectInstance :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr t -> CString -> UniqueID -> FederateHandle -> IO ()) -> IO ()
-
 onRemoveObjectInstance :: FedTimeImpl t => (ObjectHandle -> String -> Maybe (FedTimeRepr t, EventRetractionHandle) -> IO ()) -> FedHandlers t ()
 onRemoveObjectInstance removeObjectInstance = do
     fedAmb <- ask
@@ -402,9 +316,6 @@ set_removeObjectInstance fedAmb removeObjectInstance =
         
         hsfa_set_removeObjectInstance fedAmb funPtr
 
-foreign import ccall "hsFederateAmb.h hsfa_set_attributesInScope"
-    hsfa_set_attributesInScope :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> IO ()) -> IO ()
-
 onAttributesInScope :: (ObjectHandle -> AttributeHandleSet -> IO ()) -> FedHandlers t ()
 onAttributesInScope attributesInScope = do
     fedAmb <- ask
@@ -417,9 +328,6 @@ set_attributesInScope fedAmb attributesInScope =
             theAttrs <- newForeignPtr_ theAttrs
             attributesInScope theObject (AttributeHandleSet theAttrs)
         hsfa_set_attributesInScope fedAmb funPtr
-
-foreign import ccall "hsFederateAmb.h hsfa_set_attributesOutOfScope"
-    hsfa_set_attributesOutOfScope :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> IO ()) -> IO ()
 
 onAttributesOutOfScope :: (ObjectHandle -> AttributeHandleSet -> IO ()) -> FedHandlers t ()
 onAttributesOutOfScope attributesOutOfScope = do
@@ -435,9 +343,6 @@ set_attributesOutOfScope fedAmb attributesOutOfScope =
         hsfa_set_attributesOutOfScope fedAmb funPtr
 
 
-foreign import ccall "hsFederateAmb.h hsfa_set_provideAttributeValueUpdate"
-    hsfa_set_provideAttributeValueUpdate :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> IO ()) -> IO ()
-
 onProvideAttributeValueUpdate :: (ObjectHandle -> AttributeHandleSet -> IO ()) -> FedHandlers t ()
 onProvideAttributeValueUpdate provideAttributeValueUpdate = do
     fedAmb <- ask
@@ -451,9 +356,6 @@ set_provideAttributeValueUpdate fedAmb provideAttributeValueUpdate =
             provideAttributeValueUpdate theObject (AttributeHandleSet theAttrs)
         hsfa_set_provideAttributeValueUpdate fedAmb funPtr
 
-foreign import ccall "hsFederateAmb.h hsfa_set_turnUpdatesOnForObjectInstance"
-    hsfa_set_turnUpdatesOnForObjectInstance :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> IO ()) -> IO ()
-
 onTurnUpdatesOnForObjectInstance :: (ObjectHandle -> AttributeHandleSet -> IO ()) -> FedHandlers t ()
 onTurnUpdatesOnForObjectInstance turnUpdatesOnForObjectInstance = do
     fedAmb <- ask
@@ -466,9 +368,6 @@ set_turnUpdatesOnForObjectInstance fedAmb turnUpdatesOnForObjectInstance =
             theAttrs <- newForeignPtr_ theAttrs
             turnUpdatesOnForObjectInstance theObject (AttributeHandleSet theAttrs)
         hsfa_set_turnUpdatesOnForObjectInstance fedAmb funPtr
-
-foreign import ccall "hsFederateAmb.h hsfa_set_turnUpdatesOffForObjectInstance"
-    hsfa_set_turnUpdatesOffForObjectInstance :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> IO ()) -> IO ()
 
 onTurnUpdatesOffForObjectInstance :: (ObjectHandle -> AttributeHandleSet -> IO ()) -> FedHandlers t ()
 onTurnUpdatesOffForObjectInstance turnUpdatesOffForObjectInstance = do
@@ -488,9 +387,6 @@ set_turnUpdatesOffForObjectInstance fedAmb turnUpdatesOffForObjectInstance =
 -- Ownership Management Services --
 -----------------------------------
 
-foreign import ccall "hsFederateAmb.h hsfa_set_requestAttributeOwnershipAssumption"
-    hsfa_set_requestAttributeOwnershipAssumption :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> CString -> IO ()) -> IO ()
-
 onRequestAttributeOwnershipAssumption :: (ObjectHandle -> AttributeHandleSet -> String -> IO ()) -> FedHandlers t ()
 onRequestAttributeOwnershipAssumption requestAttributeOwnershipAssumption = do
     fedAmb <- ask
@@ -505,9 +401,6 @@ set_requestAttributeOwnershipAssumption fedAmb requestAttributeOwnershipAssumpti
             requestAttributeOwnershipAssumption theObject (AttributeHandleSet theAttrs) theTag
         hsfa_set_requestAttributeOwnershipAssumption fedAmb funPtr
 
-foreign import ccall "hsFederateAmb.h hsfa_set_attributeOwnershipDivestitureNotification"
-    hsfa_set_attributeOwnershipDivestitureNotification :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> IO ()) -> IO ()
-
 onAttributeOwnershipDivestitureNotification :: (ObjectHandle -> AttributeHandleSet -> IO ()) -> FedHandlers t ()
 onAttributeOwnershipDivestitureNotification attributeOwnershipDivestitureNotification = do
     fedAmb <- ask
@@ -520,9 +413,6 @@ set_attributeOwnershipDivestitureNotification fedAmb attributeOwnershipDivestitu
             theAttrs <- newForeignPtr_ theAttrs
             attributeOwnershipDivestitureNotification theObject (AttributeHandleSet theAttrs)
         hsfa_set_attributeOwnershipDivestitureNotification fedAmb funPtr
-
-foreign import ccall "hsFederateAmb.h hsfa_set_attributeOwnershipAcquisitionNotification"
-    hsfa_set_attributeOwnershipAcquisitionNotification :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> IO ()) -> IO ()
 
 onAttributeOwnershipAcquisitionNotification :: (ObjectHandle -> AttributeHandleSet -> IO ()) -> FedHandlers t ()
 onAttributeOwnershipAcquisitionNotification attributeOwnershipAcquisitionNotification = do
@@ -537,9 +427,6 @@ set_attributeOwnershipAcquisitionNotification fedAmb attributeOwnershipAcquisiti
             attributeOwnershipAcquisitionNotification theObject (AttributeHandleSet theAttrs)
         hsfa_set_attributeOwnershipAcquisitionNotification fedAmb funPtr
 
-foreign import ccall "hsFederateAmb.h hsfa_set_attributeOwnershipUnavailable"
-    hsfa_set_attributeOwnershipUnavailable :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> IO ()) -> IO ()
-
 onAttributeOwnershipUnavailable :: (ObjectHandle -> AttributeHandleSet -> IO ()) -> FedHandlers t ()
 onAttributeOwnershipUnavailable attributeOwnershipUnavailable = do
     fedAmb <- ask
@@ -552,9 +439,6 @@ set_attributeOwnershipUnavailable fedAmb attributeOwnershipUnavailable =
             theAttrs <- newForeignPtr_ theAttrs
             attributeOwnershipUnavailable theObject (AttributeHandleSet theAttrs)
         hsfa_set_attributeOwnershipUnavailable fedAmb funPtr
-
-foreign import ccall "hsFederateAmb.h hsfa_set_requestAttributeOwnershipRelease"
-    hsfa_set_requestAttributeOwnershipRelease :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> CString -> IO ()) -> IO ()
 
 onRequestAttributeOwnershipRelease :: (ObjectHandle -> AttributeHandleSet -> String -> IO ()) -> FedHandlers t ()
 onRequestAttributeOwnershipRelease requestAttributeOwnershipRelease = do
@@ -571,9 +455,6 @@ set_requestAttributeOwnershipRelease fedAmb requestAttributeOwnershipRelease =
         hsfa_set_requestAttributeOwnershipRelease fedAmb funPtr
 
 
-foreign import ccall "hsFederateAmb.h hsfa_set_confirmAttributeOwnershipAcquisitionCancellation"
-    hsfa_set_confirmAttributeOwnershipAcquisitionCancellation :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> IO ()) -> IO ()
-
 onConfirmAttributeOwnershipAcquisitionCancellation :: (ObjectHandle -> AttributeHandleSet -> IO ()) -> FedHandlers t ()
 onConfirmAttributeOwnershipAcquisitionCancellation confirmAttributeOwnershipAcquisitionCancellation = do
     fedAmb <- ask
@@ -587,9 +468,6 @@ set_confirmAttributeOwnershipAcquisitionCancellation fedAmb confirmAttributeOwne
             confirmAttributeOwnershipAcquisitionCancellation theObject (AttributeHandleSet theAttrs)
         hsfa_set_confirmAttributeOwnershipAcquisitionCancellation fedAmb funPtr
 
-foreign import ccall "hsFederateAmb.h hsfa_set_informAttributeOwnership"
-    hsfa_set_informAttributeOwnership :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> AttributeHandle -> FederateHandle -> IO ()) -> IO ()
-
 onInformAttributeOwnership :: (ObjectHandle -> AttributeHandle -> FederateHandle -> IO ()) -> FedHandlers t ()
 onInformAttributeOwnership informAttributeOwnership = do
     fedAmb <- ask
@@ -601,9 +479,6 @@ set_informAttributeOwnership fedAmb informAttributeOwnership =
         funPtr <- mkFunPtr_O_A_F_V informAttributeOwnership
         hsfa_set_informAttributeOwnership fedAmb funPtr
 
-foreign import ccall "hsFederateAmb.h hsfa_set_attributeIsNotOwned"
-    hsfa_set_attributeIsNotOwned :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> AttributeHandle -> IO ()) -> IO ()
-
 onAttributeIsNotOwned :: (ObjectHandle -> AttributeHandle -> IO ()) -> FedHandlers t ()
 onAttributeIsNotOwned attributeIsNotOwned = do
     fedAmb <- ask
@@ -614,9 +489,6 @@ set_attributeIsNotOwned fedAmb attributeIsNotOwned =
     withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_O_A_V attributeIsNotOwned
         hsfa_set_attributeIsNotOwned fedAmb funPtr
-
-foreign import ccall "hsFederateAmb.h hsfa_set_attributeOwnedByRTI"
-    hsfa_set_attributeOwnedByRTI :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> AttributeHandle -> IO ()) -> IO ()
 
 onAttributeOwnedByRTI :: (ObjectHandle -> AttributeHandle -> IO ()) -> FedHandlers t ()
 onAttributeOwnedByRTI attributeOwnedByRTI = do
@@ -634,9 +506,6 @@ set_attributeOwnedByRTI fedAmb attributeOwnedByRTI =
 -- Time Management --
 ---------------------
 
-foreign import ccall "hsFederateAmb.h hsfa_set_timeRegulationEnabled"
-    hsfa_set_timeRegulationEnabled :: Ptr (HsFederateAmbassador t) -> FunPtr (Ptr t -> IO ()) -> IO ()
-
 onTimeRegulationEnabled :: FedTimeImpl t => (FedTimeRepr t -> IO ()) -> FedHandlers t ()
 onTimeRegulationEnabled timeRegulationEnabled = do
     fedAmb <- ask
@@ -649,9 +518,6 @@ set_timeRegulationEnabled fedAmb timeRegulationEnabled =
             someFedTime <- importFedTime ftPtr
             timeRegulationEnabled someFedTime
         hsfa_set_timeRegulationEnabled fedAmb funPtr
-
-foreign import ccall "hsFederateAmb.h hsfa_set_timeConstrainedEnabled"
-    hsfa_set_timeConstrainedEnabled :: Ptr (HsFederateAmbassador t) -> FunPtr (Ptr t -> IO ()) -> IO ()
 
 onTimeConstrainedEnabled :: FedTimeImpl t => (FedTimeRepr t -> IO ()) -> FedHandlers t ()
 onTimeConstrainedEnabled timeConstrainedEnabled = do
@@ -666,9 +532,6 @@ set_timeConstrainedEnabled fedAmb timeConstrainedEnabled =
             timeConstrainedEnabled someFedTime
         hsfa_set_timeConstrainedEnabled fedAmb funPtr
 
-foreign import ccall "hsFederateAmb.h hsfa_set_timeAdvanceGrant"
-    hsfa_set_timeAdvanceGrant :: Ptr (HsFederateAmbassador t) -> FunPtr (Ptr t -> IO ()) -> IO ()
-
 onTimeAdvanceGrant :: FedTimeImpl t => (FedTimeRepr t -> IO ()) -> FedHandlers t ()
 onTimeAdvanceGrant timeAdvanceGrant = do
     fedAmb <- ask
@@ -681,9 +544,6 @@ set_timeAdvanceGrant fedAmb timeAdvanceGrant =
             someFedTime <- importFedTime ftPtr
             timeAdvanceGrant someFedTime
         hsfa_set_timeAdvanceGrant fedAmb funPtr
-
-foreign import ccall "hsFederateAmb.h hsfa_set_requestRetraction"
-    hsfa_set_requestRetraction :: Ptr (HsFederateAmbassador t) -> FunPtr (UniqueID -> FederateHandle -> IO ()) -> IO ()
 
 onRequestRetraction :: (EventRetractionHandle -> IO ()) -> FedHandlers t ()
 onRequestRetraction requestRetraction = do
