@@ -578,6 +578,22 @@ set_attributeOwnershipAcquisitionNotification fedAmb attributeOwnershipAcquisiti
             attributeOwnershipAcquisitionNotification theObject (AttributeHandleSet theAttrs)
         hsfa_set_attributeOwnershipAcquisitionNotification fedAmb funPtr
 
+foreign import ccall "hsFederateAmb.h hsfa_set_attributeOwnershipUnavailable"
+    hsfa_set_attributeOwnershipUnavailable :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> IO ()) -> IO ()
+
+onAttributeOwnershipUnavailable :: (ObjectHandle -> AttributeHandleSet -> IO ()) -> FedHandlers t ()
+onAttributeOwnershipUnavailable attributeOwnershipUnavailable = do
+    fedAmb <- ask
+    liftIO (set_attributeOwnershipUnavailable fedAmb attributeOwnershipUnavailable)
+
+set_attributeOwnershipUnavailable :: HsFederateAmbassador t -> (ObjectHandle -> AttributeHandleSet -> IO ()) -> IO ()
+set_attributeOwnershipUnavailable fedAmb attributeOwnershipUnavailable = 
+    withHsFederateAmbassador fedAmb $ \fedAmb -> do
+        funPtr <- mkObjectPtrFunPtr $ \theObject theAttrs -> do
+            theAttrs <- newForeignPtr_ theAttrs
+            attributeOwnershipUnavailable theObject (AttributeHandleSet theAttrs)
+        hsfa_set_attributeOwnershipUnavailable fedAmb funPtr
+
 ---------------------
 -- Time Management --
 ---------------------
