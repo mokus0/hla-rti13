@@ -67,6 +67,9 @@ foreign import ccall unsafe "wrap/RTIambServices.h wrap_federateSaveBegun"
 foreign import ccall unsafe "wrap/RTIambServices.h wrap_federateSaveComplete"
     wrap_federateSaveComplete :: Ptr (RTIAmbassador fedAmb) -> Ptr (Ptr RTIException) -> IO ()
 
+foreign import ccall unsafe "wrap/RTIambServices.h wrap_federateSaveNotComplete"
+    wrap_federateSaveNotComplete :: Ptr (RTIAmbassador fedAmb) -> Ptr (Ptr RTIException) -> IO ()
+
 -------------------------------------
 -- Declaration Management Services --
 -------------------------------------
