@@ -94,32 +94,19 @@ federateSaveNotComplete :: RTIAmbassador fedAmb -> IO ()
 federateSaveNotComplete rtiAmb = withRTIAmbassador rtiAmb
     (wrapExceptions . wrap_federateSaveNotComplete)
 
-    -- // 4.16
-    -- void requestFederationRestore (    
-    --   const char *label) // supplied C4
-    -- throw (
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
-    -- // 4.20
-    -- void federateRestoreComplete ()
-    --   throw (
-    --     RestoreNotRequested,
-    --     FederateNotExecutionMember,
-    --     ConcurrentAccessAttempted,
-    --     SaveInProgress,
-    --     RTIinternalError);
-    -- 
-    -- void federateRestoreNotComplete ()
-    -- throw (
-    --   RestoreNotRequested,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RTIinternalError);
+requestFederationRestore :: RTIAmbassador fedAmb -> String -> IO ()
+requestFederationRestore rtiAmb label =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        withCString label $ \label ->
+            wrapExceptions (wrap_requestFederationRestore rtiAmb label)
+
+federateRestoreComplete :: RTIAmbassador fedAmb -> IO ()
+federateRestoreComplete rtiAmb = withRTIAmbassador rtiAmb
+    (wrapExceptions . wrap_federateRestoreComplete)
+
+federateRestoreNotComplete :: RTIAmbassador fedAmb -> IO ()
+federateRestoreNotComplete rtiAmb = withRTIAmbassador rtiAmb
+    (wrapExceptions . wrap_federateRestoreNotComplete)
 
 -------------------------------------
 -- Declaration Management Services --
