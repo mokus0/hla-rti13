@@ -10,7 +10,52 @@
 
 class HsFederateAmbassador;
 typedef void (*setter)(HsFederateAmbassador *, HsFunPtr *);
-extern setter setters[];
+
+// this array is scanned through when constructing and destructing HsFederateAmbassador.
+// all function pointer setters should be here, otherwise fields will not be properly
+// initialized or finalized, and there will almost certainly be a segfault as a result.
+static setter setters[] =
+{   (setter) &hsfa_set_synchronizationPointRegistrationSucceeded,
+    (setter) &hsfa_set_synchronizationPointRegistrationFailed,
+    (setter) &hsfa_set_announceSynchronizationPoint,
+    (setter) &hsfa_set_federationSynchronized,
+    (setter) &hsfa_set_initiateFederateSave,
+    (setter) &hsfa_set_federationSaved,
+    (setter) &hsfa_set_federationNotSaved,
+    (setter) &hsfa_set_requestFederationRestoreSucceeded,
+    (setter) &hsfa_set_requestFederationRestoreFailed,
+    (setter) &hsfa_set_federationRestoreBegun,
+    (setter) &hsfa_set_initiateFederateRestore,
+    (setter) &hsfa_set_federationRestored,
+    (setter) &hsfa_set_federationNotRestored,
+    (setter) &hsfa_set_startRegistrationForObjectClass,
+    (setter) &hsfa_set_stopRegistrationForObjectClass,
+    (setter) &hsfa_set_turnUpdatesOnForObjectInstance,
+    (setter) &hsfa_set_turnUpdatesOffForObjectInstance,
+    (setter) &hsfa_set_requestAttributeOwnershipAssumption,
+    (setter) &hsfa_set_attributeOwnershipDivestitureNotification,
+    (setter) &hsfa_set_attributeOwnershipAcquisitionNotification,
+    (setter) &hsfa_set_attributeOwnershipUnavailable,
+    (setter) &hsfa_set_requestAttributeOwnershipRelease,
+    (setter) &hsfa_set_confirmAttributeOwnershipAcquisitionCancellation,
+    (setter) &hsfa_set_informAttributeOwnership,
+    (setter) &hsfa_set_attributeIsNotOwned,
+    (setter) &hsfa_set_attributeOwnedByRTI,
+    (setter) &hsfa_set_discoverObjectInstance,
+    (setter) &hsfa_set_timeRegulationEnabled,
+    (setter) &hsfa_set_timeConstrainedEnabled,
+    (setter) &hsfa_set_timeAdvanceGrant,
+    (setter) &hsfa_set_requestRetraction,
+    (setter) &hsfa_set_turnInteractionsOn,
+    (setter) &hsfa_set_turnInteractionsOff,
+    (setter) &hsfa_set_removeObjectInstance,
+    (setter) &hsfa_set_attributesInScope,
+    (setter) &hsfa_set_attributesOutOfScope,
+    (setter) &hsfa_set_provideAttributeValueUpdate,
+    (setter) &hsfa_set_reflectAttributeValues,
+    (setter) &hsfa_set_receiveInteraction,
+    NULL
+};
 
 class HsFederateAmbassador : public rti13::FederateAmbassador {
 public:
@@ -702,48 +747,3 @@ ccall void hsfa_set_reflectAttributeValues(void *fedAmb, ULong_to_ConstPtrX3_to_
 ccall void hsfa_set_receiveInteraction(void *fedAmb, ULong_to_ConstPtrX3_to_ULongX2_to_Void theFunPtr) {
     setFunPtr(hsReceiveInteraction)
 }
-
-// this array is scanned through when constructing and destructing HsFederateAmbassador.
-// all function pointer setters should be here.
-setter setters[] =
-{   (setter) &hsfa_set_synchronizationPointRegistrationSucceeded,
-    (setter) &hsfa_set_synchronizationPointRegistrationFailed,
-    (setter) &hsfa_set_announceSynchronizationPoint,
-    (setter) &hsfa_set_federationSynchronized,
-    (setter) &hsfa_set_initiateFederateSave,
-    (setter) &hsfa_set_federationSaved,
-    (setter) &hsfa_set_federationNotSaved,
-    (setter) &hsfa_set_requestFederationRestoreSucceeded,
-    (setter) &hsfa_set_requestFederationRestoreFailed,
-    (setter) &hsfa_set_federationRestoreBegun,
-    (setter) &hsfa_set_initiateFederateRestore,
-    (setter) &hsfa_set_federationRestored,
-    (setter) &hsfa_set_federationNotRestored,
-    (setter) &hsfa_set_startRegistrationForObjectClass,
-    (setter) &hsfa_set_stopRegistrationForObjectClass,
-    (setter) &hsfa_set_turnUpdatesOnForObjectInstance,
-    (setter) &hsfa_set_turnUpdatesOffForObjectInstance,
-    (setter) &hsfa_set_requestAttributeOwnershipAssumption,
-    (setter) &hsfa_set_attributeOwnershipDivestitureNotification,
-    (setter) &hsfa_set_attributeOwnershipAcquisitionNotification,
-    (setter) &hsfa_set_attributeOwnershipUnavailable,
-    (setter) &hsfa_set_requestAttributeOwnershipRelease,
-    (setter) &hsfa_set_confirmAttributeOwnershipAcquisitionCancellation,
-    (setter) &hsfa_set_informAttributeOwnership,
-    (setter) &hsfa_set_attributeIsNotOwned,
-    (setter) &hsfa_set_attributeOwnedByRTI,
-    (setter) &hsfa_set_discoverObjectInstance,
-    (setter) &hsfa_set_timeRegulationEnabled,
-    (setter) &hsfa_set_timeConstrainedEnabled,
-    (setter) &hsfa_set_timeAdvanceGrant,
-    (setter) &hsfa_set_requestRetraction,
-    (setter) &hsfa_set_turnInteractionsOn,
-    (setter) &hsfa_set_turnInteractionsOff,
-    (setter) &hsfa_set_removeObjectInstance,
-    (setter) &hsfa_set_attributesInScope,
-    (setter) &hsfa_set_attributesOutOfScope,
-    (setter) &hsfa_set_provideAttributeValueUpdate,
-    (setter) &hsfa_set_reflectAttributeValues,
-    (setter) &hsfa_set_receiveInteraction,
-    NULL
-};
