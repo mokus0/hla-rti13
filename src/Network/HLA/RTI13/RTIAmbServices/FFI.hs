@@ -212,6 +212,12 @@ foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_nextEventRequestAvailabl
 foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_flushQueueRequest"
     wrap_flushQueueRequest :: Ptr (RTIAmbassador fedAmb) -> Ptr (FedAmbTime fedAmb) -> Ptr (Ptr RTIException) -> IO ()
 
+foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_enableAsynchronousDelivery"
+    wrap_enableAsynchronousDelivery :: Ptr (RTIAmbassador fedAmb) -> Ptr (Ptr RTIException) -> IO ()
+
+foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_disableAsynchronousDelivery"
+    wrap_disableAsynchronousDelivery :: Ptr (RTIAmbassador fedAmb) -> Ptr (Ptr RTIException) -> IO ()
+
 ----------------------------------
 -- Data Distribution Management --
 ----------------------------------

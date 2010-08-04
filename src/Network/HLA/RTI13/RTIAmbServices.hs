@@ -365,26 +365,16 @@ flushQueueRequest rtiAmb theTime =
         withFedTime_ theTime $ \theTime -> 
             wrapExceptions (wrap_flushQueueRequest rtiAmb theTime)
 
-    -- // 8.14
-    -- void enableAsynchronousDelivery()
-    --   throw (
-    --     AsynchronousDeliveryAlreadyEnabled,
-    --     FederateNotExecutionMember,
-    --     ConcurrentAccessAttempted,
-    --     SaveInProgress,
-    --     RestoreInProgress,
-    --     RTIinternalError);
-    -- 
-    -- // 8.15
-    -- void disableAsynchronousDelivery()
-    --   throw (
-    --     AsynchronousDeliveryAlreadyDisabled,
-    --     FederateNotExecutionMember,
-    --     ConcurrentAccessAttempted,
-    --     SaveInProgress,
-    --     RestoreInProgress,
-    --     RTIinternalError);
-    -- 
+enableAsynchronousDelivery :: RTIAmbassador fedAmb -> IO ()
+enableAsynchronousDelivery rtiAmb = 
+    withRTIAmbassador rtiAmb
+        (wrapExceptions . wrap_enableAsynchronousDelivery)
+
+disableAsynchronousDelivery :: RTIAmbassador fedAmb -> IO ()
+disableAsynchronousDelivery rtiAmb = 
+    withRTIAmbassador rtiAmb
+        (wrapExceptions . wrap_disableAsynchronousDelivery)
+
     -- // 8.16
     -- void queryLBTS (
     --   FedTime& theTime) // returned C5
