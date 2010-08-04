@@ -220,22 +220,12 @@ localDeleteObjectInstance rtiAmb theObject =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (wrap_localDeleteObjectInstance rtiAmb theObject)
 
-    -- // 6.11
-    -- void changeAttributeTransportationType (
-    --         ObjectHandle             theObject,     // supplied C1
-    --   const AttributeHandleSet&      theAttributes, // supplied C4
-    --         TransportationHandle     theType)       // supplied C1
-    -- throw (
-    --   ObjectNotKnown,
-    --   AttributeNotDefined,
-    --   AttributeNotOwned,
-    --   InvalidTransportationHandle,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
+changeAttributeTransportationType :: RTIAmbassador fedAmb -> ObjectHandle -> AttributeHandleSet -> TransportationHandle -> IO ()
+changeAttributeTransportationType rtiAmb theObject theAttributes theType =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        withAttributeHandleSet theAttributes $ \theAttributes ->
+            wrapExceptions (wrap_changeAttributeTransportationType rtiAmb theObject theAttributes theType)
+
     -- // 6.12
     -- void changeInteractionTransportationType (
     --   InteractionClassHandle theClass, // supplied C1
