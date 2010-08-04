@@ -297,19 +297,10 @@ queryAttributeOwnership rtiAmb theObject theAttributes =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (wrap_queryAttributeOwnership rtiAmb theObject theAttributes)
 
-    -- // 7.17
-    -- Boolean                          // returned C3
-    -- isAttributeOwnedByFederate (
-    --   ObjectHandle    theObject,     // supplied C1
-    --   AttributeHandle theAttribute)  // supplied C1
-    -- throw (
-    --   ObjectNotKnown,
-    --   AttributeNotDefined,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
+isAttributeOwnedByFederate :: RTIAmbassador fedAmb -> ObjectHandle -> AttributeHandle -> IO Bool
+isAttributeOwnedByFederate rtiAmb theObject theAttributes =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        wrapExceptions (wrap_isAttributeOwnedByFederate rtiAmb theObject theAttributes)
 
 ------------------------------
 -- Time Management Services --
