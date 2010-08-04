@@ -206,6 +206,9 @@ foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_timeAdvanceRequestAvaila
 foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_nextEventRequest"
     wrap_nextEventRequest :: Ptr (RTIAmbassador fedAmb) -> Ptr (FedAmbTime fedAmb) -> Ptr (Ptr RTIException) -> IO ()
 
+foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_nextEventRequestAvailable"
+    wrap_nextEventRequestAvailable :: Ptr (RTIAmbassador fedAmb) -> Ptr (FedAmbTime fedAmb) -> Ptr (Ptr RTIException) -> IO ()
+
 ----------------------------------
 -- Data Distribution Management --
 ----------------------------------
