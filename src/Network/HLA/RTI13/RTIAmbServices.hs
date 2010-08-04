@@ -253,22 +253,13 @@ unconditionalAttributeOwnershipDivestiture rtiAmb theObject theAttributes =
         withAttributeHandleSet theAttributes $ \theAttributes ->
             wrapExceptions (wrap_unconditionalAttributeOwnershipDivestiture rtiAmb theObject theAttributes)
 
-    -- // 7.3
-    -- void negotiatedAttributeOwnershipDivestiture (
-    --         ObjectHandle                  theObject,     // supplied C1
-    --   const AttributeHandleSet&           theAttributes, // supplied C4
-    --   const char                         *theTag)        // supplied C4
-    -- throw (
-    --   ObjectNotKnown,
-    --   AttributeNotDefined,
-    --   AttributeNotOwned,
-    --   AttributeAlreadyBeingDivested,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
+negotiatedAttributeOwnershipDivestiture :: RTIAmbassador fedAmb -> ObjectHandle -> AttributeHandleSet -> String -> IO ()
+negotiatedAttributeOwnershipDivestiture rtiAmb theObject theAttributes theTag =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        withAttributeHandleSet theAttributes $ \theAttributes ->
+            withCString theTag $ \theTag ->
+                wrapExceptions (wrap_negotiatedAttributeOwnershipDivestiture rtiAmb theObject theAttributes theTag)
+
     -- // 7.7
     -- void attributeOwnershipAcquisition (
     --         ObjectHandle        theObject,         // supplied C1
