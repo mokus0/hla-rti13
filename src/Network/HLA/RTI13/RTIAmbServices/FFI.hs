@@ -114,6 +114,12 @@ foreign import ccall "wrap/RTIAmbServices.h wrap_unsubscribeInteractionClass"
 foreign import ccall "wrap/RTIAmbServices.h wrap_registerObjectInstance_withName"
     wrap_registerObjectInstance_withName :: Ptr (RTIAmbassador fedAmb) -> ObjectClassHandle -> CString -> Ptr (Ptr RTIException) -> IO ObjectHandle
 
+foreign import ccall "wrap/RTIAmbServices.h wrap_updateAttributeValuesAtTime"
+    wrap_updateAttributeValuesAtTime :: Ptr (RTIAmbassador fedAmb) -> ObjectHandle -> Ptr AttributeHandleValuePairSet -> Ptr (FedAmbTime fedAmb) -> CString -> Ptr UniqueID -> Ptr FederateHandle -> Ptr (Ptr RTIException) -> IO ()
+
+foreign import ccall "wrap/RTIAmbServices.h wrap_updateAttributeValues"
+    wrap_updateAttributeValues :: Ptr (RTIAmbassador fedAmb) -> ObjectHandle -> Ptr AttributeHandleValuePairSet -> CString -> Ptr (Ptr RTIException) -> IO ()
+
 foreign import ccall "wrap/RTIAmbServices.h wrap_registerObjectInstance"
     wrap_registerObjectInstance :: Ptr (RTIAmbassador fedAmb) -> ObjectClassHandle -> Ptr (Ptr RTIException) -> IO ObjectHandle
 

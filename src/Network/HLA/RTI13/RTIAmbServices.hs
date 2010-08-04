@@ -168,38 +168,22 @@ registerObjectInstance rtiAmb theClass mbObject =
             Nothing         ->
                 wrapExceptions (wrap_registerObjectInstance rtiAmb theClass)
 
-    -- // 6.4
-    -- EventRetractionHandle                               // returned C3
-    -- updateAttributeValues (
-    --         ObjectHandle                 theObject,     // supplied C1
-    --   const AttributeHandleValuePairSet& theAttributes, // supplied C4
-    --   const FedTime&                     theTime,       // supplied C4
-    --   const char                        *theTag)        // supplied C4
-    -- throw (
-    --   ObjectNotKnown,
-    --   AttributeNotDefined,
-    --   AttributeNotOwned,
-    --   InvalidFederationTime,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
-    -- void updateAttributeValues (
-    --         ObjectHandle                 theObject,     // supplied C1
-    --   const AttributeHandleValuePairSet& theAttributes, // supplied C4
-    --   const char                        *theTag)        // supplied C4
-    -- throw (
-    --   ObjectNotKnown,
-    --   AttributeNotDefined,
-    --   AttributeNotOwned,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
+
+updateAttributeValuesAtTime :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> ObjectHandle -> AttributeHandleValuePairSet -> FedTime fedAmb -> String -> IO EventRetractionHandle
+updateAttributeValuesAtTime rtiAmb theObject theAttributes theTime theTag =
+    withRTIAmbassador rtiAmb $ \rtiAmb -> 
+        withAttributeHandleValuePairSet theAttributes $ \theAttributes ->
+            withFedTime_ theTime $ \theTime ->
+                withCString theTag $ \theTag ->
+                    withEventRetractionHandleReturn $ \u fh ->
+                        wrapExceptions (wrap_updateAttributeValuesAtTime rtiAmb theObject theAttributes theTime theTag u fh)
+
+updateAttributeValues :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> ObjectHandle -> AttributeHandleValuePairSet -> String -> IO ()
+updateAttributeValues rtiAmb theObject theAttributes theTag =
+    withRTIAmbassador rtiAmb $ \rtiAmb -> 
+        withAttributeHandleValuePairSet theAttributes $ \theAttributes ->
+            withCString theTag $ \theTag ->
+                wrapExceptions (wrap_updateAttributeValues rtiAmb theObject theAttributes theTag)
 
 sendInteractionAtTime :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> InteractionClassHandle -> ParameterHandleValuePairSet -> FedTime fedAmb -> String -> IO EventRetractionHandle
 sendInteractionAtTime rtiAmb theInteraction theParameters theTime theTag = 
