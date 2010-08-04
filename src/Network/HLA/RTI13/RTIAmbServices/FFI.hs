@@ -218,6 +218,18 @@ foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_enableAsynchronousDelive
 foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_disableAsynchronousDelivery"
     wrap_disableAsynchronousDelivery :: Ptr (RTIAmbassador fedAmb) -> Ptr (Ptr RTIException) -> IO ()
 
+foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_queryLBTS"
+    wrap_queryLBTS :: Ptr (RTIAmbassador fedAmb) -> Ptr (FedAmbTime fedAmb) -> Ptr (Ptr RTIException) -> IO ()
+
+foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_queryFederateTime"
+    wrap_queryFederateTime :: Ptr (RTIAmbassador fedAmb) -> Ptr (FedAmbTime fedAmb) -> Ptr (Ptr RTIException) -> IO ()
+
+foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_queryMinNextEventTime"
+    wrap_queryMinNextEventTime :: Ptr (RTIAmbassador fedAmb) -> Ptr (FedAmbTime fedAmb) -> Ptr (Ptr RTIException) -> IO ()
+
+foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_modifyLookahead"
+    wrap_modifyLookahead :: Ptr (RTIAmbassador fedAmb) -> Ptr (FedAmbTime fedAmb) -> Ptr (Ptr RTIException) -> IO ()
+
 ----------------------------------
 -- Data Distribution Management --
 ----------------------------------

@@ -404,18 +404,13 @@ disableAsynchronousDelivery rtiAmb =
     --   SaveInProgress,
     --   RestoreInProgress,
     --   RTIinternalError);
-    -- 
-    -- // 8.19
-    -- void modifyLookahead (
-    --   const FedTime& theLookahead) // supplied C4
-    -- throw (
-    --   InvalidLookahead,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
+
+modifyLookahead :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> FedTime fedAmb -> IO ()
+modifyLookahead rtiAmb theTime =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        withFedTime_ theTime $ \theTime -> 
+            wrapExceptions (wrap_modifyLookahead rtiAmb theTime)
+
 queryLookahead :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> IO (FedTime fedAmb)
 queryLookahead rtiAmb =
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
