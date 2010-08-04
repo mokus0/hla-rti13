@@ -463,22 +463,12 @@ registerObjectInstanceWithRegion rtiAmb theClass mbObject theHandles = do
                         Just theObject -> withCString theObject $ \theObject ->
                             wrapExceptions (wrap_registerObjectInstanceWithRegion_withName rtiAmb theClass theObject theAttributes theRegions (fromIntegral theNumberOfHandles))
 
-    -- // 9.6
-    -- void associateRegionForUpdates (
-    --         Region             &theRegion,     // supplied C4
-    --         ObjectHandle        theObject,     // supplied C1
-    --   const AttributeHandleSet &theAttributes) // supplied C4
-    -- throw (
-    --   ObjectNotKnown,
-    --   AttributeNotDefined,
-    --   InvalidRegionContext,
-    --   RegionNotKnown,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
+associateRegionForUpdates :: RTIAmbassador rtiAmb -> Region -> ObjectHandle -> IO ()
+associateRegionForUpdates rtiAmb theRegion theObject =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        withRegion theRegion $ \theRegion ->
+            wrapExceptions (wrap_associateRegionForUpdates rtiAmb theRegion theObject)
+
     -- // 9.7
     -- void unassociateRegionForUpdates (
     --   Region       &theRegion,     // supplied C4

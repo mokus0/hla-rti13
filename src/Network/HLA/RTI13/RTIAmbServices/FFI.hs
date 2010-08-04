@@ -261,6 +261,9 @@ foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_registerObjectInstanceWi
 foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_registerObjectInstanceWithRegion" 
     wrap_registerObjectInstanceWithRegion :: Ptr (RTIAmbassador t) -> ObjectClassHandle -> Ptr AttributeHandle -> Ptr (Ptr Region) -> ULong -> Ptr (Ptr RTIException) -> IO ObjectHandle
 
+foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_associateRegionForUpdates" 
+    wrap_associateRegionForUpdates :: Ptr (RTIAmbassador t) -> Ptr Region -> ObjectHandle -> Ptr (Ptr RTIException) -> IO ()
+
 foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_subscribeInteractionClassWithRegion" 
     wrap_subscribeInteractionClassWithRegion :: Ptr (RTIAmbassador fedAmb) -> InteractionClassHandle -> Ptr Region -> Bool -> Ptr (Ptr RTIException) -> IO ()
 
