@@ -201,33 +201,20 @@ sendInteraction rtiAmb theInteraction theParameters theTag =
             withCString theTag $ \theTag -> 
                 wrapExceptions (wrap_sendInteraction rtiAmb theInteraction theParameters theTag)
 
-    -- EventRetractionHandle                 // returned C3
-    -- deleteObjectInstance (
-    --         ObjectHandle    theObject,    // supplied C1
-    --   const FedTime&        theTime,      // supplied C4
-    --   const char           *theTag)       // supplied C4
-    -- throw (
-    --   ObjectNotKnown,
-    --   DeletePrivilegeNotHeld,
-    --   InvalidFederationTime,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
-    -- void deleteObjectInstance (
-    --         ObjectHandle    theObject,    // supplied C1
-    --   const char           *theTag)       // supplied C4
-    -- throw (
-    --   ObjectNotKnown,
-    --   DeletePrivilegeNotHeld,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
+deleteObjectInstanceAtTime :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> ObjectHandle -> FedTime fedAmb -> String -> IO EventRetractionHandle
+deleteObjectInstanceAtTime rtiAmb theObject theTime theTag = 
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        withFedTime_ theTime $ \ theTime ->
+            withCString theTag $ \theTag -> 
+                withEventRetractionHandleReturn $ \u fh ->
+                    wrapExceptions (wrap_deleteObjectInstanceAtTime rtiAmb theObject theTime theTag u fh)
+
+deleteObjectInstance :: RTIAmbassador fedAmb -> ObjectHandle -> String -> IO ()
+deleteObjectInstance rtiAmb theObject theTag = 
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        withCString theTag $ \theTag -> 
+            wrapExceptions (wrap_deleteObjectInstance rtiAmb theObject theTag)
+
     -- // 6.10
     -- void localDeleteObjectInstance (
     --   ObjectHandle    theObject)       // supplied C1
