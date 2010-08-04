@@ -347,21 +347,12 @@ timeAdvanceRequestAvailable rtiAmb theTime =
         withFedTime_ theTime $ \theTime -> 
             wrapExceptions (wrap_timeAdvanceRequestAvailable rtiAmb theTime)
 
-    -- // 8.10
-    -- void nextEventRequest (
-    --   const FedTime& theTime) // supplied C4
-    -- throw (
-    --   InvalidFederationTime,
-    --   FederationTimeAlreadyPassed,
-    --   TimeAdvanceAlreadyInProgress,
-    --   EnableTimeRegulationPending,
-    --   EnableTimeConstrainedPending,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
+nextEventRequest :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> FedTime fedAmb -> IO ()
+nextEventRequest rtiAmb theTime =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        withFedTime_ theTime $ \theTime -> 
+            wrapExceptions (wrap_nextEventRequest rtiAmb theTime)
+
     -- // 8.11
     -- void nextEventRequestAvailable (
     --   const FedTime& theTime) // supplied C4
