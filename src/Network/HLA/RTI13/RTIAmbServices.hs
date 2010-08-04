@@ -519,23 +519,14 @@ sendInteractionWithRegionAtTime rtiAmb theInteraction theParameters theTime theT
                         withEventRetractionHandleReturn $ \u fh ->
                             wrapExceptions (wrap_sendInteractionWithRegionAtTime rtiAmb theInteraction theParameters theTime theTag theRegion u fh)
 
-    -- void sendInteractionWithRegion (
-    --         InteractionClassHandle       theInteraction, // supplied C1
-    --   const ParameterHandleValuePairSet &theParameters,  // supplied C4
-    --   const char                        *theTag,         // supplied C4
-    --   const Region                      &theRegion)      // supplied C4
-    -- throw (
-    --   InteractionClassNotDefined,
-    --   InteractionClassNotPublished,
-    --   InteractionParameterNotDefined,
-    --   RegionNotKnown,
-    --   InvalidRegionContext,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
+sendInteractionWithRegion :: RTIAmbassador fedAmb -> InteractionClassHandle -> ParameterHandleValuePairSet -> String -> Region -> IO ()
+sendInteractionWithRegion rtiAmb theInteraction theParameters theTag theRegion =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        withParameterHandleValuePairSet theParameters $ \theParameters ->
+            withCString theTag $ \theTag ->
+                withRegion theRegion $ \theRegion ->
+                    wrapExceptions (wrap_sendInteractionWithRegion rtiAmb theInteraction theParameters theTag theRegion)
+
     -- // 9.13
     -- void requestClassAttributeValueUpdateWithRegion (
     --         ObjectClassHandle   theClass,      // supplied C1
