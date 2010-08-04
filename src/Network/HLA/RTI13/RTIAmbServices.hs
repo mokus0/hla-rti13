@@ -231,18 +231,11 @@ changeInteractionTransportationType rtiAmb theClass theType =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (wrap_changeInteractionTransportationType rtiAmb theClass theType)
 
-    -- // 6.15
-    -- void requestObjectAttributeValueUpdate (
-    --         ObjectHandle        theObject,     // supplied C1
-    --   const AttributeHandleSet& theAttributes) // supplied C4
-    -- throw (
-    --   ObjectNotKnown,
-    --   AttributeNotDefined,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
+requestObjectAttributeValueUpdate :: RTIAmbassador fedAmb -> ObjectHandle -> AttributeHandleSet -> IO ()
+requestObjectAttributeValueUpdate rtiAmb theObject theAttributes =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        withAttributeHandleSet theAttributes $ \theAttributes ->
+            wrapExceptions (wrap_requestObjectAttributeValueUpdate rtiAmb theObject theAttributes)
 
 requestClassAttributeValueUpdate :: RTIAmbassador fedAmb -> ObjectClassHandle -> AttributeHandleSet -> IO ()
 requestClassAttributeValueUpdate rtiAmb theClass theAttributes =
