@@ -247,20 +247,12 @@ requestClassAttributeValueUpdate rtiAmb theClass theAttributes =
 -- Ownership Management Services --
 -----------------------------------
 
-    -- // 7.2
-    -- void unconditionalAttributeOwnershipDivestiture (
-    --         ObjectHandle                  theObject,     // supplied C1
-    --   const AttributeHandleSet&           theAttributes) // supplied C4
-    -- throw (
-    --   ObjectNotKnown, 
-    --   AttributeNotDefined,
-    --   AttributeNotOwned,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
+unconditionalAttributeOwnershipDivestiture :: RTIAmbassador fedAmb -> ObjectHandle -> AttributeHandleSet -> IO ()
+unconditionalAttributeOwnershipDivestiture rtiAmb theObject theAttributes =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        withAttributeHandleSet theAttributes $ \theAttributes ->
+            wrapExceptions (wrap_unconditionalAttributeOwnershipDivestiture rtiAmb theObject theAttributes)
+
     -- // 7.3
     -- void negotiatedAttributeOwnershipDivestiture (
     --         ObjectHandle                  theObject,     // supplied C1
