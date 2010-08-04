@@ -527,20 +527,12 @@ sendInteractionWithRegion rtiAmb theInteraction theParameters theTag theRegion =
                 withRegion theRegion $ \theRegion ->
                     wrapExceptions (wrap_sendInteractionWithRegion rtiAmb theInteraction theParameters theTag theRegion)
 
-    -- // 9.13
-    -- void requestClassAttributeValueUpdateWithRegion (
-    --         ObjectClassHandle   theClass,      // supplied C1
-    --   const AttributeHandleSet &theAttributes, // supplied C4
-    --   const Region             &theRegion)     // supplied C4
-    -- throw (
-    --   ObjectClassNotDefined, 
-    --   AttributeNotDefined,
-    --   RegionNotKnown,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
+requestClassAttributeValueUpdateWithRegion :: RTIAmbassador fedAmb -> ObjectClassHandle -> AttributeHandleSet -> Region -> IO ()
+requestClassAttributeValueUpdateWithRegion rtiAmb theClass theAttributes theRegion =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        withAttributeHandleSet theAttributes $ \theAttributes ->
+            withRegion theRegion $ \theRegion ->
+                wrapExceptions (wrap_requestClassAttributeValueUpdateWithRegion rtiAmb theClass theAttributes theRegion)
 
 --------------------------
 -- RTI Support Services --

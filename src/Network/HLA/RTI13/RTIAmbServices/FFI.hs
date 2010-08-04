@@ -282,6 +282,10 @@ foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_sendInteractionWithRegio
 foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_sendInteractionWithRegion" 
     wrap_sendInteractionWithRegion :: Ptr (RTIAmbassador fedAmb) -> InteractionClassHandle -> Ptr ParameterHandleValuePairSet -> CString -> Ptr Region -> Ptr (Ptr RTIException) -> IO ()
 
+foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_requestClassAttributeValueUpdateWithRegion" 
+    wrap_requestClassAttributeValueUpdateWithRegion :: Ptr (RTIAmbassador fedAmb) -> ObjectClassHandle -> Ptr AttributeHandleSet -> Ptr Region -> Ptr (Ptr RTIException) -> IO ()
+
+
 --------------------------
 -- RTI Support Services --
 --------------------------
