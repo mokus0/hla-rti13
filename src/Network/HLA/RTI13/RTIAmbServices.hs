@@ -226,20 +226,11 @@ changeAttributeTransportationType rtiAmb theObject theAttributes theType =
         withAttributeHandleSet theAttributes $ \theAttributes ->
             wrapExceptions (wrap_changeAttributeTransportationType rtiAmb theObject theAttributes theType)
 
-    -- // 6.12
-    -- void changeInteractionTransportationType (
-    --   InteractionClassHandle theClass, // supplied C1
-    --   TransportationHandle   theType)  // supplied C1
-    -- throw (
-    --   InteractionClassNotDefined,
-    --   InteractionClassNotPublished,
-    --   InvalidTransportationHandle,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
+changeInteractionTransportationType :: RTIAmbassador fedAmb -> InteractionClassHandle -> TransportationHandle -> IO ()
+changeInteractionTransportationType rtiAmb theClass theType =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        wrapExceptions (wrap_changeInteractionTransportationType rtiAmb theClass theType)
+
     -- // 6.15
     -- void requestObjectAttributeValueUpdate (
     --         ObjectHandle        theObject,     // supplied C1

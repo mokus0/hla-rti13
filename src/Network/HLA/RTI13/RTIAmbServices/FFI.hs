@@ -141,6 +141,9 @@ foreign import ccall "wrap/RTIAmbServices.h wrap_localDeleteObjectInstance"
 foreign import ccall "wrap/RTIAmbServices.h wrap_changeAttributeTransportationType"
     wrap_changeAttributeTransportationType :: Ptr (RTIAmbassador fedAmb) -> ObjectHandle -> Ptr AttributeHandleSet -> TransportationHandle -> Ptr (Ptr RTIException) -> IO ()
 
+foreign import ccall "wrap/RTIAmbServices.h wrap_changeInteractionTransportationType"
+    wrap_changeInteractionTransportationType :: Ptr (RTIAmbassador fedAmb) -> InteractionClassHandle -> TransportationHandle -> Ptr (Ptr RTIException) -> IO ()
+
 foreign import ccall "wrap/RTIAmbServices.h wrap_requestClassAttributeValueUpdate"
     wrap_requestClassAttributeValueUpdate :: Ptr (RTIAmbassador fedAmb) -> ObjectClassHandle -> Ptr AttributeHandleSet -> Ptr (Ptr RTIException) -> IO ()
 
