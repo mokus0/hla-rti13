@@ -144,6 +144,15 @@ attributeSetFactory_create n = do
     return (AttributeHandleValuePairSet ahvps)
 
 -- data AttributeHandleSet
+
+-- |Import an AttributeHandleSet pointer, accepting responsibility to delete
+-- it when the object goes out of scope.
+importAttributeHandleSet :: Ptr AttributeHandleSet -> IO AttributeHandleSet
+importAttributeHandleSet ahSetPtr = do
+    fPtr <- newForeignPtr ahSetPtr (delete_AttributeHandleSet ahSetPtr)
+    return (AttributeHandleSet fPtr)
+    
+
 instance Container AttributeHandleSet where
     type Elem AttributeHandleSet = AttributeHandle
 
