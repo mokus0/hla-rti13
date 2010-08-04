@@ -267,23 +267,12 @@ attributeOwnershipAcquisition rtiAmb theObject theAttributes theTag =
             withCString theTag $ \theTag ->
                 wrapExceptions (wrap_attributeOwnershipAcquisition rtiAmb theObject theAttributes theTag)
 
-    -- // 7.8
-    -- void attributeOwnershipAcquisitionIfAvailable (
-    --         ObjectHandle        theObject,         // supplied C1
-    --   const AttributeHandleSet& desiredAttributes) // supplied C4
-    -- throw (
-    --   ObjectNotKnown,
-    --   ObjectClassNotPublished,
-    --   AttributeNotDefined,
-    --   AttributeNotPublished,
-    --   FederateOwnsAttributes,
-    --   AttributeAlreadyBeingAcquired,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
+attributeOwnershipAcquisitionIfAvailable :: RTIAmbassador fedAmb -> ObjectHandle -> AttributeHandleSet -> IO ()
+attributeOwnershipAcquisitionIfAvailable rtiAmb theObject theAttributes =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        withAttributeHandleSet theAttributes $ \theAttributes ->
+            wrapExceptions (wrap_attributeOwnershipAcquisitionIfAvailable rtiAmb theObject theAttributes)
+
     -- // 7.11
     -- AttributeHandleSet*                        // returned C6
     -- attributeOwnershipReleaseResponse (
