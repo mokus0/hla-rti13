@@ -463,13 +463,13 @@ registerObjectInstanceWithRegion rtiAmb theClass mbObject theHandles = do
                         Just theObject -> withCString theObject $ \theObject ->
                             wrapExceptions (wrap_registerObjectInstanceWithRegion_withName rtiAmb theClass theObject theAttributes theRegions (fromIntegral theNumberOfHandles))
 
-associateRegionForUpdates :: RTIAmbassador rtiAmb -> Region -> ObjectHandle -> IO ()
+associateRegionForUpdates :: RTIAmbassador fedAmb -> Region -> ObjectHandle -> IO ()
 associateRegionForUpdates rtiAmb theRegion theObject =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withRegion theRegion $ \theRegion ->
             wrapExceptions (wrap_associateRegionForUpdates rtiAmb theRegion theObject)
 
-unassociateRegionForUpdates :: RTIAmbassador rtiAmb -> Region -> ObjectHandle -> IO ()
+unassociateRegionForUpdates :: RTIAmbassador fedAmb -> Region -> ObjectHandle -> IO ()
 unassociateRegionForUpdates rtiAmb theRegion theObject =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withRegion theRegion $ \theRegion ->
