@@ -509,28 +509,16 @@ unsubscribeInteractionClassWithRegion rtiAmb theClass theRegion =
         withRegion theRegion $ \theRegion ->
             wrapExceptions (wrap_unsubscribeInteractionClassWithRegion rtiAmb theClass theRegion)
 
+sendInteractionWithRegionAtTime :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> InteractionClassHandle -> ParameterHandleValuePairSet -> FedTime fedAmb -> String -> Region -> IO EventRetractionHandle
+sendInteractionWithRegionAtTime rtiAmb theInteraction theParameters theTime theTag theRegion =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        withParameterHandleValuePairSet theParameters $ \theParameters ->
+            withFedTime_ theTime $ \theTime ->
+                withCString theTag $ \theTag ->
+                    withRegion theRegion $ \theRegion ->
+                        withEventRetractionHandleReturn $ \u fh ->
+                            wrapExceptions (wrap_sendInteractionWithRegionAtTime rtiAmb theInteraction theParameters theTime theTag theRegion u fh)
 
-    -- // 9.12
-    -- EventRetractionHandle                                // returned C3
-    -- sendInteractionWithRegion (
-    --         InteractionClassHandle       theInteraction, // supplied C1
-    --   const ParameterHandleValuePairSet &theParameters,  // supplied C4
-    --   const FedTime&                     theTime,        // supplied C4
-    --   const char                        *theTag,         // supplied C4
-    --   const Region                      &theRegion)      // supplied C4
-    -- throw (
-    --   InteractionClassNotDefined,
-    --   InteractionClassNotPublished,
-    --   InteractionParameterNotDefined,
-    --   InvalidFederationTime,
-    --   RegionNotKnown,
-    --   InvalidRegionContext,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
     -- void sendInteractionWithRegion (
     --         InteractionClassHandle       theInteraction, // supplied C1
     --   const ParameterHandleValuePairSet &theParameters,  // supplied C4
