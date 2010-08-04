@@ -450,56 +450,19 @@ deleteRegion :: RTIAmbassador fedAmb -> Region -> IO ()
 deleteRegion rtiAmb (Region theRegion) = finalizeForeignPtr theRegion
 
 
-registerObjectInstanceWithRegion :: RTIAmbassador t -> ObjectClassHandle -> String -> [(AttributeHandle, Region)] -> IO ObjectHandle
-registerObjectInstanceWithRegion rtiAmb theClass theObject theHandles = do
+registerObjectInstanceWithRegion :: RTIAmbassador t -> ObjectClassHandle -> Maybe String -> [(AttributeHandle, Region)] -> IO ObjectHandle
+registerObjectInstanceWithRegion rtiAmb theClass mbObject theHandles = do
     let (theAttributes, theRegions) = unzip theHandles
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
-        withCString theObject $ \theObject -> 
-            withMany withRegion theRegions $ \theRegions ->
-                withArray theRegions $ \theRegions -> 
-                    withArrayLen theAttributes $ \theNumberOfHandles theAttributes ->
-                        wrapExceptions (wrap_registerObjectInstanceWithRegion rtiAmb theClass theObject theAttributes theRegions (fromIntegral theNumberOfHandles))
+        withMany withRegion theRegions $ \theRegions ->
+            withArray theRegions $ \theRegions -> 
+                withArrayLen theAttributes $ \theNumberOfHandles theAttributes ->
+                    case mbObject of
+                        Nothing ->
+                            wrapExceptions (wrap_registerObjectInstanceWithRegion          rtiAmb theClass           theAttributes theRegions (fromIntegral theNumberOfHandles))
+                        Just theObject -> withCString theObject $ \theObject ->
+                            wrapExceptions (wrap_registerObjectInstanceWithRegion_withName rtiAmb theClass theObject theAttributes theRegions (fromIntegral theNumberOfHandles))
 
-    -- ObjectHandle                                  // returned C3
-    -- registerObjectInstanceWithRegion (
-    --         ObjectClassHandle theClass,           // supplied C1
-    --   const char             *theObject,          // supplied C4
-    --         AttributeHandle   theAttributes[],    // supplied C4
-    --         Region           *theRegions[],       // supplied C4
-    --         ULong             theNumberOfHandles) // supplied C1
-    -- throw (
-    --   ObjectClassNotDefined,
-    --   ObjectClassNotPublished,
-    --   AttributeNotDefined,
-    --   AttributeNotPublished,
-    --   RegionNotKnown,
-    --   InvalidRegionContext,
-    --   ObjectAlreadyRegistered,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
-    -- ObjectHandle                              // returned C3
-    -- registerObjectInstanceWithRegion (
-    --   ObjectClassHandle theClass,             // supplied C1
-    --   AttributeHandle   theAttributes[],      // supplied C4
-    --   Region           *theRegions[],         // supplied C4
-    --   ULong             theNumberOfHandles)   // supplied C1
-    -- throw (
-    --   ObjectClassNotDefined,
-    --   ObjectClassNotPublished,
-    --   AttributeNotDefined,
-    --   AttributeNotPublished,
-    --   RegionNotKnown,
-    --   InvalidRegionContext,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
     -- // 9.6
     -- void associateRegionForUpdates (
     --         Region             &theRegion,     // supplied C4
