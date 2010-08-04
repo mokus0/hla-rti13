@@ -765,41 +765,25 @@ disableAttributeRelevanceAdvisorySwitch rtiAmb =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (wrap_disableAttributeRelevanceAdvisorySwitch rtiAmb)
 
-    -- // 10.27
-    -- void enableAttributeScopeAdvisorySwitch()
-    -- throw(
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
-    -- // 10.28
-    -- void disableAttributeScopeAdvisorySwitch()
-    -- throw(
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
-    -- // 10.29
-    -- void enableInteractionRelevanceAdvisorySwitch()
-    -- throw(
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
-    -- // 10.30
-    -- void disableInteractionRelevanceAdvisorySwitch()
-    -- throw(
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
+enableAttributeScopeAdvisorySwitch :: RTIAmbassador fedAmb -> IO ()
+enableAttributeScopeAdvisorySwitch rtiAmb = 
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        wrapExceptions (wrap_enableAttributeScopeAdvisorySwitch rtiAmb)
+    
+disableAttributeScopeAdvisorySwitch :: RTIAmbassador fedAmb -> IO ()
+disableAttributeScopeAdvisorySwitch rtiAmb = 
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        wrapExceptions (wrap_disableAttributeScopeAdvisorySwitch rtiAmb)
+
+enableInteractionRelevanceAdvisorySwitch :: RTIAmbassador fedAmb -> IO ()
+enableInteractionRelevanceAdvisorySwitch rtiAmb = 
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        wrapExceptions (wrap_enableInteractionRelevanceAdvisorySwitch rtiAmb)
+    
+disableInteractionRelevanceAdvisorySwitch :: RTIAmbassador fedAmb -> IO ()
+disableInteractionRelevanceAdvisorySwitch rtiAmb = 
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        wrapExceptions (wrap_disableInteractionRelevanceAdvisorySwitch rtiAmb)
 
     -- Boolean // returned C3
 -- tick :: 

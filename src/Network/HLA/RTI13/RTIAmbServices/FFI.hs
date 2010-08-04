@@ -314,5 +314,17 @@ foreign import ccall "wrap/RTIAmbServices.h wrap_enableAttributeRelevanceAdvisor
 foreign import ccall "wrap/RTIAmbServices.h wrap_disableAttributeRelevanceAdvisorySwitch"
     wrap_disableAttributeRelevanceAdvisorySwitch :: Ptr (RTIAmbassador fedAmb) -> Ptr (Ptr RTIException) -> IO ()
 
+foreign import ccall "wrap/RTIAmbServices.h wrap_enableAttributeScopeAdvisorySwitch"
+    wrap_enableAttributeScopeAdvisorySwitch :: Ptr (RTIAmbassador fedAmb) -> Ptr (Ptr RTIException) -> IO ()
+
+foreign import ccall "wrap/RTIAmbServices.h wrap_disableAttributeScopeAdvisorySwitch"
+    wrap_disableAttributeScopeAdvisorySwitch :: Ptr (RTIAmbassador fedAmb) -> Ptr (Ptr RTIException) -> IO ()
+
+foreign import ccall "wrap/RTIAmbServices.h wrap_enableInteractionRelevanceAdvisorySwitch"
+    wrap_enableInteractionRelevanceAdvisorySwitch :: Ptr (RTIAmbassador fedAmb) -> Ptr (Ptr RTIException) -> IO ()
+
+foreign import ccall "wrap/RTIAmbServices.h wrap_disableInteractionRelevanceAdvisorySwitch"
+    wrap_disableInteractionRelevanceAdvisorySwitch :: Ptr (RTIAmbassador fedAmb) -> Ptr (Ptr RTIException) -> IO ()
+
 foreign import ccall "wrap/RTIAmbServices.h wrap_tick_minimum_maximum"
     wrap_tick_minimum_maximum :: Ptr (RTIAmbassador fedAmb) -> TickTime -> TickTime -> Ptr (Ptr RTIException) -> IO Bool
