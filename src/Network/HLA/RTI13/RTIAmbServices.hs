@@ -469,20 +469,12 @@ associateRegionForUpdates rtiAmb theRegion theObject =
         withRegion theRegion $ \theRegion ->
             wrapExceptions (wrap_associateRegionForUpdates rtiAmb theRegion theObject)
 
-    -- // 9.7
-    -- void unassociateRegionForUpdates (
-    --   Region       &theRegion,     // supplied C4
-    --   ObjectHandle  theObject)     // supplied C1
-    -- throw (
-    --   ObjectNotKnown,
-    --   InvalidRegionContext,
-    --   RegionNotKnown,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
+unassociateRegionForUpdates :: RTIAmbassador rtiAmb -> Region -> ObjectHandle -> IO ()
+unassociateRegionForUpdates rtiAmb theRegion theObject =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        withRegion theRegion $ \theRegion ->
+            wrapExceptions (wrap_unassociateRegionForUpdates rtiAmb theRegion theObject)
+
     -- // 9.8
     -- void subscribeObjectClassAttributesWithRegion (
     --         ObjectClassHandle   theClass,      // supplied C1
