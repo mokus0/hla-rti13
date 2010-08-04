@@ -215,18 +215,11 @@ deleteObjectInstance rtiAmb theObject theTag =
         withCString theTag $ \theTag -> 
             wrapExceptions (wrap_deleteObjectInstance rtiAmb theObject theTag)
 
-    -- // 6.10
-    -- void localDeleteObjectInstance (
-    --   ObjectHandle    theObject)       // supplied C1
-    -- throw (
-    --   ObjectNotKnown,
-    --   FederateOwnsAttributes,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
+localDeleteObjectInstance :: RTIAmbassador fedAmb -> ObjectHandle -> IO ()
+localDeleteObjectInstance rtiAmb theObject = 
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        wrapExceptions (wrap_localDeleteObjectInstance rtiAmb theObject)
+
     -- // 6.11
     -- void changeAttributeTransportationType (
     --         ObjectHandle             theObject,     // supplied C1
