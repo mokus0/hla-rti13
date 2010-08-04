@@ -326,5 +326,8 @@ foreign import ccall "wrap/RTIAmbServices.h wrap_enableInteractionRelevanceAdvis
 foreign import ccall "wrap/RTIAmbServices.h wrap_disableInteractionRelevanceAdvisorySwitch"
     wrap_disableInteractionRelevanceAdvisorySwitch :: Ptr (RTIAmbassador fedAmb) -> Ptr (Ptr RTIException) -> IO ()
 
+foreign import ccall "wrap/RTIAmbServices.h wrap_tick"
+    wrap_tick :: Ptr (RTIAmbassador fedAmb) -> Ptr (Ptr RTIException) -> IO Bool
+
 foreign import ccall "wrap/RTIAmbServices.h wrap_tick_minimum_maximum"
     wrap_tick_minimum_maximum :: Ptr (RTIAmbassador fedAmb) -> TickTime -> TickTime -> Ptr (Ptr RTIException) -> IO Bool

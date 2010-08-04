@@ -785,13 +785,10 @@ disableInteractionRelevanceAdvisorySwitch rtiAmb =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (wrap_disableInteractionRelevanceAdvisorySwitch rtiAmb)
 
-    -- Boolean // returned C3
--- tick :: 
-    -- tick ()
-    -- throw (
-    --   SpecifiedSaveLabelDoesNotExist,
-    --   ConcurrentAccessAttempted,
-    --   RTIinternalError);
+tick :: RTIAmbassador fedAmb -> IO Bool
+tick rtiAmb =
+    withRTIAmbassador rtiAmb
+        (wrapExceptions . wrap_tick)
 
 tick_minimum_maximum :: RTIAmbassador fedAmb -> TickTime -> TickTime -> IO Bool
 tick_minimum_maximum rtiAmb min max = 
