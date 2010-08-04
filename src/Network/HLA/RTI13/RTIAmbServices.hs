@@ -286,21 +286,12 @@ cancelNegotiatedAttributeOwnershipDivestiture rtiAmb theObject theAttributes =
         withAttributeHandleSet theAttributes $ \theAttributes ->
             wrapExceptions (wrap_cancelNegotiatedAttributeOwnershipDivestiture rtiAmb theObject theAttributes)
 
-    -- // 7.13
-    -- void cancelAttributeOwnershipAcquisition (
-    --         ObjectHandle        theObject,     // supplied C1
-    --   const AttributeHandleSet& theAttributes) // supplied C4
-    -- throw (
-    --   ObjectNotKnown,
-    --   AttributeNotDefined,
-    --   AttributeAlreadyOwned,
-    --   AttributeAcquisitionWasNotRequested,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
+cancelAttributeOwnershipAcquisition :: RTIAmbassador fedAmb -> ObjectHandle -> AttributeHandleSet -> IO ()
+cancelAttributeOwnershipAcquisition rtiAmb theObject theAttributes =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        withAttributeHandleSet theAttributes $ \theAttributes ->
+            wrapExceptions (wrap_cancelAttributeOwnershipAcquisition rtiAmb theObject theAttributes)
+
     -- // 7.15
     -- void queryAttributeOwnership (
     --   ObjectHandle    theObject,    // supplied C1
