@@ -375,35 +375,23 @@ disableAsynchronousDelivery rtiAmb =
     withRTIAmbassador rtiAmb
         (wrapExceptions . wrap_disableAsynchronousDelivery)
 
-    -- // 8.16
-    -- void queryLBTS (
-    --   FedTime& theTime) // returned C5
-    -- throw (
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
-    -- // 8.17
-    -- void queryFederateTime (
-    --   FedTime& theTime) // returned C5
-    -- throw (
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
-    -- // 8.18
-    -- void queryMinNextEventTime (
-    --   FedTime& theTime) // returned C5
-    -- throw (
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
+queryLBTS :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> IO (FedTime fedAmb)
+queryLBTS rtiAmb =
+    withRTIAmbassador rtiAmb $ \rtiAmb -> 
+        withArbitraryFedTime $ \fedTime -> 
+            wrapExceptions (wrap_queryLBTS rtiAmb fedTime)
+
+queryFederateTime :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> IO (FedTime fedAmb)
+queryFederateTime rtiAmb =
+    withRTIAmbassador rtiAmb $ \rtiAmb -> 
+        withArbitraryFedTime $ \fedTime -> 
+            wrapExceptions (wrap_queryFederateTime rtiAmb fedTime)
+
+queryMinNextEventTime :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> IO (FedTime fedAmb)
+queryMinNextEventTime rtiAmb =
+    withRTIAmbassador rtiAmb $ \rtiAmb -> 
+        withArbitraryFedTime $ \fedTime -> 
+            wrapExceptions (wrap_queryMinNextEventTime rtiAmb fedTime)
 
 modifyLookahead :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> FedTime fedAmb -> IO ()
 modifyLookahead rtiAmb theTime =
@@ -416,51 +404,22 @@ queryLookahead rtiAmb =
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
         withArbitraryFedTime $ \fedTime -> 
             wrapExceptions (wrap_queryLookahead rtiAmb fedTime)
-    
-    where 
-        wrap_queryLookahead :: Ptr (RTIAmbassador fedAmb) -> Ptr (FedAmbTime fedAmb) -> Ptr (Ptr RTIException) -> IO ()
-        wrap_queryLookahead = error "wrap_queryLookahead"
 
-    -- // 8.21
-    -- void retract (
-    --   EventRetractionHandle theHandle) // supplied C1
-    -- throw (
-    --   InvalidRetractionHandle,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
-    -- // 8.23
-    -- void changeAttributeOrderType (
-    --         ObjectHandle        theObject,     // supplied C1
-    --   const AttributeHandleSet& theAttributes, // supplied C4
-    --         OrderingHandle      theType)       // supplied C1
-    -- throw (
-    --   ObjectNotKnown,
-    --   AttributeNotDefined,
-    --   AttributeNotOwned,
-    --   InvalidOrderingHandle,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
-    -- // 8.24
-    -- void changeInteractionOrderType (
-    --   InteractionClassHandle theClass, // supplied C1
-    --   OrderingHandle         theType)  // supplied C1
-    -- throw (
-    --   InteractionClassNotDefined,
-    --   InteractionClassNotPublished,
-    --   InvalidOrderingHandle,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
+retract :: RTIAmbassador fedAmb -> EventRetractionHandle -> IO ()
+retract rtiAmb (EventRetractionHandle u fh) =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        wrapExceptions (wrap_retract rtiAmb u fh)
+
+changeAttributeOrderType :: RTIAmbassador fedAmb -> ObjectHandle -> AttributeHandleSet -> OrderingHandle -> IO ()
+changeAttributeOrderType rtiAmb theObject theAttributes theType =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        withAttributeHandleSet theAttributes $ \theAttributes ->
+            wrapExceptions (wrap_changeAttributeOrderType rtiAmb theObject theAttributes theType)
+
+changeInteractionOrderType :: RTIAmbassador fedAmb -> InteractionClassHandle -> OrderingHandle -> IO ()
+changeInteractionOrderType rtiAmb theClass theType =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        wrapExceptions (wrap_changeInteractionOrderType rtiAmb theClass theType)
 
 ----------------------------------
 -- Data Distribution Management --

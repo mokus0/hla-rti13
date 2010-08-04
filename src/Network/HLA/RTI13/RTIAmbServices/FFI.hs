@@ -230,6 +230,18 @@ foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_queryMinNextEventTime"
 foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_modifyLookahead"
     wrap_modifyLookahead :: Ptr (RTIAmbassador fedAmb) -> Ptr (FedAmbTime fedAmb) -> Ptr (Ptr RTIException) -> IO ()
 
+foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_queryLookahead"
+    wrap_queryLookahead :: Ptr (RTIAmbassador fedAmb) -> Ptr (FedAmbTime fedAmb) -> Ptr (Ptr RTIException) -> IO ()
+
+foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_retract"
+    wrap_retract :: Ptr (RTIAmbassador fedAmb) -> UniqueID -> FederateHandle -> Ptr (Ptr RTIException) -> IO ()
+
+foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_changeAttributeOrderType"
+    wrap_changeAttributeOrderType :: Ptr (RTIAmbassador fedAmb) -> ObjectHandle -> Ptr (AttributeHandleSet) -> OrderingHandle -> Ptr (Ptr RTIException) -> IO ()
+
+foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_changeInteractionOrderType"
+    wrap_changeInteractionOrderType :: Ptr (RTIAmbassador fedAmb) -> InteractionClassHandle -> OrderingHandle -> Ptr (Ptr RTIException) -> IO ()
+
 ----------------------------------
 -- Data Distribution Management --
 ----------------------------------
