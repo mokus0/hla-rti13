@@ -760,16 +760,11 @@ enableAttributeRelevanceAdvisorySwitch rtiAmb =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (wrap_enableAttributeRelevanceAdvisorySwitch rtiAmb)
     
-    -- 
-    -- // 10.26
-    -- void disableAttributeRelevanceAdvisorySwitch()
-    -- throw(
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
+disableAttributeRelevanceAdvisorySwitch :: RTIAmbassador fedAmb -> IO ()
+disableAttributeRelevanceAdvisorySwitch rtiAmb = 
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        wrapExceptions (wrap_disableAttributeRelevanceAdvisorySwitch rtiAmb)
+
     -- // 10.27
     -- void enableAttributeScopeAdvisorySwitch()
     -- throw(
