@@ -279,22 +279,13 @@ attributeOwnershipReleaseResponse rtiAmb theObject theAttributes = do
         withAttributeHandleSet theAttributes $ \theAttributes ->
             wrapExceptions (wrap_attributeOwnershipReleaseResponse rtiAmb theObject theAttributes)
     importAttributeHandleSet response
-    
-    -- // 7.12
-    -- void cancelNegotiatedAttributeOwnershipDivestiture (
-    --         ObjectHandle        theObject,     // supplied C1
-    --   const AttributeHandleSet& theAttributes) // supplied C4
-    -- throw (
-    --   ObjectNotKnown,
-    --   AttributeNotDefined,
-    --   AttributeNotOwned,
-    --   AttributeDivestitureWasNotRequested,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
+
+cancelNegotiatedAttributeOwnershipDivestiture :: RTIAmbassador fedAmb -> ObjectHandle -> AttributeHandleSet -> IO ()
+cancelNegotiatedAttributeOwnershipDivestiture rtiAmb theObject theAttributes =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        withAttributeHandleSet theAttributes $ \theAttributes ->
+            wrapExceptions (wrap_cancelNegotiatedAttributeOwnershipDivestiture rtiAmb theObject theAttributes)
+
     -- // 7.13
     -- void cancelAttributeOwnershipAcquisition (
     --         ObjectHandle        theObject,     // supplied C1
