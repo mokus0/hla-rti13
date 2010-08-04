@@ -292,19 +292,11 @@ cancelAttributeOwnershipAcquisition rtiAmb theObject theAttributes =
         withAttributeHandleSet theAttributes $ \theAttributes ->
             wrapExceptions (wrap_cancelAttributeOwnershipAcquisition rtiAmb theObject theAttributes)
 
-    -- // 7.15
-    -- void queryAttributeOwnership (
-    --   ObjectHandle    theObject,    // supplied C1
-    --   AttributeHandle theAttribute) // supplied C1
-    -- throw (
-    --   ObjectNotKnown,
-    --   AttributeNotDefined,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
+queryAttributeOwnership :: RTIAmbassador fedAmb -> ObjectHandle -> AttributeHandle -> IO ()
+queryAttributeOwnership rtiAmb theObject theAttributes =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        wrapExceptions (wrap_queryAttributeOwnership rtiAmb theObject theAttributes)
+
     -- // 7.17
     -- Boolean                          // returned C3
     -- isAttributeOwnedByFederate (
