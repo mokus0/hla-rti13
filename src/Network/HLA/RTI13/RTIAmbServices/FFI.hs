@@ -160,6 +160,9 @@ foreign import ccall "wrap/RTIAmbServices.h wrap_unconditionalAttributeOwnership
 foreign import ccall "wrap/RTIAmbServices.h wrap_negotiatedAttributeOwnershipDivestiture"
     wrap_negotiatedAttributeOwnershipDivestiture :: Ptr (RTIAmbassador fedAmb) -> ObjectHandle -> Ptr AttributeHandleSet -> CString -> Ptr (Ptr RTIException) -> IO ()
 
+foreign import ccall "wrap/RTIAmbServices.h wrap_attributeOwnershipAcquisition"
+    wrap_attributeOwnershipAcquisition :: Ptr (RTIAmbassador fedAmb) -> ObjectHandle -> Ptr AttributeHandleSet -> CString -> Ptr (Ptr RTIException) -> IO ()
+
 ------------------------------
 -- Time Management Services --
 ------------------------------

@@ -260,23 +260,13 @@ negotiatedAttributeOwnershipDivestiture rtiAmb theObject theAttributes theTag =
             withCString theTag $ \theTag ->
                 wrapExceptions (wrap_negotiatedAttributeOwnershipDivestiture rtiAmb theObject theAttributes theTag)
 
-    -- // 7.7
-    -- void attributeOwnershipAcquisition (
-    --         ObjectHandle        theObject,         // supplied C1
-    --   const AttributeHandleSet& desiredAttributes, // supplied C4
-    --   const char               *theTag)            // supplied C4
-    -- throw (
-    --   ObjectNotKnown,
-    --   ObjectClassNotPublished,
-    --   AttributeNotDefined,
-    --   AttributeNotPublished,
-    --   FederateOwnsAttributes,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
+attributeOwnershipAcquisition :: RTIAmbassador fedAmb -> ObjectHandle -> AttributeHandleSet -> String -> IO ()
+attributeOwnershipAcquisition rtiAmb theObject theAttributes theTag =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        withAttributeHandleSet theAttributes $ \theAttributes ->
+            withCString theTag $ \theTag ->
+                wrapExceptions (wrap_attributeOwnershipAcquisition rtiAmb theObject theAttributes theTag)
+
     -- // 7.8
     -- void attributeOwnershipAcquisitionIfAvailable (
     --         ObjectHandle        theObject,         // supplied C1
