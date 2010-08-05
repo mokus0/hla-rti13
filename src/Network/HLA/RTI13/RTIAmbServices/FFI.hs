@@ -307,6 +307,9 @@ foreign import ccall unsafe "wrap/RTIambServices.h wrap_getAttributeName"
 
 foreign import ccall unsafe "wrap/RTIambServices.h wrap_getInteractionClassHandle"
     wrap_getInteractionClassHandle :: Ptr (RTIAmbassador fedAmb) -> CString -> Ptr (Ptr RTIException) -> IO InteractionClassHandle
+    
+foreign import ccall unsafe "wrap/RTIambServices.h wrap_getInteractionClassName"
+    wrap_getInteractionClassName :: Ptr (RTIAmbassador fedAmb) -> InteractionClassHandle -> Ptr (Ptr RTIException) -> IO CString
 
 foreign import ccall unsafe "wrap/RTIambServices.h wrap_getParameterHandle"
     wrap_getParameterHandle :: Ptr (RTIAmbassador fedAmb) -> CString -> InteractionClassHandle -> Ptr (Ptr RTIException) -> IO ParameterHandle
