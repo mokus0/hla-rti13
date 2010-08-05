@@ -45,6 +45,7 @@ Library
                         Network.HLA.RTI13.RTITypes.Types
                         Network.HLA.RTI13.RTITypes.FFI
   other-modules:        Network.HLA.RTI13.HsFederateAmbassador.FunPtrWrappers
+                        Network.HLA.RTI13.OddsAndEnds
                         
   build-depends:        base >= 4, containers, syb, mtl,
                         bytestring,
@@ -64,6 +65,7 @@ Library
     cc-options:         -DDEBUG
   
   c-sources:            cbits/hsFederateAmb.cpp
+                        cbits/oddsAndEnds.cpp
                         cbits/wrap/BaseTypes.cpp
                         cbits/wrap/fedtime.cpp
                         cbits/wrap/NullFederateAmbassador.cpp
