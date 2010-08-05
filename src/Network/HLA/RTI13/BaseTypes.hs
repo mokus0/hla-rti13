@@ -13,9 +13,16 @@ import System.IO
 import Foreign.Storable
 import Text.Printf
 
+-- * Primitive numeric types with specified sizes
+
+-- |'Short' is a 16-bit signed integer type
 newtype Short   = Short  Int16      deriving (Eq, Ord, Bits, Enum, Bounded, Num, Real, Integral, Data, Typeable, Storable, PrintfArg)
+-- |'UShort' is a 16-bit unsigned integer type
 newtype UShort  = UShort Word16     deriving (Eq, Ord, Bits, Enum, Bounded, Num, Real, Integral, Data, Typeable, Storable, PrintfArg)
+
+-- |'Long' is a 32-bit signed integer type
 newtype Long    = Long   Int32      deriving (Eq, Ord, Bits, Enum, Bounded, Num, Real, Integral, Data, Typeable, Storable, PrintfArg)
+-- |'ULong' is a 32-bit unsigned integer type, and is by far the most widely-used numeric type in the RTI interface.
 newtype ULong   = ULong  Word32     deriving (Eq, Ord, Bits, Enum, Bounded, Num, Real, Integral, Data, Typeable, Storable, PrintfArg)
 
 instance Show Short  where showsPrec p (Short  x) = showsPrec p x

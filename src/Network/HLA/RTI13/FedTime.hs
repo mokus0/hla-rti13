@@ -17,8 +17,12 @@ import Network.HLA.RTI13.BaseTypes
 import Network.HLA.RTI13.RTITypes
 import Network.HLA.RTI13.RTIException
 
+-- |'RTIFedTime' is the default double-based implementation of the 'FedTimeImpl'
+-- interface.  In C++ it is called \"RTI::FedTime\" or \"rti13::FedTime\".
 newtype RTIFedTime = RTIFedTime (ForeignPtr RTIFedTime)
     deriving (Eq, Ord, Show)
+
+-- TODO: split this stuff into a separate FFI module exported by the package
 
 foreign import ccall unsafe "wrap/fedtime.h wrap_new_RTIfedTime"
     wrap_new_RTIfedTime :: CDouble -> Ptr (Ptr RTIException) -> IO (Ptr RTIFedTime)
