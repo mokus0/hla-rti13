@@ -580,16 +580,12 @@ getParameterName rtiAmb theHandle whichClass = do
         wrapExceptions (wrap_getParameterName rtiAmb theHandle whichClass)
     unsafePackNewCString cStr
 
-    -- // 10.10
-    -- ObjectHandle                 // returned C3
-    -- getObjectInstanceHandle (
-    --   const char *theName)       // supplied C4
-    -- throw (
-    --     ObjectNotKnown,
-    --     FederateNotExecutionMember,
-    --     ConcurrentAccessAttempted,
-    --     RTIinternalError);
-    -- 
+getObjectInstanceHandle :: RTIAmbassador fedAmb -> String -> IO ObjectHandle
+getObjectInstanceHandle rtiAmb theName =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        withCString theName $ \theName ->
+            wrapExceptions (wrap_getObjectInstanceHandle rtiAmb theName)
+
     -- // 10.11
     -- char *                     // returned C6  
     -- getObjectInstanceName (
