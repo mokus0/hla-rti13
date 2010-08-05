@@ -621,16 +621,11 @@ getAttributeRoutingSpaceHandle rtiAmb theHandle whichClass =
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
         wrapExceptions (wrap_getAttributeRoutingSpaceHandle rtiAmb theHandle whichClass)
 
-    -- // 10.17
-    -- ObjectClassHandle            // returned C3
-    -- getObjectClass (
-    --   ObjectHandle theObject)    // supplied C1
-    -- throw (
-    --   ObjectNotKnown,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   RTIinternalError);
-    -- 
+getObjectClass :: RTIAmbassador fedAmb -> ObjectHandle -> IO ObjectClassHandle
+getObjectClass rtiAmb theObject =
+    withRTIAmbassador rtiAmb $ \rtiAmb -> 
+        wrapExceptions (wrap_getObjectClass rtiAmb theObject)
+
     -- // 10.18
     -- SpaceHandle                             // returned C3
     -- getInteractionRoutingSpaceHandle (
