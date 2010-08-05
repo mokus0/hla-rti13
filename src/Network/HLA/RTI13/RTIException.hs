@@ -9,7 +9,6 @@ import System.IO.Unsafe
 import qualified Data.IntMap as IM
 import Data.StateRef
 import Foreign.C.String
-import Foreign.Ptr
 import Foreign
 import Unsafe.Coerce
 import Data.Generics

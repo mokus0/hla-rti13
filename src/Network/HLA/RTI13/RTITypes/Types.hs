@@ -9,7 +9,6 @@
   #-}
 module Network.HLA.RTI13.RTITypes.Types where
 
-import Data.Bits
 import Data.Generics
 import Foreign
 import Network.HLA.RTI13.BaseTypes

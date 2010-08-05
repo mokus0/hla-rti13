@@ -8,8 +8,6 @@ import Data.Int
 import Data.Word
 import Data.Bits
 import Data.Generics
-import Control.Exception
-import System.IO
 import Foreign.Storable
 import Text.Printf
 

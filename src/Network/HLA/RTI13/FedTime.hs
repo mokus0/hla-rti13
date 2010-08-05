@@ -13,7 +13,6 @@ import Foreign.C
 import Data.StateRef
 import Control.Exception
 
-import Network.HLA.RTI13.BaseTypes
 import Network.HLA.RTI13.RTITypes
 import Network.HLA.RTI13.RTIException
 
