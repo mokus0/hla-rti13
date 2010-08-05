@@ -586,16 +586,12 @@ getObjectInstanceHandle rtiAmb theName =
         withCString theName $ \theName ->
             wrapExceptions (wrap_getObjectInstanceHandle rtiAmb theName)
 
-    -- // 10.11
-    -- char *                     // returned C6  
-    -- getObjectInstanceName (
-    --   ObjectHandle theHandle)  // supplied C1
-    -- throw (
-    --   ObjectNotKnown,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   RTIinternalError);
-    -- 
+getObjectInstanceName :: RTIAmbassador fedAmb -> ObjectHandle -> IO ByteString
+getObjectInstanceName rtiAmb theHandle = do
+    cStr <- withRTIAmbassador rtiAmb $ \rtiAmb ->
+        wrapExceptions (wrap_getObjectInstanceName rtiAmb theHandle)
+    unsafePackNewCString cStr
+
 getRoutingSpaceHandle :: RTIAmbassador fedAmb -> String -> IO SpaceHandle
 getRoutingSpaceHandle rtiAmb theName =
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
