@@ -15,7 +15,8 @@ import Control.Exception (bracket_)
 import Data.StateRef
 import System.Mem
 import Data.List
-import Data.ByteString (ByteString)
+import Data.ByteString (ByteString, packCString)
+import Data.ByteString.Unsafe (unsafeUseAsCString)
 
 getRTIAmbassador :: IO (RTIAmbassador fedAmb)
 getRTIAmbassador = do
@@ -28,24 +29,24 @@ getRTIAmbassador = do
 -- Federation Management Services --
 ------------------------------------
 
-createFederationExecution :: RTIAmbassador fedAmb -> String -> String -> IO ()
+createFederationExecution :: RTIAmbassador fedAmb -> ByteString -> ByteString -> IO ()
 createFederationExecution rtiAmb executionName fed = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
-        withCString executionName $ \executionName ->
-            withCString fed $ \fed ->
+        unsafeUseAsCString executionName $ \executionName ->
+            unsafeUseAsCString fed $ \fed ->
                 wrapExceptions (wrap_createFederationExecution rtiAmb executionName fed)
 
-destroyFederationExecution :: RTIAmbassador fedAmb -> String -> IO ()
+destroyFederationExecution :: RTIAmbassador fedAmb -> ByteString -> IO ()
 destroyFederationExecution rtiAmb executionName = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
-        withCString executionName $ \executionName ->
+        unsafeUseAsCString executionName $ \executionName ->
             wrapExceptions (wrap_destroyFederationExecution rtiAmb executionName)
 
-joinFederationExecution :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> String -> String -> fedAmb -> IO FederateHandle
+joinFederationExecution :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> ByteString -> ByteString -> fedAmb -> IO FederateHandle
 joinFederationExecution rtiAmb yourName executionName fedAmb = do
     fedHandle <- withRTIAmbassador rtiAmb $ \rtiAmb -> 
-        withCString yourName $ \yourName ->
-            withCString executionName $ \executionName ->
+        unsafeUseAsCString yourName $ \yourName ->
+            unsafeUseAsCString executionName $ \executionName ->
                 withFederateAmbassador fedAmb $ \fedAmb ->
                     wrapExceptions (wrap_joinFederationExecution rtiAmb yourName executionName fedAmb)
     writeReference (rtiFedAmb rtiAmb) (Just fedAmb)
@@ -58,26 +59,26 @@ resignFederationExecution rtiAmb resignAction = do
     writeReference (rtiFedAmb rtiAmb) Nothing
     performGC
 
-registerFederationSynchronizationPoint :: RTIAmbassador fedAmb -> String -> String -> Maybe FederateHandleSet -> IO ()
+registerFederationSynchronizationPoint :: RTIAmbassador fedAmb -> ByteString -> ByteString -> Maybe FederateHandleSet -> IO ()
 registerFederationSynchronizationPoint rtiAmb label theTag mbSyncSet = do
     withRTIAmbassador rtiAmb $ \rtiAmb ->
-        withCString label $ \label ->
-            withCString theTag $ \theTag -> case mbSyncSet of
+        unsafeUseAsCString label $ \label ->
+            unsafeUseAsCString theTag $ \theTag -> case mbSyncSet of
                     Nothing ->
                         wrapExceptions (wrap_registerFederationSynchronizationPoint rtiAmb label theTag)
                     Just syncSet -> withFederateHandleSet syncSet $ \syncSet ->
                         wrapExceptions (wrap_registerFederationSynchronizationPoint_with_syncSet rtiAmb label theTag syncSet)
 
-synchronizationPointAchieved :: RTIAmbassador fedAmb -> String -> IO ()
+synchronizationPointAchieved :: RTIAmbassador fedAmb -> ByteString -> IO ()
 synchronizationPointAchieved rtiAmb label =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
-        withCString label $ \label ->
+        unsafeUseAsCString label $ \label ->
             wrapExceptions (wrap_synchronizationPointAchieved rtiAmb label)
 
-requestFederationSave :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> String -> Maybe (FedTime fedAmb) -> IO ()
+requestFederationSave :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> ByteString -> Maybe (FedTime fedAmb) -> IO ()
 requestFederationSave rtiAmb label mbTime =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
-        withCString label $ \label -> case mbTime of
+        unsafeUseAsCString label $ \label -> case mbTime of
             Nothing ->
                 wrapExceptions (wrap_requestFederationSave rtiAmb label)
             Just theTime -> 
@@ -96,10 +97,10 @@ federateSaveNotComplete :: RTIAmbassador fedAmb -> IO ()
 federateSaveNotComplete rtiAmb = withRTIAmbassador rtiAmb
     (wrapExceptions . wrap_federateSaveNotComplete)
 
-requestFederationRestore :: RTIAmbassador fedAmb -> String -> IO ()
+requestFederationRestore :: RTIAmbassador fedAmb -> ByteString -> IO ()
 requestFederationRestore rtiAmb label =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
-        withCString label $ \label ->
+        unsafeUseAsCString label $ \label ->
             wrapExceptions (wrap_requestFederationRestore rtiAmb label)
 
 federateRestoreComplete :: RTIAmbassador fedAmb -> IO ()
@@ -160,61 +161,61 @@ unsubscribeInteractionClass rtiAmb theClass =
 -- Object Management Services --
 --------------------------------
 
-registerObjectInstance :: RTIAmbassador fedAmb -> ObjectClassHandle -> Maybe String -> IO ObjectHandle
+registerObjectInstance :: RTIAmbassador fedAmb -> ObjectClassHandle -> Maybe ByteString -> IO ObjectHandle
 registerObjectInstance rtiAmb theClass mbObject =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         case mbObject of
             Just theObject  ->
-                withCString theObject $ \theObject ->
+                unsafeUseAsCString theObject $ \theObject ->
                     wrapExceptions (wrap_registerObjectInstance_withName rtiAmb theClass theObject)
             Nothing         ->
                 wrapExceptions (wrap_registerObjectInstance rtiAmb theClass)
 
 
-updateAttributeValuesAtTime :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> ObjectHandle -> AttributeHandleValuePairSet -> FedTime fedAmb -> String -> IO EventRetractionHandle
+updateAttributeValuesAtTime :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> ObjectHandle -> AttributeHandleValuePairSet -> FedTime fedAmb -> ByteString -> IO EventRetractionHandle
 updateAttributeValuesAtTime rtiAmb theObject theAttributes theTime theTag =
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
         withAttributeHandleValuePairSet theAttributes $ \theAttributes ->
             withFedTime_ theTime $ \theTime ->
-                withCString theTag $ \theTag ->
+                unsafeUseAsCString theTag $ \theTag ->
                     withEventRetractionHandleReturn $ \u fh ->
                         wrapExceptions (wrap_updateAttributeValuesAtTime rtiAmb theObject theAttributes theTime theTag u fh)
 
-updateAttributeValues :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> ObjectHandle -> AttributeHandleValuePairSet -> String -> IO ()
+updateAttributeValues :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> ObjectHandle -> AttributeHandleValuePairSet -> ByteString -> IO ()
 updateAttributeValues rtiAmb theObject theAttributes theTag =
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
         withAttributeHandleValuePairSet theAttributes $ \theAttributes ->
-            withCString theTag $ \theTag ->
+            unsafeUseAsCString theTag $ \theTag ->
                 wrapExceptions (wrap_updateAttributeValues rtiAmb theObject theAttributes theTag)
 
-sendInteractionAtTime :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> InteractionClassHandle -> ParameterHandleValuePairSet -> FedTime fedAmb -> String -> IO EventRetractionHandle
+sendInteractionAtTime :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> InteractionClassHandle -> ParameterHandleValuePairSet -> FedTime fedAmb -> ByteString -> IO EventRetractionHandle
 sendInteractionAtTime rtiAmb theInteraction theParameters theTime theTag = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withParameterHandleValuePairSet theParameters $ \theParameters ->
             withFedTime_ theTime $ \ theTime ->
-                withCString theTag $ \theTag -> 
+                unsafeUseAsCString theTag $ \theTag -> 
                     withEventRetractionHandleReturn $ \u fh ->
                         wrapExceptions (wrap_sendInteractionAtTime rtiAmb theInteraction theParameters theTime theTag u fh)
 
-sendInteraction :: RTIAmbassador fedAmb -> InteractionClassHandle -> ParameterHandleValuePairSet -> String -> IO ()
+sendInteraction :: RTIAmbassador fedAmb -> InteractionClassHandle -> ParameterHandleValuePairSet -> ByteString -> IO ()
 sendInteraction rtiAmb theInteraction theParameters theTag = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withParameterHandleValuePairSet theParameters $ \theParameters ->
-            withCString theTag $ \theTag -> 
+            unsafeUseAsCString theTag $ \theTag -> 
                 wrapExceptions (wrap_sendInteraction rtiAmb theInteraction theParameters theTag)
 
-deleteObjectInstanceAtTime :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> ObjectHandle -> FedTime fedAmb -> String -> IO EventRetractionHandle
+deleteObjectInstanceAtTime :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> ObjectHandle -> FedTime fedAmb -> ByteString -> IO EventRetractionHandle
 deleteObjectInstanceAtTime rtiAmb theObject theTime theTag = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withFedTime_ theTime $ \ theTime ->
-            withCString theTag $ \theTag -> 
+            unsafeUseAsCString theTag $ \theTag -> 
                 withEventRetractionHandleReturn $ \u fh ->
                     wrapExceptions (wrap_deleteObjectInstanceAtTime rtiAmb theObject theTime theTag u fh)
 
-deleteObjectInstance :: RTIAmbassador fedAmb -> ObjectHandle -> String -> IO ()
+deleteObjectInstance :: RTIAmbassador fedAmb -> ObjectHandle -> ByteString -> IO ()
 deleteObjectInstance rtiAmb theObject theTag = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
-        withCString theTag $ \theTag -> 
+        unsafeUseAsCString theTag $ \theTag -> 
             wrapExceptions (wrap_deleteObjectInstance rtiAmb theObject theTag)
 
 localDeleteObjectInstance :: RTIAmbassador fedAmb -> ObjectHandle -> IO ()
@@ -255,18 +256,18 @@ unconditionalAttributeOwnershipDivestiture rtiAmb theObject theAttributes =
         withAttributeHandleSet theAttributes $ \theAttributes ->
             wrapExceptions (wrap_unconditionalAttributeOwnershipDivestiture rtiAmb theObject theAttributes)
 
-negotiatedAttributeOwnershipDivestiture :: RTIAmbassador fedAmb -> ObjectHandle -> AttributeHandleSet -> String -> IO ()
+negotiatedAttributeOwnershipDivestiture :: RTIAmbassador fedAmb -> ObjectHandle -> AttributeHandleSet -> ByteString -> IO ()
 negotiatedAttributeOwnershipDivestiture rtiAmb theObject theAttributes theTag =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withAttributeHandleSet theAttributes $ \theAttributes ->
-            withCString theTag $ \theTag ->
+            unsafeUseAsCString theTag $ \theTag ->
                 wrapExceptions (wrap_negotiatedAttributeOwnershipDivestiture rtiAmb theObject theAttributes theTag)
 
-attributeOwnershipAcquisition :: RTIAmbassador fedAmb -> ObjectHandle -> AttributeHandleSet -> String -> IO ()
+attributeOwnershipAcquisition :: RTIAmbassador fedAmb -> ObjectHandle -> AttributeHandleSet -> ByteString -> IO ()
 attributeOwnershipAcquisition rtiAmb theObject theAttributes theTag =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withAttributeHandleSet theAttributes $ \theAttributes ->
-            withCString theTag $ \theTag ->
+            unsafeUseAsCString theTag $ \theTag ->
                 wrapExceptions (wrap_attributeOwnershipAcquisition rtiAmb theObject theAttributes theTag)
 
 attributeOwnershipAcquisitionIfAvailable :: RTIAmbassador fedAmb -> ObjectHandle -> AttributeHandleSet -> IO ()
@@ -452,7 +453,7 @@ deleteRegion :: RTIAmbassador fedAmb -> Region -> IO ()
 deleteRegion rtiAmb (Region theRegion) = finalizeForeignPtr theRegion
 
 
-registerObjectInstanceWithRegion :: RTIAmbassador t -> ObjectClassHandle -> Maybe String -> [(AttributeHandle, Region)] -> IO ObjectHandle
+registerObjectInstanceWithRegion :: RTIAmbassador t -> ObjectClassHandle -> Maybe ByteString -> [(AttributeHandle, Region)] -> IO ObjectHandle
 registerObjectInstanceWithRegion rtiAmb theClass mbObject theHandles = do
     let (theAttributes, theRegions) = unzip theHandles
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
@@ -462,7 +463,7 @@ registerObjectInstanceWithRegion rtiAmb theClass mbObject theHandles = do
                     case mbObject of
                         Nothing ->
                             wrapExceptions (wrap_registerObjectInstanceWithRegion          rtiAmb theClass           theAttributes theRegions (fromIntegral theNumberOfHandles))
-                        Just theObject -> withCString theObject $ \theObject ->
+                        Just theObject -> unsafeUseAsCString theObject $ \theObject ->
                             wrapExceptions (wrap_registerObjectInstanceWithRegion_withName rtiAmb theClass theObject theAttributes theRegions (fromIntegral theNumberOfHandles))
 
 associateRegionForUpdates :: RTIAmbassador fedAmb -> Region -> ObjectHandle -> IO ()
@@ -503,21 +504,21 @@ unsubscribeInteractionClassWithRegion rtiAmb theClass theRegion =
         withRegion theRegion $ \theRegion ->
             wrapExceptions (wrap_unsubscribeInteractionClassWithRegion rtiAmb theClass theRegion)
 
-sendInteractionWithRegionAtTime :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> InteractionClassHandle -> ParameterHandleValuePairSet -> FedTime fedAmb -> String -> Region -> IO EventRetractionHandle
+sendInteractionWithRegionAtTime :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> InteractionClassHandle -> ParameterHandleValuePairSet -> FedTime fedAmb -> ByteString -> Region -> IO EventRetractionHandle
 sendInteractionWithRegionAtTime rtiAmb theInteraction theParameters theTime theTag theRegion =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withParameterHandleValuePairSet theParameters $ \theParameters ->
             withFedTime_ theTime $ \theTime ->
-                withCString theTag $ \theTag ->
+                unsafeUseAsCString theTag $ \theTag ->
                     withRegion theRegion $ \theRegion ->
                         withEventRetractionHandleReturn $ \u fh ->
                             wrapExceptions (wrap_sendInteractionWithRegionAtTime rtiAmb theInteraction theParameters theTime theTag theRegion u fh)
 
-sendInteractionWithRegion :: RTIAmbassador fedAmb -> InteractionClassHandle -> ParameterHandleValuePairSet -> String -> Region -> IO ()
+sendInteractionWithRegion :: RTIAmbassador fedAmb -> InteractionClassHandle -> ParameterHandleValuePairSet -> ByteString -> Region -> IO ()
 sendInteractionWithRegion rtiAmb theInteraction theParameters theTag theRegion =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withParameterHandleValuePairSet theParameters $ \theParameters ->
-            withCString theTag $ \theTag ->
+            unsafeUseAsCString theTag $ \theTag ->
                 withRegion theRegion $ \theRegion ->
                     wrapExceptions (wrap_sendInteractionWithRegion rtiAmb theInteraction theParameters theTag theRegion)
 
@@ -532,10 +533,10 @@ requestClassAttributeValueUpdateWithRegion rtiAmb theClass theAttributes theRegi
 -- RTI Support Services --
 --------------------------
 
-getObjectClassHandle :: RTIAmbassador fedAmb -> String -> IO ObjectClassHandle
+getObjectClassHandle :: RTIAmbassador fedAmb -> ByteString -> IO ObjectClassHandle
 getObjectClassHandle rtiAmb theName = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
-        withCString theName $ \theName ->
+        unsafeUseAsCString theName $ \theName ->
             wrapExceptions (wrap_getObjectClassHandle rtiAmb theName)
 
 getObjectClassName :: RTIAmbassador fedAmb -> ObjectClassHandle -> IO ByteString
@@ -544,10 +545,10 @@ getObjectClassName rtiAmb theHandle = do
         wrapExceptions (wrap_getObjectClassName rtiAmb theHandle)
     unsafePackNewCString cStr
     
-getAttributeHandle :: RTIAmbassador fedAmb -> String -> ObjectClassHandle -> IO AttributeHandle
+getAttributeHandle :: RTIAmbassador fedAmb -> ByteString -> ObjectClassHandle -> IO AttributeHandle
 getAttributeHandle rtiAmb theName whichClass = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
-        withCString theName $ \theName -> 
+        unsafeUseAsCString theName $ \theName -> 
             wrapExceptions (wrap_getAttributeHandle rtiAmb theName whichClass)
 
 getAttributeName :: RTIAmbassador fedAmb -> AttributeHandle -> ObjectClassHandle -> IO ByteString
@@ -556,10 +557,10 @@ getAttributeName rtiAmb theHandle whichClass = do
         wrapExceptions (wrap_getAttributeName rtiAmb theHandle whichClass)
     unsafePackNewCString cStr
 
-getInteractionClassHandle :: RTIAmbassador fedAmb -> String -> IO InteractionClassHandle
+getInteractionClassHandle :: RTIAmbassador fedAmb -> ByteString -> IO InteractionClassHandle
 getInteractionClassHandle rtiAmb theName = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
-        withCString theName $ \theName ->
+        unsafeUseAsCString theName $ \theName ->
             wrapExceptions (wrap_getInteractionClassHandle rtiAmb theName)
 
 getInteractionClassName :: RTIAmbassador fedAmb -> InteractionClassHandle -> IO ByteString
@@ -568,10 +569,10 @@ getInteractionClassName rtiAmb theHandle = do
         wrapExceptions (wrap_getInteractionClassName rtiAmb theHandle)
     unsafePackNewCString cStr
 
-getParameterHandle :: RTIAmbassador fedAmb -> String -> InteractionClassHandle -> IO ParameterHandle
+getParameterHandle :: RTIAmbassador fedAmb -> ByteString -> InteractionClassHandle -> IO ParameterHandle
 getParameterHandle rtiAmb theName whichClass =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
-        withCString theName $ \theName ->
+        unsafeUseAsCString theName $ \theName ->
             wrapExceptions (wrap_getParameterHandle rtiAmb theName whichClass)
 
 getParameterName :: RTIAmbassador fedAmb -> ParameterHandle -> InteractionClassHandle -> IO ByteString
@@ -580,10 +581,10 @@ getParameterName rtiAmb theHandle whichClass = do
         wrapExceptions (wrap_getParameterName rtiAmb theHandle whichClass)
     unsafePackNewCString cStr
 
-getObjectInstanceHandle :: RTIAmbassador fedAmb -> String -> IO ObjectHandle
+getObjectInstanceHandle :: RTIAmbassador fedAmb -> ByteString -> IO ObjectHandle
 getObjectInstanceHandle rtiAmb theName =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
-        withCString theName $ \theName ->
+        unsafeUseAsCString theName $ \theName ->
             wrapExceptions (wrap_getObjectInstanceHandle rtiAmb theName)
 
 getObjectInstanceName :: RTIAmbassador fedAmb -> ObjectHandle -> IO ByteString
@@ -592,10 +593,10 @@ getObjectInstanceName rtiAmb theHandle = do
         wrapExceptions (wrap_getObjectInstanceName rtiAmb theHandle)
     unsafePackNewCString cStr
 
-getRoutingSpaceHandle :: RTIAmbassador fedAmb -> String -> IO SpaceHandle
+getRoutingSpaceHandle :: RTIAmbassador fedAmb -> ByteString -> IO SpaceHandle
 getRoutingSpaceHandle rtiAmb theName =
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
-        withCString theName $ \theName ->
+        unsafeUseAsCString theName $ \theName ->
             wrapExceptions (wrap_getRoutingSpaceHandle rtiAmb theName)
 
 getRoutingSpaceName :: RTIAmbassador fedAmb -> SpaceHandle -> IO ByteString
@@ -604,10 +605,10 @@ getRoutingSpaceName rtiAmb theHandle = do
         wrapExceptions (wrap_getRoutingSpaceName rtiAmb theHandle)
     unsafePackNewCString cStr
 
-getDimensionHandle :: RTIAmbassador fedAmb -> String -> SpaceHandle -> IO DimensionHandle
+getDimensionHandle :: RTIAmbassador fedAmb -> ByteString -> SpaceHandle -> IO DimensionHandle
 getDimensionHandle rtiAmb theName whichSpace =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
-        withCString theName $ \theName ->
+        unsafeUseAsCString theName $ \theName ->
             wrapExceptions (wrap_getDimensionHandle rtiAmb theName whichSpace)
 
 getDimensionName :: RTIAmbassador fedAmb -> DimensionHandle -> SpaceHandle -> IO ByteString
@@ -631,10 +632,10 @@ getInteractionRoutingSpaceHandle rtiAmb theHandle =
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
         wrapExceptions (wrap_getInteractionRoutingSpaceHandle rtiAmb theHandle)
 
-getTransportationHandle :: RTIAmbassador fedAmb -> String -> IO TransportationHandle
+getTransportationHandle :: RTIAmbassador fedAmb -> ByteString -> IO TransportationHandle
 getTransportationHandle rtiAmb theName =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
-        withCString theName $ \theName ->
+        unsafeUseAsCString theName $ \theName ->
             wrapExceptions (wrap_getTransportationHandle rtiAmb theName)
 
 getTransportationName :: RTIAmbassador fedAmb -> TransportationHandle -> IO ByteString
@@ -643,10 +644,10 @@ getTransportationName rtiAmb theHandle = do
         wrapExceptions (wrap_getTransportationName rtiAmb theHandle)
     unsafePackNewCString cStr
 
-getOrderingHandle :: RTIAmbassador fedAmb -> String -> IO OrderingHandle
+getOrderingHandle :: RTIAmbassador fedAmb -> ByteString -> IO OrderingHandle
 getOrderingHandle rtiAmb theName =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
-        withCString theName $ \theName ->
+        unsafeUseAsCString theName $ \theName ->
             wrapExceptions (wrap_getOrderingHandle rtiAmb theName)
 
 getOrderingName :: RTIAmbassador fedAmb -> OrderingHandle -> IO ByteString
