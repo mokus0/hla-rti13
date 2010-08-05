@@ -637,16 +637,12 @@ getTransportationHandle rtiAmb theName =
         withCString theName $ \theName ->
             wrapExceptions (wrap_getTransportationHandle rtiAmb theName)
 
-    -- // 10.20
-    -- char *                            // returned C6 
-    -- getTransportationName (
-    --   TransportationHandle theHandle) // supplied C1
-    -- throw (
-    --   InvalidTransportationHandle,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   RTIinternalError);
-    -- 
+getTransportationName :: RTIAmbassador fedAmb -> TransportationHandle -> IO ByteString
+getTransportationName rtiAmb theHandle = do
+    cStr <- withRTIAmbassador rtiAmb $ \rtiAmb ->
+        wrapExceptions (wrap_getTransportationName rtiAmb theHandle)
+    unsafePackNewCString cStr
+
     -- // 10.21
     -- OrderingHandle         // returned C3
     -- getOrderingHandle (
