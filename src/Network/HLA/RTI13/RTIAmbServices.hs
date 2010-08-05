@@ -574,18 +574,12 @@ getParameterHandle rtiAmb theName whichClass =
         withCString theName $ \theName ->
             wrapExceptions (wrap_getParameterHandle rtiAmb theName whichClass)
 
-    -- // 10.9
-    -- char *                               // returned C6
-    -- getParameterName (
-    --   ParameterHandle        theHandle,  // supplied C1
-    --   InteractionClassHandle whichClass) // supplied C1
-    -- throw (
-    --   InteractionClassNotDefined,
-    --   InteractionParameterNotDefined,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   RTIinternalError);
-    -- 
+getParameterName :: RTIAmbassador fedAmb -> ParameterHandle -> InteractionClassHandle -> IO ByteString
+getParameterName rtiAmb theHandle whichClass = do
+    cStr <- withRTIAmbassador rtiAmb $ \rtiAmb ->
+        wrapExceptions (wrap_getParameterName rtiAmb theHandle whichClass)
+    unsafePackNewCString cStr
+
     -- // 10.10
     -- ObjectHandle                 // returned C3
     -- getObjectInstanceHandle (
