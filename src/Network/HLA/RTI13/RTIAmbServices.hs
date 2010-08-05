@@ -643,26 +643,18 @@ getTransportationName rtiAmb theHandle = do
         wrapExceptions (wrap_getTransportationName rtiAmb theHandle)
     unsafePackNewCString cStr
 
-    -- // 10.21
-    -- OrderingHandle         // returned C3
-    -- getOrderingHandle (
-    --   const char *theName) // supplied C4
-    -- throw (
-    --   NameNotFound,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   RTIinternalError);
-    -- 
-    -- // 10.22
-    -- char *                      // returned C6 
-    -- getOrderingName (
-    --   OrderingHandle theHandle) // supplied C1
-    -- throw (
-    --   InvalidOrderingHandle,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   RTIinternalError);
-    -- 
+getOrderingHandle :: RTIAmbassador fedAmb -> String -> IO OrderingHandle
+getOrderingHandle rtiAmb theName =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        withCString theName $ \theName ->
+            wrapExceptions (wrap_getOrderingHandle rtiAmb theName)
+
+getOrderingName :: RTIAmbassador fedAmb -> OrderingHandle -> IO ByteString
+getOrderingName rtiAmb theHandle = do
+    cStr <- withRTIAmbassador rtiAmb $ \rtiAmb ->
+        wrapExceptions (wrap_getOrderingName rtiAmb theHandle)
+    unsafePackNewCString cStr
+
     -- // 10.23
     -- void enableClassRelevanceAdvisorySwitch()
     -- throw(
