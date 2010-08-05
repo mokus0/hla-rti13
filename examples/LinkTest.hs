@@ -8,5 +8,5 @@ import Network.HLA.RTI13.RTITypes.FFI
 -- should include info about where to find the libraries needed.
 main = do
     putStrLn ("testing constants: " ++ show [rtiVersion, defaultSpaceName, show wrap_RTI_MAJOR_VERSION])
-    rti_ambassador <- getRTIAmbassador :: IO (RTIAmbassador ())
+    rti_ambassador <- newRTIAmbassador :: IO (RTIAmbassador ())
     putStrLn ("got rti_ambassador: " ++ show rti_ambassador)

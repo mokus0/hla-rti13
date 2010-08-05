@@ -10,25 +10,35 @@ import Network.HLA.RTI13.RTIAmbServices.FFI as FFI
 import Network.HLA.RTI13.RTIException
 import Foreign hiding (newForeignPtr)
 import Foreign.Concurrent
-import Foreign.C.String
 import Control.Exception (bracket_)
 import Data.StateRef
 import System.Mem
 import Data.List
-import Data.ByteString (ByteString, packCString)
+import Data.ByteString (ByteString)
 import Data.ByteString.Unsafe (unsafeUseAsCString)
 
-getRTIAmbassador :: IO (RTIAmbassador fedAmb)
-getRTIAmbassador = do
+-- |Create a new 'RTIAmbassador', which is the object that manages the 
+-- connection to the RTI.  There should be exactly one 'RTIAmbassador'
+-- and one 'FederateAmbassador' per federate.  Some RTIs only support one
+-- federate per application instance.
+newRTIAmbassador :: IO (RTIAmbassador fedAmb)
+newRTIAmbassador = do
     rtiAmb <- new_RTIambassador
     rtiAmb <- newForeignPtr rtiAmb (delete_RTIambassador rtiAmb)
     fedAmb <- newReference Nothing
     return (RTIAmbassador rtiAmb fedAmb)
 
-------------------------------------
--- Federation Management Services --
-------------------------------------
+--------------------------------------
+-- * Federation Management Services
+--------------------------------------
 
+-- |Attempt to create a federation on the RTI.  If the federation already exists,
+-- a 'FederationExecutionAlreadyExists' exception will be thrown.
+-- 
+-- Usage:
+-- 
+-- > createFederationExecution fedAmb executionName fedFile
+-- 
 createFederationExecution :: RTIAmbassador fedAmb -> ByteString -> ByteString -> IO ()
 createFederationExecution rtiAmb executionName fed = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
@@ -36,12 +46,24 @@ createFederationExecution rtiAmb executionName fed =
             unsafeUseAsCString fed $ \fed ->
                 wrapExceptions (wrap_createFederationExecution rtiAmb executionName fed)
 
+-- |Attempt to halt a federation on the RTI.  If the federation does not exist,
+-- a 'FederationExecutionDoesNotExist' exception will be thrown.
+-- 
+-- Usage:
+-- 
+-- > destroyFederationExecution fedAmb executionName
+-- 
 destroyFederationExecution :: RTIAmbassador fedAmb -> ByteString -> IO ()
 destroyFederationExecution rtiAmb executionName = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         unsafeUseAsCString executionName $ \executionName ->
             wrapExceptions (wrap_destroyFederationExecution rtiAmb executionName)
 
+-- |Attempt to join a federation execution.
+-- 
+-- Usage:
+-- 
+-- > joinFederationExecution rtiAmb federateName executionName fedAmb
 joinFederationExecution :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> ByteString -> ByteString -> fedAmb -> IO FederateHandle
 joinFederationExecution rtiAmb yourName executionName fedAmb = do
     fedHandle <- withRTIAmbassador rtiAmb $ \rtiAmb -> 
@@ -52,6 +74,8 @@ joinFederationExecution rtiAmb yourName executionName fedAmb = do
     writeReference (rtiFedAmb rtiAmb) (Just fedAmb)
     return fedHandle
 
+-- |Attempt to resign from a federation execution.  The 'ResignAction' 
+-- parameter describes how attributes owned by the federate will be disposed of.
 resignFederationExecution :: RTIAmbassador fedAmb -> ResignAction -> IO ()
 resignFederationExecution rtiAmb resignAction = do
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
@@ -111,9 +135,9 @@ federateRestoreNotComplete :: RTIAmbassador fedAmb -> IO ()
 federateRestoreNotComplete rtiAmb = withRTIAmbassador rtiAmb
     (wrapExceptions . wrap_federateRestoreNotComplete)
 
--------------------------------------
--- Declaration Management Services --
--------------------------------------
+--------------------------------------
+-- * Declaration Management Services
+--------------------------------------
 
 publishObjectClass :: RTIAmbassador fedAmb -> ObjectClassHandle -> AttributeHandleSet -> IO ()
 publishObjectClass rtiAmb theClass attributeList =
@@ -157,9 +181,9 @@ unsubscribeInteractionClass rtiAmb theClass =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (wrap_unsubscribeInteractionClass rtiAmb theClass)
 
---------------------------------
--- Object Management Services --
---------------------------------
+---------------------------------
+-- * Object Management Services
+---------------------------------
 
 registerObjectInstance :: RTIAmbassador fedAmb -> ObjectClassHandle -> Maybe ByteString -> IO ObjectHandle
 registerObjectInstance rtiAmb theClass mbObject =
@@ -246,9 +270,9 @@ requestClassAttributeValueUpdate rtiAmb theClass theAttributes =
         withAttributeHandleSet theAttributes $ \theAttributes ->
             wrapExceptions (wrap_requestClassAttributeValueUpdate rtiAmb theClass theAttributes)
 
------------------------------------
--- Ownership Management Services --
------------------------------------
+------------------------------------
+-- * Ownership Management Services
+------------------------------------
 
 unconditionalAttributeOwnershipDivestiture :: RTIAmbassador fedAmb -> ObjectHandle -> AttributeHandleSet -> IO ()
 unconditionalAttributeOwnershipDivestiture rtiAmb theObject theAttributes =
@@ -305,9 +329,9 @@ isAttributeOwnedByFederate rtiAmb theObject theAttributes =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (wrap_isAttributeOwnedByFederate rtiAmb theObject theAttributes)
 
-------------------------------
--- Time Management Services --
-------------------------------
+-------------------------------
+-- * Time Management Services
+-------------------------------
 
 withTimeRegulation :: FederateAmbassador fedAmb => RTIAmbassador fedAmb -> FedTime fedAmb -> FedTime fedAmb -> IO a -> IO a
 withTimeRegulation rtiAmb theFederateTime theLookahead regulatedAction =
@@ -424,9 +448,9 @@ changeInteractionOrderType rtiAmb theClass theType =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (wrap_changeInteractionOrderType rtiAmb theClass theType)
 
-----------------------------------
--- Data Distribution Management --
-----------------------------------
+-----------------------------------
+-- * Data Distribution Management
+-----------------------------------
 
 -- |TODO - think about this... can it ever call the finalizer for RTIAmbassador
 -- before the one for Region?  Probably.  Is that a problem?  Probably...
@@ -529,9 +553,9 @@ requestClassAttributeValueUpdateWithRegion rtiAmb theClass theAttributes theRegi
             withRegion theRegion $ \theRegion ->
                 wrapExceptions (wrap_requestClassAttributeValueUpdateWithRegion rtiAmb theClass theAttributes theRegion)
 
---------------------------
--- RTI Support Services --
---------------------------
+---------------------------
+-- * RTI Support Services
+---------------------------
 
 getObjectClassHandle :: RTIAmbassador fedAmb -> ByteString -> IO ObjectClassHandle
 getObjectClassHandle rtiAmb theName = 
