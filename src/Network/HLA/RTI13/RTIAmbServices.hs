@@ -711,14 +711,14 @@ getRegionToken rtiAmb theRegion =
         withRegion theRegion $ \theRegion ->
             wrapExceptions (wrap_getRegionToken rtiAmb theRegion)
 
-    -- Region *
-    -- getRegion(
-    --   RegionToken)
-    -- throw(
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   RegionNotKnown,
-    --   RTIinternalError);
-
-
-
+-- |WARNING: the header did not say anything about the return convention of 
+-- this function, so I don't really know how long these Region objects live.
+-- My guess would be that they live about as long as the RTIAmbassador, but
+-- I'm not sure.
+getRegion :: RTIAmbassador fedAmb -> RegionToken -> IO Region
+getRegion rtiAmb theRegion = do
+    regionPtr <- withRTIAmbassador rtiAmb $ \rtiAmb ->
+        wrapExceptions (wrap_getRegion rtiAmb theRegion)
+    fPtr <- newForeignPtr_ regionPtr
+    return (Region fPtr)
+    

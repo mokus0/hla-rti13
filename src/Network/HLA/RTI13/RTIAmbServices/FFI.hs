@@ -388,3 +388,6 @@ foreign import ccall "wrap/RTIAmbServices.h wrap_tick_minimum_maximum"
 
 foreign import ccall "wrap/RTIAmbServices.h wrap_getRegionToken"
     wrap_getRegionToken :: Ptr (RTIAmbassador fedAmb) -> Ptr Region -> Ptr (Ptr RTIException) -> IO RegionToken
+
+foreign import ccall "wrap/RTIAmbServices.h wrap_getRegion"
+    wrap_getRegion :: Ptr (RTIAmbassador fedAmb) -> RegionToken -> Ptr (Ptr RTIException) -> IO (Ptr Region)
