@@ -12,7 +12,7 @@ import Foreign
 -- same name with one installable callback for each method implementation.
 -- 
 -- From the haskell side, there is a function to install each callback.
--- For convenience, these functions con be chained together in a do-block 
+-- For convenience, these functions can be chained together in a do-block 
 -- defining multiple handlers, which can be installed en masse by the 
 -- 'setHandlers' function.  
 newtype HsFederateAmbassador t = HsFederateAmbassador (ForeignPtr (HsFederateAmbassador t))
