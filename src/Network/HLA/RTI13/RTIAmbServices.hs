@@ -795,23 +795,12 @@ tick_minimum_maximum rtiAmb min max =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (wrap_tick_minimum_maximum rtiAmb min max)
 
-    -- RTIambassador()
-    -- throw (
-    --   MemoryExhausted,
-    --   RTIinternalError);
-    -- 
-    -- ~RTIambassador()
-    -- throw (RTIinternalError);
-    -- 
-    -- RegionToken
-    -- getRegionToken(
-    --   Region *)
-    -- throw(
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   RegionNotKnown,
-    --   RTIinternalError);
-    -- 
+getRegionToken :: RTIAmbassador fedAmb -> Region -> IO RegionToken
+getRegionToken rtiAmb theRegion =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        withRegion theRegion $ \theRegion ->
+            wrapExceptions (wrap_getRegionToken rtiAmb theRegion)
+
     -- Region *
     -- getRegion(
     --   RegionToken)
