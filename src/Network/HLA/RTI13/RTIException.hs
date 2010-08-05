@@ -13,11 +13,12 @@ import Foreign
 import Unsafe.Coerce
 import Data.Generics
 import Control.Exception
+import Data.ByteString.Char8 (ByteString, packCString, unpack)
 
 data RTIException = RTIException
     { exceptionName   :: !RTIExceptionName
     , exceptionSerial :: !ULong
-    , exceptionReason :: !String
+    , exceptionReason :: !ByteString
     } deriving (Eq, Ord, Data, Typeable)
 
 instance Show RTIException where
@@ -26,7 +27,7 @@ instance Show RTIException where
             ( showsPrec 11 name 
             . showParen True (shows serial)
             . showString ": "
-            . shows reason
+            . showString (unpack reason)
             )
 instance Exception RTIException
 
@@ -57,7 +58,7 @@ importException pExc =
                 dissect_Exception pExc pSerial pReason pName
                 
                 serial <- peek pSerial
-                reason <- peekCString =<< peek pReason
+                reason <- packCString =<< peek pReason
                 name   <- lookupRTIExceptionName =<< peek pName
                 
                 return (RTIException name serial reason)
@@ -78,10 +79,9 @@ exceptionNameTable = unsafePerformIO (newReference IM.empty)
 
 readRTIExceptionName :: CString -> IO RTIExceptionName
 readRTIExceptionName name = do
-    name <- peekCString name
-    evaluate (length name)  -- is this necessary? (is peekCString strict or lazy?)
+    name <- packCString name
     
-    return $ case reads name of
+    return $ case reads (unpack name) of
         [(excName, "")] -> excName
         other           -> UnknownRTIException name
 
@@ -180,7 +180,7 @@ data RTIExceptionName
     | UnableToPerformSave
     | ValueCountExceeded
     | ValueLengthExceeded
-    | UnknownRTIException !String
+    | UnknownRTIException !ByteString
     deriving (Eq, Ord, Read, Show, Data, Typeable)
 
 -- selectors for catchJust
