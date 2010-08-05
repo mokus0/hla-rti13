@@ -598,20 +598,11 @@ getRoutingSpaceHandle rtiAmb theName =
         withCString theName $ \theName ->
             wrapExceptions (wrap_getRoutingSpaceHandle rtiAmb theName)
 
-    -- // 10.13
-    -- char *                         // returned C6
-    -- getRoutingSpaceName (
-    --    //
-    --    // This const was removed for the RTI 1.3 NG to work around a limitation of
-    --    // the Sun 4.2 C++ compiler regarding template instantiation.  The const
-    --    // is unnecessary.
-    --    //
-    --    /* const */ SpaceHandle theHandle) // supplied C4
-    -- throw (
-    --   SpaceNotDefined,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   RTIinternalError);
+getRoutingSpaceName :: RTIAmbassador fedAmb -> SpaceHandle -> IO ByteString
+getRoutingSpaceName rtiAmb theHandle = do
+    cStr <- withRTIAmbassador rtiAmb $ \rtiAmb ->
+        wrapExceptions (wrap_getRoutingSpaceName rtiAmb theHandle)
+    unsafePackNewCString cStr
 
 getDimensionHandle :: RTIAmbassador fedAmb -> String -> SpaceHandle -> IO DimensionHandle
 getDimensionHandle rtiAmb theName whichSpace =
