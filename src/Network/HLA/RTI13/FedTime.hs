@@ -1,10 +1,4 @@
-{-# LANGUAGE
-        ForeignFunctionInterface,
-        EmptyDataDecls, 
-        MultiParamTypeClasses, FlexibleInstances,
-        TypeFamilies
-        
-  #-}
+{-# LANGUAGE MultiParamTypeClasses, TypeFamilies #-}
 module Network.HLA.RTI13.FedTime (RTIFedTime) where
 
 import Network.HLA.RTI13.FedTime.FFI
