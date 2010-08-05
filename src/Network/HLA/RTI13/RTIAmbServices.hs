@@ -550,17 +550,11 @@ getAttributeHandle rtiAmb theName whichClass =
         withCString theName $ \theName -> 
             wrapExceptions (wrap_getAttributeHandle rtiAmb theName whichClass)
 
-    -- // 10.5
-    -- char *                          // returned C6 
-    -- getAttributeName (
-    --   AttributeHandle   theHandle,  // supplied C1
-    --   ObjectClassHandle whichClass) // supplied C1
-    -- throw (
-    --   ObjectClassNotDefined,
-    --   AttributeNotDefined,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   RTIinternalError);
+getAttributeName :: RTIAmbassador fedAmb -> AttributeHandle -> ObjectClassHandle -> IO ByteString
+getAttributeName rtiAmb theHandle whichClass = do
+    cStr <- withRTIAmbassador rtiAmb $ \rtiAmb ->
+        wrapExceptions (wrap_getAttributeName rtiAmb theHandle whichClass)
+    unsafePackNewCString cStr
 
 getInteractionClassHandle :: RTIAmbassador fedAmb -> String -> IO InteractionClassHandle
 getInteractionClassHandle rtiAmb theName = 
