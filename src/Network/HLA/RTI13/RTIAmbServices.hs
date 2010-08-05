@@ -3,20 +3,22 @@ module Network.HLA.RTI13.RTIAmbServices
     , module Network.HLA.RTI13.RTIAmbServices
     ) where
 
+import Network.HLA.RTI13.RTIAmbServices.FFI (RTIAmbassador(..), withRTIAmbassador)
+import qualified Network.HLA.RTI13.RTIAmbServices.FFI as FFI
+
 import Network.HLA.RTI13.BaseTypes
 import Network.HLA.RTI13.OddsAndEnds
 import Network.HLA.RTI13.RTITypes
-import Network.HLA.RTI13.RTIAmbServices.FFI (RTIAmbassador(..), withRTIAmbassador)
-import qualified Network.HLA.RTI13.RTIAmbServices.FFI as FFI
 import Network.HLA.RTI13.RTIException
-import Foreign hiding (newForeignPtr)
-import Foreign.Concurrent
+
 import Control.Exception (bracket_)
-import Data.StateRef
-import System.Mem
-import Data.List
 import Data.ByteString (ByteString)
 import Data.ByteString.Unsafe (unsafeUseAsCString)
+import Data.List
+import Data.StateRef
+import Foreign hiding (newForeignPtr)
+import Foreign.Concurrent
+import System.Mem
 
 -- |Create a new 'RTIAmbassador', which is the object that manages the 
 -- connection to the RTI.  There should be exactly one 'RTIAmbassador'
