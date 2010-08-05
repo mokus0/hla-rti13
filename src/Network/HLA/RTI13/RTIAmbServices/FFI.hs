@@ -332,6 +332,9 @@ foreign import ccall unsafe "wrap/RTIambServices.h wrap_getRoutingSpaceName"
 foreign import ccall unsafe "wrap/RTIambServices.h wrap_getDimensionHandle"
     wrap_getDimensionHandle :: Ptr (RTIAmbassador fedAmb) -> CString -> SpaceHandle -> Ptr (Ptr RTIException) -> IO DimensionHandle
 
+foreign import ccall unsafe "wrap/RTIambServices.h wrap_getDimensionName"
+    wrap_getDimensionName :: Ptr (RTIAmbassador fedAmb) -> DimensionHandle -> SpaceHandle -> Ptr (Ptr RTIException) -> IO CString
+
 foreign import ccall "wrap/RTIAmbServices.h wrap_enableAttributeRelevanceAdvisorySwitch"
     wrap_enableAttributeRelevanceAdvisorySwitch :: Ptr (RTIAmbassador fedAmb) -> Ptr (Ptr RTIException) -> IO ()
 

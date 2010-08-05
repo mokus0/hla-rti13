@@ -610,18 +610,12 @@ getDimensionHandle rtiAmb theName whichSpace =
         withCString theName $ \theName ->
             wrapExceptions (wrap_getDimensionHandle rtiAmb theName whichSpace)
 
-    -- // 10.15
-    -- char *                        // returned C6
-    -- getDimensionName (
-    --   DimensionHandle theHandle,  // supplied C1
-    --   SpaceHandle     whichSpace) // supplied C1
-    -- throw (
-    --   SpaceNotDefined,
-    --   DimensionNotDefined,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   RTIinternalError);
-    -- 
+getDimensionName :: RTIAmbassador fedAmb -> DimensionHandle -> SpaceHandle -> IO ByteString
+getDimensionName rtiAmb theHandle whichSpace = do
+    cStr <- withRTIAmbassador rtiAmb $ \rtiAmb ->
+        wrapExceptions (wrap_getDimensionName rtiAmb theHandle whichSpace)
+    unsafePackNewCString cStr
+
     -- // 10.16
     -- SpaceHandle                      // returned C3
     -- getAttributeRoutingSpaceHandle (
