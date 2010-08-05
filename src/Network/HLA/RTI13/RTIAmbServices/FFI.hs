@@ -3,13 +3,13 @@
   #-}
 module Network.HLA.RTI13.RTIAmbServices.FFI where
 
+import Data.IORef
 import Foreign
 import Foreign.C
 import Foreign.C.String
 import Network.HLA.RTI13.BaseTypes
 import Network.HLA.RTI13.RTITypes
 import Network.HLA.RTI13.RTIException
-import Data.StateRef
 
 data RTIAmbassador fedAmb = RTIAmbassador
     { rtiAmbPtr :: ForeignPtr (RTIAmbassador fedAmb)
