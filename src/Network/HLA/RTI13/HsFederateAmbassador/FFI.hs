@@ -15,9 +15,9 @@ foreign import ccall "hsFederateAmb.h wrap_delete_HsFederateAmbassador"
     wrap_delete_HsFederateAmbassador :: Ptr (HsFederateAmbassador t) -> Ptr (Ptr RTIException) -> IO ()
 
 
-------------------------------------
--- Federation Management Services --
-------------------------------------
+-------------------------------------
+-- * Federation Management Services
+-------------------------------------
 
 foreign import ccall "hsFederateAmb.h hsfa_set_synchronizationPointRegistrationSucceeded"
     hsfa_set_synchronizationPointRegistrationSucceeded :: Ptr (HsFederateAmbassador t) -> FunPtr (CString -> IO ()) -> IO ()
@@ -58,9 +58,9 @@ foreign import ccall "hsFederateAmb.h hsfa_set_federationRestored"
 foreign import ccall "hsFederateAmb.h hsfa_set_federationNotRestored"
     hsfa_set_federationNotRestored :: Ptr (HsFederateAmbassador t) -> FunPtr (IO ()) -> IO ()
 
-----------------------------
--- Declaration Management --
-----------------------------
+-----------------------------
+-- * Declaration Management
+-----------------------------
 
 foreign import ccall "hsFederateAmb.h hsfa_set_turnInteractionsOn"
     hsfa_set_turnInteractionsOn :: Ptr (HsFederateAmbassador t) -> FunPtr (InteractionClassHandle -> IO ()) -> IO ()
@@ -101,9 +101,9 @@ foreign import ccall "hsFederateAmb.h hsfa_set_turnUpdatesOnForObjectInstance"
 foreign import ccall "hsFederateAmb.h hsfa_set_turnUpdatesOffForObjectInstance"
     hsfa_set_turnUpdatesOffForObjectInstance :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> IO ()) -> IO ()
 
------------------------------------
--- Ownership Management Services --
------------------------------------
+------------------------------------
+-- * Ownership Management Services
+------------------------------------
 
 foreign import ccall "hsFederateAmb.h hsfa_set_requestAttributeOwnershipAssumption"
     hsfa_set_requestAttributeOwnershipAssumption :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> CString -> IO ()) -> IO ()
@@ -132,9 +132,9 @@ foreign import ccall "hsFederateAmb.h hsfa_set_attributeIsNotOwned"
 foreign import ccall "hsFederateAmb.h hsfa_set_attributeOwnedByRTI"
     hsfa_set_attributeOwnedByRTI :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> AttributeHandle -> IO ()) -> IO ()
 
----------------------
--- Time Management --
----------------------
+----------------------
+-- * Time Management
+----------------------
 
 foreign import ccall "hsFederateAmb.h hsfa_set_timeRegulationEnabled"
     hsfa_set_timeRegulationEnabled :: Ptr (HsFederateAmbassador t) -> FunPtr (Ptr t -> IO ()) -> IO ()

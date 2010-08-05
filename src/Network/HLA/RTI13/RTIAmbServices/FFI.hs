@@ -30,9 +30,9 @@ delete_RTIambassador rtiAmb = wrapExceptions (wrap_delete_RTIambassador rtiAmb)
 foreign import ccall unsafe "wrap/RTIambServices.h wrap_delete_RTIambassador" 
     wrap_delete_RTIambassador :: Ptr (RTIAmbassador fedAmb) -> Ptr (Ptr RTIException) -> IO ()
 
-------------------------------------
--- Federation Management Services --
-------------------------------------
+-------------------------------------
+-- * Federation Management Services
+-------------------------------------
 
 foreign import ccall unsafe "wrap/RTIambServices.h wrap_createFederationExecution"
     wrap_createFederationExecution :: Ptr (RTIAmbassador fedAmb) -> CString -> CString -> Ptr (Ptr RTIException) -> IO ()
@@ -79,9 +79,9 @@ foreign import ccall unsafe "wrap/RTIambServices.h wrap_federateRestoreComplete"
 foreign import ccall unsafe "wrap/RTIambServices.h wrap_federateRestoreNotComplete"
     wrap_federateRestoreNotComplete :: Ptr (RTIAmbassador fedAmb) -> Ptr (Ptr RTIException) -> IO ()
 
--------------------------------------
--- Declaration Management Services --
--------------------------------------
+--------------------------------------
+-- * Declaration Management Services
+--------------------------------------
 
 foreign import ccall "wrap/RTIambServices.h wrap_publishObjectClass"
     wrap_publishObjectClass :: Ptr (RTIAmbassador fedAmb) -> ObjectClassHandle -> Ptr AttributeHandleSet -> Ptr (Ptr RTIException) -> IO ()
@@ -107,9 +107,9 @@ foreign import ccall "wrap/RTIAmbServices.h wrap_subscribeInteractionClass"
 foreign import ccall "wrap/RTIAmbServices.h wrap_unsubscribeInteractionClass"
     wrap_unsubscribeInteractionClass :: Ptr (RTIAmbassador fedAmb) -> InteractionClassHandle -> Ptr (Ptr RTIException) -> IO ()
 
---------------------------------
--- Object Management Services --
---------------------------------
+---------------------------------
+-- * Object Management Services
+---------------------------------
 
 foreign import ccall "wrap/RTIAmbServices.h wrap_registerObjectInstance_withName"
     wrap_registerObjectInstance_withName :: Ptr (RTIAmbassador fedAmb) -> ObjectClassHandle -> CString -> Ptr (Ptr RTIException) -> IO ObjectHandle
@@ -150,9 +150,9 @@ foreign import ccall "wrap/RTIAmbServices.h wrap_requestObjectAttributeValueUpda
 foreign import ccall "wrap/RTIAmbServices.h wrap_requestClassAttributeValueUpdate"
     wrap_requestClassAttributeValueUpdate :: Ptr (RTIAmbassador fedAmb) -> ObjectClassHandle -> Ptr AttributeHandleSet -> Ptr (Ptr RTIException) -> IO ()
 
------------------------------------
--- Ownership Management Services --
------------------------------------
+------------------------------------
+-- * Ownership Management Services
+------------------------------------
 
 foreign import ccall "wrap/RTIAmbServices.h wrap_unconditionalAttributeOwnershipDivestiture"
     wrap_unconditionalAttributeOwnershipDivestiture :: Ptr (RTIAmbassador fedAmb) -> ObjectHandle -> Ptr AttributeHandleSet -> Ptr (Ptr RTIException) -> IO ()
@@ -181,9 +181,9 @@ foreign import ccall "wrap/RTIAmbServices.h wrap_queryAttributeOwnership"
 foreign import ccall "wrap/RTIAmbServices.h wrap_isAttributeOwnedByFederate"
     wrap_isAttributeOwnedByFederate :: Ptr (RTIAmbassador fedAmb) -> ObjectHandle -> AttributeHandle -> Ptr (Ptr RTIException) -> IO Bool
 
-------------------------------
--- Time Management Services --
-------------------------------
+-------------------------------
+-- * Time Management Services
+-------------------------------
 
 foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_enableTimeRegulation" 
     wrap_enableTimeRegulation :: Ptr (RTIAmbassador fedAmb) -> Ptr (FedAmbTime fedAmb) -> Ptr (FedAmbTime fedAmb) -> Ptr (Ptr RTIException) -> IO ()
@@ -242,9 +242,9 @@ foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_changeAttributeOrderType
 foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_changeInteractionOrderType"
     wrap_changeInteractionOrderType :: Ptr (RTIAmbassador fedAmb) -> InteractionClassHandle -> OrderingHandle -> Ptr (Ptr RTIException) -> IO ()
 
-----------------------------------
--- Data Distribution Management --
-----------------------------------
+-----------------------------------
+-- * Data Distribution Management
+-----------------------------------
 
 foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_createRegion" 
     wrap_createRegion :: Ptr (RTIAmbassador fedAmb) -> SpaceHandle -> ULong -> Ptr (Ptr RTIException) -> IO (Ptr Region)
@@ -289,9 +289,9 @@ foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_requestClassAttributeVal
     wrap_requestClassAttributeValueUpdateWithRegion :: Ptr (RTIAmbassador fedAmb) -> ObjectClassHandle -> Ptr AttributeHandleSet -> Ptr Region -> Ptr (Ptr RTIException) -> IO ()
 
 
---------------------------
--- RTI Support Services --
---------------------------
+---------------------------
+-- * RTI Support Services
+---------------------------
 
 foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_getObjectClassHandle"
     wrap_getObjectClassHandle :: Ptr (RTIAmbassador fedAmb) -> CString -> Ptr (Ptr RTIException) -> IO ObjectClassHandle

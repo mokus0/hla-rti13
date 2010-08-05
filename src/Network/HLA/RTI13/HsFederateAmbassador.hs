@@ -34,9 +34,9 @@ newFedAmbWithHandlers handlers = do
     setHandlers fedAmb handlers
     return fedAmb
 
-------------------------------------
--- Federation Management Services --
-------------------------------------
+-------------------------------------
+-- * Federation Management Services
+-------------------------------------
 
 onSynchronizationPointRegistrationSucceeded :: (ByteString -> IO ()) -> FedHandlers t ()
 onSynchronizationPointRegistrationSucceeded synchronizationPointRegistrationSucceeded = do
@@ -152,9 +152,9 @@ onFederationNotRestored federationNotRestored = do
         hsfa_set_federationNotRestored fedAmb funPtr
 
 
-----------------------------
--- Declaration Management --
-----------------------------
+-----------------------------
+-- * Declaration Management
+-----------------------------
 
 onTurnInteractionsOn :: (InteractionClassHandle -> IO ()) -> FedHandlers t ()
 onTurnInteractionsOn turnInteractionsOn = do
@@ -170,9 +170,9 @@ onTurnInteractionsOff turnInteractionsOff = do
         funPtr <- mkFunPtr_IC_V turnInteractionsOff
         hsfa_set_turnInteractionsOff fedAmb funPtr
 
------------------------
--- Object Management --
------------------------
+------------------------
+-- * Object Management
+------------------------
 
 onStartRegistrationForObjectClass :: (ObjectClassHandle -> IO ()) -> FedHandlers t ()
 onStartRegistrationForObjectClass startRegistrationForObjectClass = do
@@ -290,9 +290,9 @@ onTurnUpdatesOffForObjectInstance turnUpdatesOffForObjectInstance = do
         hsfa_set_turnUpdatesOffForObjectInstance fedAmb funPtr
 
 
------------------------------------
--- Ownership Management Services --
------------------------------------
+------------------------------------
+-- * Ownership Management Services
+------------------------------------
 
 onRequestAttributeOwnershipAssumption :: (ObjectHandle -> AttributeHandleSet -> ByteString -> IO ()) -> FedHandlers t ()
 onRequestAttributeOwnershipAssumption requestAttributeOwnershipAssumption = do
@@ -373,9 +373,9 @@ onAttributeOwnedByRTI attributeOwnedByRTI = do
         hsfa_set_attributeOwnedByRTI fedAmb funPtr
 
 
----------------------
--- Time Management --
----------------------
+----------------------
+-- * Time Management
+----------------------
 
 onTimeRegulationEnabled :: FedTimeImpl t => (FedTimeRepr t -> IO ()) -> FedHandlers t ()
 onTimeRegulationEnabled timeRegulationEnabled = do
