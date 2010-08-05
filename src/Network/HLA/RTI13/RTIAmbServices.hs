@@ -14,8 +14,8 @@ import Network.HLA.RTI13.RTIException
 import Control.Exception (bracket_)
 import Data.ByteString (ByteString)
 import Data.ByteString.Unsafe (unsafeUseAsCString)
+import Data.IORef
 import Data.List
-import Data.StateRef
 import Foreign hiding (newForeignPtr)
 import Foreign.Concurrent
 import System.Mem
@@ -28,7 +28,7 @@ newRTIAmbassador :: IO (RTIAmbassador fedAmb)
 newRTIAmbassador = do
     rtiAmb <- FFI.new_RTIambassador
     rtiAmb <- newForeignPtr rtiAmb (FFI.delete_RTIambassador rtiAmb)
-    fedAmb <- newReference Nothing
+    fedAmb <- newIORef Nothing
     return (RTIAmbassador rtiAmb fedAmb)
 
 --------------------------------------
@@ -74,7 +74,7 @@ joinFederationExecution rtiAmb yourName executionName fedAmb = do
             unsafeUseAsCString executionName $ \executionName ->
                 withFederateAmbassador fedAmb $ \fedAmb ->
                     wrapExceptions (FFI.joinFederationExecution rtiAmb yourName executionName fedAmb)
-    writeReference (rtiFedAmb rtiAmb) (Just fedAmb)
+    writeIORef (rtiFedAmb rtiAmb) (Just fedAmb)
     return fedHandle
 
 -- |Attempt to resign from a federation execution.  The 'ResignAction' 
@@ -83,7 +83,7 @@ resignFederationExecution :: RTIAmbassador fedAmb -> ResignAction -> IO ()
 resignFederationExecution rtiAmb resignAction = do
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
         wrapExceptions (FFI.resignFederationExecution rtiAmb (fromIntegral (fromEnum resignAction)))
-    writeReference (rtiFedAmb rtiAmb) Nothing
+    writeIORef (rtiFedAmb rtiAmb) Nothing
     performGC
 
 registerFederationSynchronizationPoint :: RTIAmbassador fedAmb -> ByteString -> ByteString -> Maybe FederateHandleSet -> IO ()
