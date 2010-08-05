@@ -482,20 +482,12 @@ subscribeObjectClassAttributesWithRegion rtiAmb theClass theRegion attributeList
             withAttributeHandleSet attributeList $ \attributeList ->
                 wrapExceptions (wrap_subscribeObjectClassAttributesWithRegion rtiAmb theClass theRegion attributeList active)
 
-    -- // 9.9
-    -- void unsubscribeObjectClassWithRegion (
-    --   ObjectClassHandle theClass,          // supplied C1
-    --   Region           &theRegion)         // supplied C4
-    -- throw (
-    --   ObjectClassNotDefined,
-    --   RegionNotKnown,
-    --   ObjectClassNotSubscribed,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
+unsubscribeObjectClassWithRegion :: RTIAmbassador fedAmb -> ObjectClassHandle -> Region -> IO ()
+unsubscribeObjectClassWithRegion rtiAmb theClass theRegion =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        withRegion theRegion $ \theRegion ->
+            wrapExceptions (wrap_unsubscribeObjectClassWithRegion rtiAmb theClass theRegion)
+
 subscribeInteractionClassWithRegion :: RTIAmbassador fedAmb -> InteractionClassHandle -> Region -> Bool -> IO ()
 subscribeInteractionClassWithRegion rtiAmb theClass theRegion active = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
