@@ -10,6 +10,7 @@ import Foreign.Concurrent
 import Foreign.C.String
 import Control.Monad.Reader
 import Control.Exception
+import Data.ByteString (ByteString, packCString)
 
 import Network.HLA.RTI13.HsFederateAmbassador.FFI
 import Network.HLA.RTI13.HsFederateAmbassador.FunPtrWrappers
@@ -37,49 +38,49 @@ newFedAmbWithHandlers handlers = do
 -- Federation Management Services --
 ------------------------------------
 
-onSynchronizationPointRegistrationSucceeded :: (String -> IO ()) -> FedHandlers t ()
+onSynchronizationPointRegistrationSucceeded :: (ByteString -> IO ()) -> FedHandlers t ()
 onSynchronizationPointRegistrationSucceeded synchronizationPointRegistrationSucceeded = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_P_V $ \cstr -> do
-            str <- peekCString cstr
+            str <- packCString cstr
             synchronizationPointRegistrationSucceeded str
         hsfa_set_synchronizationPointRegistrationSucceeded fedAmb funPtr
 
-onSynchronizationPointRegistrationFailed :: (String -> IO ()) -> FedHandlers t ()
+onSynchronizationPointRegistrationFailed :: (ByteString -> IO ()) -> FedHandlers t ()
 onSynchronizationPointRegistrationFailed synchronizationPointRegistrationFailed = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_P_V $ \cstr -> do
-            str <- peekCString cstr
+            str <- packCString cstr
             synchronizationPointRegistrationFailed str
         hsfa_set_synchronizationPointRegistrationFailed fedAmb funPtr
 
-onAnnounceSynchronizationPoint :: (String -> String -> IO ()) -> FedHandlers t ()
+onAnnounceSynchronizationPoint :: (ByteString -> ByteString -> IO ()) -> FedHandlers t ()
 onAnnounceSynchronizationPoint announceSynchronizationPoint = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_P2_V $ \cstr1 cstr2 -> do
-            str1 <- peekCString cstr1
-            str2 <- peekCString cstr2
+            str1 <- packCString cstr1
+            str2 <- packCString cstr2
             announceSynchronizationPoint str1 str2
         hsfa_set_announceSynchronizationPoint fedAmb funPtr
 
-onFederationSynchronized :: (String -> IO ()) -> FedHandlers t ()
+onFederationSynchronized :: (ByteString -> IO ()) -> FedHandlers t ()
 onFederationSynchronized federationSynchronized = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_P_V $ \cstr -> do
-            str <- peekCString cstr
+            str <- packCString cstr
             federationSynchronized str
         hsfa_set_federationSynchronized fedAmb funPtr
 
-onInitiateFederateSave :: (String -> IO ()) -> FedHandlers t ()
+onInitiateFederateSave :: (ByteString -> IO ()) -> FedHandlers t ()
 onInitiateFederateSave initiateFederateSave = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_P_V $ \cstr -> do
-            str <- peekCString cstr
+            str <- packCString cstr
             initiateFederateSave str
         hsfa_set_initiateFederateSave fedAmb funPtr
 
@@ -98,23 +99,23 @@ onFederationNotSaved federationNotSaved = do
         funPtr <- mkFunPtr_V federationNotSaved
         hsfa_set_federationNotSaved fedAmb funPtr
 
-onRequestFederationRestoreSucceeded :: (String -> IO ()) -> FedHandlers t ()
+onRequestFederationRestoreSucceeded :: (ByteString -> IO ()) -> FedHandlers t ()
 onRequestFederationRestoreSucceeded requestFederationRestoreSucceeded = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_P_V $ \cstr -> do
-            str <- peekCString cstr
+            str <- packCString cstr
             requestFederationRestoreSucceeded str
         hsfa_set_requestFederationRestoreSucceeded fedAmb funPtr
 
 
-onRequestFederationRestoreFailed :: (String -> String -> IO ()) -> FedHandlers t ()
+onRequestFederationRestoreFailed :: (ByteString -> ByteString -> IO ()) -> FedHandlers t ()
 onRequestFederationRestoreFailed requestFederationRestoreFailed = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_P2_V $ \cstr1 cstr2 -> do
-            str1 <- peekCString cstr1
-            str2 <- peekCString cstr2
+            str1 <- packCString cstr1
+            str2 <- packCString cstr2
             requestFederationRestoreFailed str1 str2
         hsfa_set_requestFederationRestoreFailed fedAmb funPtr
 
@@ -126,12 +127,12 @@ onFederationRestoreBegun federationRestoreBegun = do
         funPtr <- mkFunPtr_V federationRestoreBegun
         hsfa_set_federationRestoreBegun fedAmb funPtr
 
-onInitiateFederateRestore :: (String -> FederateHandle -> IO ()) -> FedHandlers t ()
+onInitiateFederateRestore :: (ByteString -> FederateHandle -> IO ()) -> FedHandlers t ()
 onInitiateFederateRestore initiateFederateRestore = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_P_F_V $ \cstr fh -> do
-            str <- peekCString cstr
+            str <- packCString cstr
             initiateFederateRestore str fh
         hsfa_set_initiateFederateRestore fedAmb funPtr
 
@@ -189,22 +190,21 @@ onStopRegistrationForObjectClass stopRegistrationForObjectClass = do
         hsfa_set_stopRegistrationForObjectClass fedAmb funPtr
 
 
-onDiscoverObjectInstance :: (ObjectHandle -> ObjectClassHandle -> String -> IO ()) -> FedHandlers t ()
+onDiscoverObjectInstance :: (ObjectHandle -> ObjectClassHandle -> ByteString -> IO ()) -> FedHandlers t ()
 onDiscoverObjectInstance discoverObjectInstance = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_O_OC_P_V $ \theObject theObjectHandle theName -> do
-            theName <- peekCString theName
-            evaluate (length theName)
+            theName <- packCString theName
             discoverObjectInstance theObject theObjectHandle theName
         hsfa_set_discoverObjectInstance fedAmb funPtr
 
-onReflectAttributeValues :: FedTimeImpl t => (ObjectHandle -> AttributeHandleValuePairSet -> String -> Maybe (FedTimeRepr t, EventRetractionHandle) -> IO ()) -> FedHandlers t ()
+onReflectAttributeValues :: FedTimeImpl t => (ObjectHandle -> AttributeHandleValuePairSet -> ByteString -> Maybe (FedTimeRepr t, EventRetractionHandle) -> IO ()) -> FedHandlers t ()
 onReflectAttributeValues reflectAttributeValues = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_O_P3_U_F_V $ \theObject theAttrs theTime theTag theHandleSerial theHandleFed -> do
-            theTag <- peekCString theTag
+            theTag <- packCString theTag
             theAttrs <- fmap AttributeHandleValuePairSet (newForeignPtr_ theAttrs)
             
             if theTime == nullPtr
@@ -214,12 +214,12 @@ onReflectAttributeValues reflectAttributeValues = do
                     reflectAttributeValues theObject theAttrs theTag (Just (theTime, EventRetractionHandle theHandleSerial theHandleFed))
         hsfa_set_reflectAttributeValues fedAmb funPtr
 
-onReceiveInteraction :: FedTimeImpl t => (InteractionClassHandle -> ParameterHandleValuePairSet -> String -> Maybe (FedTimeRepr t, EventRetractionHandle) -> IO ()) -> FedHandlers t ()
+onReceiveInteraction :: FedTimeImpl t => (InteractionClassHandle -> ParameterHandleValuePairSet -> ByteString -> Maybe (FedTimeRepr t, EventRetractionHandle) -> IO ()) -> FedHandlers t ()
 onReceiveInteraction receiveInteraction = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_IC_P3_U_F_V $ \theInteraction theParameters theTime theTag theHandleSerial theHandleFed -> do
-            theTag <- peekCString theTag
+            theTag <- packCString theTag
             theParameters <- fmap ParameterHandleValuePairSet (newForeignPtr_ theParameters)
             
             if theTime == nullPtr
@@ -229,12 +229,12 @@ onReceiveInteraction receiveInteraction = do
                     receiveInteraction theInteraction theParameters theTag $ Just (theTime, EventRetractionHandle theHandleSerial theHandleFed)
         hsfa_set_receiveInteraction fedAmb funPtr
 
-onRemoveObjectInstance :: FedTimeImpl t => (ObjectHandle -> String -> Maybe (FedTimeRepr t, EventRetractionHandle) -> IO ()) -> FedHandlers t ()
+onRemoveObjectInstance :: FedTimeImpl t => (ObjectHandle -> ByteString -> Maybe (FedTimeRepr t, EventRetractionHandle) -> IO ()) -> FedHandlers t ()
 onRemoveObjectInstance removeObjectInstance = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_O_P2_U_F_V $ \theObject theTime theTag theHandleSerial theHandleFederate -> do
-            theTag <- peekCString theTag
+            theTag <- packCString theTag
             if theTime == nullPtr
                 then removeObjectInstance theObject theTag Nothing
                 else do
@@ -294,13 +294,13 @@ onTurnUpdatesOffForObjectInstance turnUpdatesOffForObjectInstance = do
 -- Ownership Management Services --
 -----------------------------------
 
-onRequestAttributeOwnershipAssumption :: (ObjectHandle -> AttributeHandleSet -> String -> IO ()) -> FedHandlers t ()
+onRequestAttributeOwnershipAssumption :: (ObjectHandle -> AttributeHandleSet -> ByteString -> IO ()) -> FedHandlers t ()
 onRequestAttributeOwnershipAssumption requestAttributeOwnershipAssumption = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_O_P2_V $ \theObject theAttrs theTag -> do
             theAttrs <- newForeignPtr_ theAttrs
-            theTag <- peekCString theTag
+            theTag <- packCString theTag
             requestAttributeOwnershipAssumption theObject (AttributeHandleSet theAttrs) theTag
         hsfa_set_requestAttributeOwnershipAssumption fedAmb funPtr
 
@@ -331,13 +331,13 @@ onAttributeOwnershipUnavailable attributeOwnershipUnavailable = do
             attributeOwnershipUnavailable theObject (AttributeHandleSet theAttrs)
         hsfa_set_attributeOwnershipUnavailable fedAmb funPtr
 
-onRequestAttributeOwnershipRelease :: (ObjectHandle -> AttributeHandleSet -> String -> IO ()) -> FedHandlers t ()
+onRequestAttributeOwnershipRelease :: (ObjectHandle -> AttributeHandleSet -> ByteString -> IO ()) -> FedHandlers t ()
 onRequestAttributeOwnershipRelease requestAttributeOwnershipRelease = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_O_P2_V $ \theObject theAttrs theTag -> do
             theAttrs <- newForeignPtr_ theAttrs
-            theTag <- peekCString theTag
+            theTag <- packCString theTag
             requestAttributeOwnershipRelease theObject (AttributeHandleSet theAttrs) theTag
         hsfa_set_requestAttributeOwnershipRelease fedAmb funPtr
 
