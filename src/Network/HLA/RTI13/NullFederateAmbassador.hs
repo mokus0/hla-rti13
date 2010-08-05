@@ -1,7 +1,10 @@
 {-# LANGUAGE
         ForeignFunctionInterface, TypeFamilies
   #-}
-module Network.HLA.RTI13.NullFederateAmbassador where
+module Network.HLA.RTI13.NullFederateAmbassador
+    ( NullFederateAmbassador
+    , newNullFederateAmbassador
+    ) where
 
 import Foreign hiding (newForeignPtr)
 import Foreign.Concurrent
@@ -12,6 +15,7 @@ import Network.HLA.RTI13.RTIException
 
 newtype NullFederateAmbassador = NullFederateAmbassador (ForeignPtr NullFederateAmbassador)
 
+-- TODO: create FFI module and move these there
 foreign import ccall unsafe "wrap/NullFederateAmbassador.h wrap_new_NullFederateAmbassador"
     wrap_new_NullFederateAmbassador :: Ptr (Ptr RTIException) -> IO (Ptr NullFederateAmbassador)
 foreign import ccall unsafe "wrap/NullFederateAmbassador.h wrap_delete_NullFederateAmbassador"
