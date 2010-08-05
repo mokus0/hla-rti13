@@ -4,6 +4,7 @@ module Network.HLA.RTI13.RTIAmbServices
     ) where
 
 import Network.HLA.RTI13.BaseTypes
+import Network.HLA.RTI13.OddsAndEnds
 import Network.HLA.RTI13.RTITypes
 import Network.HLA.RTI13.RTIAmbServices.FFI as FFI
 import Network.HLA.RTI13.RTIException
@@ -14,6 +15,7 @@ import Control.Exception (bracket_)
 import Data.StateRef
 import System.Mem
 import Data.List
+import Data.ByteString (ByteString)
 
 getRTIAmbassador :: IO (RTIAmbassador fedAmb)
 getRTIAmbassador = do
@@ -535,17 +537,13 @@ getObjectClassHandle rtiAmb theName =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withCString theName $ \theName ->
             wrapExceptions (wrap_getObjectClassHandle rtiAmb theName)
-    -- 
-    -- // 10.3
-    -- char *                         // returned C6    
-    -- getObjectClassName (
-    --   ObjectClassHandle theHandle) // supplied C1
-    -- throw (
-    --   ObjectClassNotDefined,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   RTIinternalError);
 
+getObjectClassName :: RTIAmbassador fedAmb -> ObjectClassHandle -> IO ByteString
+getObjectClassName rtiAmb theHandle = do
+    cStr <- withRTIAmbassador rtiAmb $ \rtiAmb ->
+        wrapExceptions (wrap_getObjectClassName rtiAmb theHandle)
+    unsafePackNewCString cStr
+    
 getAttributeHandle :: RTIAmbassador fedAmb -> String -> ObjectClassHandle -> IO AttributeHandle
 getAttributeHandle rtiAmb theName whichClass = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
