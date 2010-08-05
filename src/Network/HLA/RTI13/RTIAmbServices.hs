@@ -626,16 +626,11 @@ getObjectClass rtiAmb theObject =
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
         wrapExceptions (wrap_getObjectClass rtiAmb theObject)
 
-    -- // 10.18
-    -- SpaceHandle                             // returned C3
-    -- getInteractionRoutingSpaceHandle (
-    --   InteractionClassHandle   theHandle)   // supplied C1
-    -- throw (
-    --   InteractionClassNotDefined,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   RTIinternalError);
-    -- 
+getInteractionRoutingSpaceHandle :: RTIAmbassador fedAmb -> InteractionClassHandle -> IO SpaceHandle
+getInteractionRoutingSpaceHandle rtiAmb theHandle =
+    withRTIAmbassador rtiAmb $ \rtiAmb -> 
+        wrapExceptions (wrap_getInteractionRoutingSpaceHandle rtiAmb theHandle)
+
     -- // 10.19
     -- TransportationHandle      // returned C3
     -- getTransportationHandle (
