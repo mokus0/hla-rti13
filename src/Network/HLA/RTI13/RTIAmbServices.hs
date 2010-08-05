@@ -655,23 +655,15 @@ getOrderingName rtiAmb theHandle = do
         wrapExceptions (wrap_getOrderingName rtiAmb theHandle)
     unsafePackNewCString cStr
 
-    -- // 10.23
-    -- void enableClassRelevanceAdvisorySwitch()
-    -- throw(
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
-    -- 
-    -- // 10.24
-    -- void disableClassRelevanceAdvisorySwitch()
-    -- throw(
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   SaveInProgress,
-    --   RestoreInProgress,
-    --   RTIinternalError);
+enableClassRelevanceAdvisorySwitch :: RTIAmbassador fedAmb -> IO ()
+enableClassRelevanceAdvisorySwitch rtiAmb = 
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        wrapExceptions (wrap_enableClassRelevanceAdvisorySwitch rtiAmb)
+    
+disableClassRelevanceAdvisorySwitch :: RTIAmbassador fedAmb -> IO ()
+disableClassRelevanceAdvisorySwitch rtiAmb = 
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        wrapExceptions (wrap_disableClassRelevanceAdvisorySwitch rtiAmb)
 
 enableAttributeRelevanceAdvisorySwitch :: RTIAmbassador fedAmb -> IO ()
 enableAttributeRelevanceAdvisorySwitch rtiAmb = 

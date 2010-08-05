@@ -356,6 +356,12 @@ foreign import ccall unsafe "wrap/RTIambServices.h wrap_getOrderingHandle"
 foreign import ccall unsafe "wrap/RTIambServices.h wrap_getOrderingName"
     wrap_getOrderingName :: Ptr (RTIAmbassador fedAmb) -> OrderingHandle -> Ptr (Ptr RTIException) -> IO CString
 
+foreign import ccall "wrap/RTIAmbServices.h wrap_enableClassRelevanceAdvisorySwitch"
+    wrap_enableClassRelevanceAdvisorySwitch :: Ptr (RTIAmbassador fedAmb) -> Ptr (Ptr RTIException) -> IO ()
+
+foreign import ccall "wrap/RTIAmbServices.h wrap_disableClassRelevanceAdvisorySwitch"
+    wrap_disableClassRelevanceAdvisorySwitch :: Ptr (RTIAmbassador fedAmb) -> Ptr (Ptr RTIException) -> IO ()
+
 foreign import ccall "wrap/RTIAmbServices.h wrap_enableAttributeRelevanceAdvisorySwitch"
     wrap_enableAttributeRelevanceAdvisorySwitch :: Ptr (RTIAmbassador fedAmb) -> Ptr (Ptr RTIException) -> IO ()
 
