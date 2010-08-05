@@ -21,6 +21,7 @@ instance FedTimeImpl t => FederateAmbassador (HsFederateAmbassador t) where
     withFederateAmbassador fedAmb action = 
         withHsFederateAmbassador fedAmb (action . castPtr)
 
+withHsFederateAmbassador :: HsFederateAmbassador fedTime -> (Ptr (HsFederateAmbassador fedTime) -> IO a) -> IO a
 withHsFederateAmbassador (HsFederateAmbassador fedAmb) = withForeignPtr fedAmb
 
 type FedHandlers t a = forall m. (MonadReader (HsFederateAmbassador t) m, MonadIO m) => m a
