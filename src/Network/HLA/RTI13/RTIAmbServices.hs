@@ -631,16 +631,12 @@ getInteractionRoutingSpaceHandle rtiAmb theHandle =
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
         wrapExceptions (wrap_getInteractionRoutingSpaceHandle rtiAmb theHandle)
 
-    -- // 10.19
-    -- TransportationHandle      // returned C3
-    -- getTransportationHandle (
-    --   const char *theName)    // supplied C4
-    -- throw (
-    --   NameNotFound,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   RTIinternalError);
-    -- 
+getTransportationHandle :: RTIAmbassador fedAmb -> String -> IO TransportationHandle
+getTransportationHandle rtiAmb theName =
+    withRTIAmbassador rtiAmb $ \rtiAmb ->
+        withCString theName $ \theName ->
+            wrapExceptions (wrap_getTransportationHandle rtiAmb theName)
+
     -- // 10.20
     -- char *                            // returned C6 
     -- getTransportationName (

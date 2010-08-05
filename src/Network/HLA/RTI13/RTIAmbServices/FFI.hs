@@ -344,6 +344,9 @@ foreign import ccall unsafe "wrap/RTIambServices.h wrap_getObjectClass"
 foreign import ccall unsafe "wrap/RTIambServices.h wrap_getInteractionRoutingSpaceHandle"
     wrap_getInteractionRoutingSpaceHandle :: Ptr (RTIAmbassador fedAmb) -> InteractionClassHandle -> Ptr (Ptr RTIException) -> IO SpaceHandle
 
+foreign import ccall unsafe "wrap/RTIambServices.h wrap_getTransportationHandle"
+    wrap_getTransportationHandle :: Ptr (RTIAmbassador fedAmb) -> CString -> Ptr (Ptr RTIException) -> IO TransportationHandle
+
 foreign import ccall "wrap/RTIAmbServices.h wrap_enableAttributeRelevanceAdvisorySwitch"
     wrap_enableAttributeRelevanceAdvisorySwitch :: Ptr (RTIAmbassador fedAmb) -> Ptr (Ptr RTIException) -> IO ()
 
