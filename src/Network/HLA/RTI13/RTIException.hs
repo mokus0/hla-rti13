@@ -79,11 +79,13 @@ exceptionNameTable = unsafePerformIO (newReference IM.empty)
 
 readRTIExceptionName :: CString -> IO RTIExceptionName
 readRTIExceptionName name = do
-    name <- packCString name
+    nameInPlace <- peekCString name
     
-    return $ case reads (unpack name) of
-        [(excName, "")] -> excName
-        other           -> UnknownRTIException name
+    case reads nameInPlace of
+        [(excName, "")] -> return excName
+        other           -> do
+            name <- packCString name
+            return (UnknownRTIException name)
 
 lookupRTIExceptionName :: CString -> IO RTIExceptionName
 lookupRTIExceptionName name = do
