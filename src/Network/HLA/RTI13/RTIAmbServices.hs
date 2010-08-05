@@ -616,18 +616,11 @@ getDimensionName rtiAmb theHandle whichSpace = do
         wrapExceptions (wrap_getDimensionName rtiAmb theHandle whichSpace)
     unsafePackNewCString cStr
 
-    -- // 10.16
-    -- SpaceHandle                      // returned C3
-    -- getAttributeRoutingSpaceHandle (
-    --   AttributeHandle   theHandle,   // supplied C1
-    --   ObjectClassHandle whichClass)  // supplied C1
-    -- throw (
-    --   ObjectClassNotDefined,
-    --   AttributeNotDefined,
-    --   FederateNotExecutionMember,
-    --   ConcurrentAccessAttempted,
-    --   RTIinternalError);
-    -- 
+getAttributeRoutingSpaceHandle :: RTIAmbassador fedAmb -> AttributeHandle -> ObjectClassHandle -> IO SpaceHandle
+getAttributeRoutingSpaceHandle rtiAmb theHandle whichClass =
+    withRTIAmbassador rtiAmb $ \rtiAmb -> 
+        wrapExceptions (wrap_getAttributeRoutingSpaceHandle rtiAmb theHandle whichClass)
+
     -- // 10.17
     -- ObjectClassHandle            // returned C3
     -- getObjectClass (
