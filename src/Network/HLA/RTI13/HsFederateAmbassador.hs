@@ -7,9 +7,7 @@ module Network.HLA.RTI13.HsFederateAmbassador
 
 import Foreign hiding (newForeignPtr)
 import Foreign.Concurrent
-import Foreign.C.String
 import Control.Monad.Reader
-import Control.Exception
 import Data.ByteString (ByteString, packCString)
 
 import Network.HLA.RTI13.HsFederateAmbassador.FFI

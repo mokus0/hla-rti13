@@ -1,7 +1,6 @@
 {-# LANGUAGE TypeFamilies, RankNTypes, FlexibleContexts #-}
 module Network.HLA.RTI13.HsFederateAmbassador.Types where
 
-import Network.HLA.RTI13.FedTime
 import Network.HLA.RTI13.RTITypes
 
 import Control.Monad.Reader
