@@ -1,5 +1,6 @@
 module Main where
 
+import Data.ByteString.Char8 (unpack)
 import Network.HLA.RTI13
 import Network.HLA.RTI13.RTITypes.FFI
 
@@ -7,6 +8,6 @@ import Network.HLA.RTI13.RTITypes.FFI
 -- build with "ghc --make", the hla-rti13 package's package description
 -- should include info about where to find the libraries needed.
 main = do
-    putStrLn ("testing constants: " ++ show [rtiVersion, defaultSpaceName, show wrap_RTI_MAJOR_VERSION])
+    putStrLn ("testing constants: " ++ show [unpack rtiVersion, unpack defaultSpaceName, show wrap_RTI_MAJOR_VERSION])
     rti_ambassador <- newRTIAmbassador :: IO (RTIAmbassador ())
     putStrLn ("got rti_ambassador: " ++ show rti_ambassador)
