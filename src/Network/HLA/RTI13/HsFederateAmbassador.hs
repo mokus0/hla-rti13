@@ -193,7 +193,7 @@ onDiscoverObjectInstance discoverObjectInstance = do
             discoverObjectInstance theObject theObjectHandle theName
         FFI.set_discoverObjectInstance fedAmb funPtr
 
-onReflectAttributeValues :: FedTimeImpl t => (ObjectHandle -> AttributeHandleValuePairSet -> ByteString -> Maybe (FedTimeRepr t, EventRetractionHandle) -> IO ()) -> FedHandlers t ()
+onReflectAttributeValues :: FedTimeImpl t => (ObjectHandle -> AttributeHandleValuePairSet -> ByteString -> Maybe (FedTime t, EventRetractionHandle) -> IO ()) -> FedHandlers t ()
 onReflectAttributeValues reflectAttributeValues = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
@@ -208,7 +208,7 @@ onReflectAttributeValues reflectAttributeValues = do
                     reflectAttributeValues theObject theAttrs theTag (Just (theTime, EventRetractionHandle theHandleSerial theHandleFed))
         FFI.set_reflectAttributeValues fedAmb funPtr
 
-onReceiveInteraction :: FedTimeImpl t => (InteractionClassHandle -> ParameterHandleValuePairSet -> ByteString -> Maybe (FedTimeRepr t, EventRetractionHandle) -> IO ()) -> FedHandlers t ()
+onReceiveInteraction :: FedTimeImpl t => (InteractionClassHandle -> ParameterHandleValuePairSet -> ByteString -> Maybe (FedTime t, EventRetractionHandle) -> IO ()) -> FedHandlers t ()
 onReceiveInteraction receiveInteraction = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
@@ -223,7 +223,7 @@ onReceiveInteraction receiveInteraction = do
                     receiveInteraction theInteraction theParameters theTag $ Just (theTime, EventRetractionHandle theHandleSerial theHandleFed)
         FFI.set_receiveInteraction fedAmb funPtr
 
-onRemoveObjectInstance :: FedTimeImpl t => (ObjectHandle -> ByteString -> Maybe (FedTimeRepr t, EventRetractionHandle) -> IO ()) -> FedHandlers t ()
+onRemoveObjectInstance :: FedTimeImpl t => (ObjectHandle -> ByteString -> Maybe (FedTime t, EventRetractionHandle) -> IO ()) -> FedHandlers t ()
 onRemoveObjectInstance removeObjectInstance = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
@@ -371,7 +371,7 @@ onAttributeOwnedByRTI attributeOwnedByRTI = do
 -- * Time Management
 ----------------------
 
-onTimeRegulationEnabled :: FedTimeImpl t => (FedTimeRepr t -> IO ()) -> FedHandlers t ()
+onTimeRegulationEnabled :: FedTimeImpl t => (FedTime t -> IO ()) -> FedHandlers t ()
 onTimeRegulationEnabled timeRegulationEnabled = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
@@ -380,7 +380,7 @@ onTimeRegulationEnabled timeRegulationEnabled = do
             timeRegulationEnabled someFedTime
         FFI.set_timeRegulationEnabled fedAmb funPtr
 
-onTimeConstrainedEnabled :: FedTimeImpl t => (FedTimeRepr t -> IO ()) -> FedHandlers t ()
+onTimeConstrainedEnabled :: FedTimeImpl t => (FedTime t -> IO ()) -> FedHandlers t ()
 onTimeConstrainedEnabled timeConstrainedEnabled = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
@@ -389,7 +389,7 @@ onTimeConstrainedEnabled timeConstrainedEnabled = do
             timeConstrainedEnabled someFedTime
         FFI.set_timeConstrainedEnabled fedAmb funPtr
 
-onTimeAdvanceGrant :: FedTimeImpl t => (FedTimeRepr t -> IO ()) -> FedHandlers t ()
+onTimeAdvanceGrant :: FedTimeImpl t => (FedTime t -> IO ()) -> FedHandlers t ()
 onTimeAdvanceGrant timeAdvanceGrant = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do

@@ -21,6 +21,6 @@ instance WriteRef RTIFedTime IO Double where
         setTime rt t
 
 instance FedTimeImpl RTIFedTime where
-    type FedTimeRepr RTIFedTime = Double
+    type FedTime RTIFedTime = Double
     withFedTimeIn d = bracket (new_RTIFedTime d) (delete_RTIFedTime)
     importFedTime = getTime

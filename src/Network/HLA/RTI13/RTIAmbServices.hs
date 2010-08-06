@@ -101,7 +101,7 @@ synchronizationPointAchieved rtiAmb label =
         unsafeUseAsCString label $ \label ->
             wrapExceptions (FFI.synchronizationPointAchieved rtiAmb label)
 
-requestFederationSave :: FedTimeImpl t => RTIAmbassador t -> ByteString -> Maybe (FedTimeRepr t) -> IO ()
+requestFederationSave :: FedTimeImpl t => RTIAmbassador t -> ByteString -> Maybe (FedTime t) -> IO ()
 requestFederationSave rtiAmb label mbTime =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         unsafeUseAsCString label $ \label -> case mbTime of
@@ -198,7 +198,7 @@ registerObjectInstance rtiAmb theClass mbObject =
                 wrapExceptions (FFI.registerObjectInstance rtiAmb theClass)
 
 
-updateAttributeValuesAtTime :: FedTimeImpl t => RTIAmbassador t -> ObjectHandle -> AttributeHandleValuePairSet -> FedTimeRepr t -> ByteString -> IO EventRetractionHandle
+updateAttributeValuesAtTime :: FedTimeImpl t => RTIAmbassador t -> ObjectHandle -> AttributeHandleValuePairSet -> FedTime t -> ByteString -> IO EventRetractionHandle
 updateAttributeValuesAtTime rtiAmb theObject theAttributes theTime theTag =
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
         withAttributeHandleValuePairSet theAttributes $ \theAttributes ->
@@ -214,7 +214,7 @@ updateAttributeValues rtiAmb theObject theAttributes theTag =
             unsafeUseAsCString theTag $ \theTag ->
                 wrapExceptions (FFI.updateAttributeValues rtiAmb theObject theAttributes theTag)
 
-sendInteractionAtTime :: FedTimeImpl t => RTIAmbassador t -> InteractionClassHandle -> ParameterHandleValuePairSet -> FedTimeRepr t -> ByteString -> IO EventRetractionHandle
+sendInteractionAtTime :: FedTimeImpl t => RTIAmbassador t -> InteractionClassHandle -> ParameterHandleValuePairSet -> FedTime t -> ByteString -> IO EventRetractionHandle
 sendInteractionAtTime rtiAmb theInteraction theParameters theTime theTag = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withParameterHandleValuePairSet theParameters $ \theParameters ->
@@ -230,7 +230,7 @@ sendInteraction rtiAmb theInteraction theParameters theTag =
             unsafeUseAsCString theTag $ \theTag -> 
                 wrapExceptions (FFI.sendInteraction rtiAmb theInteraction theParameters theTag)
 
-deleteObjectInstanceAtTime :: FedTimeImpl t => RTIAmbassador t -> ObjectHandle -> FedTimeRepr t -> ByteString -> IO EventRetractionHandle
+deleteObjectInstanceAtTime :: FedTimeImpl t => RTIAmbassador t -> ObjectHandle -> FedTime t -> ByteString -> IO EventRetractionHandle
 deleteObjectInstanceAtTime rtiAmb theObject theTime theTag = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withFedTimeIn theTime $ \ theTime ->
@@ -335,7 +335,7 @@ isAttributeOwnedByFederate rtiAmb theObject theAttributes =
 -- * Time Management Services
 -------------------------------
 
-withTimeRegulation :: FedTimeImpl t => RTIAmbassador t -> FedTimeRepr t -> FedTimeRepr t -> IO a -> IO a
+withTimeRegulation :: FedTimeImpl t => RTIAmbassador t -> FedTime t -> FedTime t -> IO a -> IO a
 withTimeRegulation rtiAmb theFederateTime theLookahead regulatedAction =
     withFedTimeIn theFederateTime $ \theFederateTime -> do
         withFedTimeIn theLookahead $ \theLookahead -> do
@@ -364,31 +364,31 @@ disableTimeConstrained rtiAmb =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (FFI.disableTimeConstrained rtiAmb)
 
-timeAdvanceRequest :: FedTimeImpl t => RTIAmbassador t -> FedTimeRepr t -> IO ()
+timeAdvanceRequest :: FedTimeImpl t => RTIAmbassador t -> FedTime t -> IO ()
 timeAdvanceRequest rtiAmb theTime = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withFedTimeIn theTime $ \theTime -> 
             wrapExceptions (FFI.timeAdvanceRequest rtiAmb theTime)
 
-timeAdvanceRequestAvailable :: FedTimeImpl t => RTIAmbassador t -> FedTimeRepr t -> IO ()
+timeAdvanceRequestAvailable :: FedTimeImpl t => RTIAmbassador t -> FedTime t -> IO ()
 timeAdvanceRequestAvailable rtiAmb theTime =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withFedTimeIn theTime $ \theTime -> 
             wrapExceptions (FFI.timeAdvanceRequestAvailable rtiAmb theTime)
 
-nextEventRequest :: FedTimeImpl t => RTIAmbassador t -> FedTimeRepr t -> IO ()
+nextEventRequest :: FedTimeImpl t => RTIAmbassador t -> FedTime t -> IO ()
 nextEventRequest rtiAmb theTime =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withFedTimeIn theTime $ \theTime -> 
             wrapExceptions (FFI.nextEventRequest rtiAmb theTime)
 
-nextEventRequestAvailable :: FedTimeImpl t => RTIAmbassador t -> FedTimeRepr t -> IO ()
+nextEventRequestAvailable :: FedTimeImpl t => RTIAmbassador t -> FedTime t -> IO ()
 nextEventRequestAvailable rtiAmb theTime =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withFedTimeIn theTime $ \theTime -> 
             wrapExceptions (FFI.nextEventRequestAvailable rtiAmb theTime)
 
-flushQueueRequest :: FedTimeImpl t => RTIAmbassador t -> FedTimeRepr t -> IO ()
+flushQueueRequest :: FedTimeImpl t => RTIAmbassador t -> FedTime t -> IO ()
 flushQueueRequest rtiAmb theTime =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withFedTimeIn theTime $ \theTime -> 
@@ -404,31 +404,31 @@ disableAsynchronousDelivery rtiAmb =
     withRTIAmbassador rtiAmb
         (wrapExceptions . FFI.disableAsynchronousDelivery)
 
-queryLBTS :: FedTimeImpl t => RTIAmbassador t -> IO (FedTimeRepr t)
+queryLBTS :: FedTimeImpl t => RTIAmbassador t -> IO (FedTime t)
 queryLBTS rtiAmb =
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
         withFedTimeOut $ \fedTime -> 
             wrapExceptions (FFI.queryLBTS rtiAmb fedTime)
 
-queryFederateTime :: FedTimeImpl t => RTIAmbassador t -> IO (FedTimeRepr t)
+queryFederateTime :: FedTimeImpl t => RTIAmbassador t -> IO (FedTime t)
 queryFederateTime rtiAmb =
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
         withFedTimeOut $ \fedTime -> 
             wrapExceptions (FFI.queryFederateTime rtiAmb fedTime)
 
-queryMinNextEventTime :: FedTimeImpl t => RTIAmbassador t -> IO (FedTimeRepr t)
+queryMinNextEventTime :: FedTimeImpl t => RTIAmbassador t -> IO (FedTime t)
 queryMinNextEventTime rtiAmb =
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
         withFedTimeOut $ \fedTime -> 
             wrapExceptions (FFI.queryMinNextEventTime rtiAmb fedTime)
 
-modifyLookahead :: FedTimeImpl t => RTIAmbassador t -> FedTimeRepr t -> IO ()
+modifyLookahead :: FedTimeImpl t => RTIAmbassador t -> FedTime t -> IO ()
 modifyLookahead rtiAmb theTime =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withFedTimeIn theTime $ \theTime -> 
             wrapExceptions (FFI.modifyLookahead rtiAmb theTime)
 
-queryLookahead :: FedTimeImpl t => RTIAmbassador t -> IO (FedTimeRepr t)
+queryLookahead :: FedTimeImpl t => RTIAmbassador t -> IO (FedTime t)
 queryLookahead rtiAmb =
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
         withFedTimeOut $ \fedTime -> 
@@ -530,7 +530,7 @@ unsubscribeInteractionClassWithRegion rtiAmb theClass theRegion =
         withRegion theRegion $ \theRegion ->
             wrapExceptions (FFI.unsubscribeInteractionClassWithRegion rtiAmb theClass theRegion)
 
-sendInteractionWithRegionAtTime :: FedTimeImpl t => RTIAmbassador t -> InteractionClassHandle -> ParameterHandleValuePairSet -> FedTimeRepr t -> ByteString -> Region -> IO EventRetractionHandle
+sendInteractionWithRegionAtTime :: FedTimeImpl t => RTIAmbassador t -> InteractionClassHandle -> ParameterHandleValuePairSet -> FedTime t -> ByteString -> Region -> IO EventRetractionHandle
 sendInteractionWithRegionAtTime rtiAmb theInteraction theParameters theTime theTag theRegion =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withParameterHandleValuePairSet theParameters $ \theParameters ->
