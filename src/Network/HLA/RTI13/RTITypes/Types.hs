@@ -49,14 +49,7 @@ class FedTimeImpl time where
 type FedTime fedAmb = FedTimeRepr (FedAmbTime fedAmb)
 class FedTimeImpl (FedAmbTime fedAmb) => FederateAmbassador fedAmb where
     type FedAmbTime fedAmb
-    withFederateAmbassador :: fedAmb -> (Ptr SomeFederateAmbassador -> IO a) -> IO a
-newtype SomeFederateAmbassador = SomeFederateAmbassador (ForeignPtr SomeFederateAmbassador)
-instance FederateAmbassador SomeFederateAmbassador where
---    type FedTime SomeFederateAmbassador = ByteString
-    type FedAmbTime SomeFederateAmbassador = SomeFedTime
-
-    withFederateAmbassador (SomeFederateAmbassador fa) = withForeignPtr fa
-    
+    withFederateAmbassador :: fedAmb -> (Ptr fedAmb -> IO a) -> IO a
 
 -- primitive numeric types
 newtype ExtentIndex            = ExtentIndex            ULong   deriving (Eq, Ord, Bits, Enum, Real, Integral, Data, Typeable, Storable)

@@ -40,7 +40,7 @@ foreign import ccall unsafe "wrap/RTIambServices.h wrap_destroyFederationExecuti
     destroyFederationExecution :: Ptr (RTIAmbassador fedAmb) -> CString -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTIambServices.h wrap_joinFederationExecution"
-    joinFederationExecution :: Ptr (RTIAmbassador fedAmb) -> CString -> CString -> Ptr SomeFederateAmbassador -> Ptr (Ptr RTIException) -> IO FederateHandle
+    joinFederationExecution :: Ptr (RTIAmbassador fedAmb) -> CString -> CString -> Ptr fedAmb -> Ptr (Ptr RTIException) -> IO FederateHandle
 
 foreign import ccall unsafe "wrap/RTIambServices.h wrap_resignFederationExecution"
     resignFederationExecution :: Ptr (RTIAmbassador fedAmb) -> CInt -> Ptr (Ptr RTIException) -> IO ()
