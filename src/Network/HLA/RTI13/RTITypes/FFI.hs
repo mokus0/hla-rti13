@@ -3,7 +3,7 @@
   #-}
 module Network.HLA.RTI13.RTITypes.FFI where
 
-import Data.ByteString (packCString)
+import Data.ByteString (ByteString, packCString)
 import Foreign
 import Foreign.C
 import Network.HLA.RTI13.BaseTypes
@@ -13,19 +13,23 @@ import Network.HLA.RTI13.RTITypes.Types
 foreign import ccall "wrap/RTItypes.h wrap_DEFAULT_SPACE_NAME" 
     wrap_DEFAULT_SPACE_NAME :: CString
 {-# NOINLINE defaultSpaceName #-}
+defaultSpaceName :: ByteString
 defaultSpaceName = unsafePerformIO (packCString wrap_DEFAULT_SPACE_NAME)
 foreign import ccall "wrap/RTItypes.h wrap_DEFAULT_SPACE_DIMENSION_NAME"
     wrap_DEFAULT_SPACE_DIMENSION_NAME :: CString
 {-# NOINLINE defaultSpaceDimensionName #-}
+defaultSpaceDimensionName :: ByteString
 defaultSpaceDimensionName = unsafePerformIO (packCString wrap_DEFAULT_SPACE_DIMENSION_NAME)
 
 foreign import ccall "wrap/RTItypes.h wrap_RTI_VERSION"
     wrap_RTI_VERSION :: CString
 {-# NOINLINE rtiVersion #-}
+rtiVersion :: ByteString
 rtiVersion = unsafePerformIO (packCString wrap_RTI_VERSION)
 foreign import ccall "wrap/RTItypes.h wrap_RTI_INTERNAL_VERSION"
     wrap_RTI_INTERNAL_VERSION :: CString
 {-# NOINLINE rtiInternalVersion #-}
+rtiInternalVersion :: ByteString
 rtiInternalVersion = unsafePerformIO (packCString wrap_RTI_INTERNAL_VERSION)
 
 foreign import ccall "wrap/RTItypes.h wrap_RTI_MAJOR_VERSION"
