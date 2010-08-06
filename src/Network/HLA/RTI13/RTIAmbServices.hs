@@ -15,7 +15,6 @@ import Control.Exception (bracket_)
 import Data.ByteString (ByteString)
 import Data.ByteString.Unsafe (unsafeUseAsCString)
 import Data.IORef
-import Data.List
 import Foreign hiding (newForeignPtr)
 import Foreign.Concurrent
 import System.Mem
