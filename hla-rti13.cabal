@@ -41,7 +41,6 @@ Library
                         Network.HLA.RTI13.FederateAmbServices
                         Network.HLA.RTI13.FedTime
                         Network.HLA.RTI13.FedTime.FFI
-                        Network.HLA.RTI13.FedTime.Types
                         Network.HLA.RTI13.HsFederateAmbassador
                         Network.HLA.RTI13.HsFederateAmbassador.FFI
                         Network.HLA.RTI13.HsFederateAmbassador.Types

@@ -1,13 +1,20 @@
 {-# LANGUAGE ForeignFunctionInterface #-}
-module Network.HLA.RTI13.FedTime.FFI where
-
-import Network.HLA.RTI13.FedTime.Types
+module Network.HLA.RTI13.FedTime.FFI
+    ( RTIFedTime(..)
+    , new_RTIFedTime, delete_RTIFedTime
+    , getTime, setTime, mkRTIFedTime
+    ) where
 
 import Foreign hiding (newForeignPtr, addForeignPtrFinalizer)
 import Foreign.Concurrent
 import Foreign.C
 
 import Network.HLA.RTI13.RTIException
+
+-- |'RTIFedTime' is the default 'Double'-based implementation of the 'FedTimeImpl'
+-- interface.  In C++ it is called \"RTI::FedTime\" or \"rti13::FedTime\".
+newtype RTIFedTime = RTIFedTime (ForeignPtr RTIFedTime)
+    deriving (Eq, Ord, Show)
 
 foreign import ccall unsafe "wrap/fedtime.h wrap_new_RTIfedTime"
     wrap_new_RTIfedTime :: CDouble -> Ptr (Ptr RTIException) -> IO (Ptr RTIFedTime)

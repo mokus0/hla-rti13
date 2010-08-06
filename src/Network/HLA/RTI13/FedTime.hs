@@ -2,7 +2,6 @@
 module Network.HLA.RTI13.FedTime (RTIFedTime) where
 
 import Network.HLA.RTI13.FedTime.FFI
-import Network.HLA.RTI13.FedTime.Types
 
 import Foreign hiding (newForeignPtr, addForeignPtrFinalizer)
 import Data.StateRef
