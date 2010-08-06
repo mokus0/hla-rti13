@@ -37,15 +37,17 @@ instance Enum ResignAction where
 
 class FedTimeImpl time where
     type FedTimeRepr time
-    withFedTime  :: FedTimeRepr time -> (Ptr time -> IO a) -> IO (FedTimeRepr time, a)
-    withFedTime_ :: FedTimeRepr time -> (Ptr time -> IO a) -> IO a
-    withArbitraryFedTime :: (Ptr time -> IO a) ->  IO (FedTimeRepr time)
+    withFedTimeInOut  :: FedTimeRepr time -> (Ptr time -> IO a) -> IO (FedTimeRepr time, a)
+    withFedTimeInOut d f = withFedTimeIn d $ \time -> do
+        result  <- f time
+        newTime <- importFedTime time
+        return (newTime, result)
+    withFedTimeIn  :: FedTimeRepr time -> (Ptr time -> IO a) -> IO a
+    withFedTimeOut :: (Ptr time -> IO a) ->  IO (FedTimeRepr time)
     importFedTime :: Ptr time -> IO (FedTimeRepr time)
 
 type FedTime fedAmb = FedTimeRepr (FedAmbTime fedAmb)
--- class FedTimeType (FedTime fedAmb) => FederateAmbassador fedAmb where
 class FedTimeImpl (FedAmbTime fedAmb) => FederateAmbassador fedAmb where
---    type FedTime fedAmb 
     type FedAmbTime fedAmb
     withFederateAmbassador :: fedAmb -> (Ptr SomeFederateAmbassador -> IO a) -> IO a
 newtype SomeFederateAmbassador = SomeFederateAmbassador (ForeignPtr SomeFederateAmbassador)

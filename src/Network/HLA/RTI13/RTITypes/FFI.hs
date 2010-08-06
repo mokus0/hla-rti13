@@ -245,20 +245,20 @@ foreign import ccall "wrap/RTItypes.h wrap_Region_getRangeUpperBoundNotification
 delete_FedTime fedTime
     = wrapExceptions (wrap_delete_FedTime fedTime)
 foreign import ccall "wrap/RTItypes.h wrap_delete_FedTime"
-    wrap_delete_FedTime :: Ptr SomeFedTime -> Ptr (Ptr RTIException) -> IO ()
+    wrap_delete_FedTime :: Ptr fedTime -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTItypes.h wrap_FedTime_setZero"
-    wrap_FedTime_setZero :: Ptr SomeFedTime -> Ptr (Ptr RTIException) -> IO ()
+    wrap_FedTime_setZero :: Ptr fedTime -> Ptr (Ptr RTIException) -> IO ()
 foreign import ccall "wrap/RTItypes.h wrap_FedTime_isZero"
-    wrap_FedTime_isZero :: Ptr SomeFedTime -> Ptr (Ptr RTIException) -> IO Bool
+    wrap_FedTime_isZero :: Ptr fedTime -> Ptr (Ptr RTIException) -> IO Bool
 
 foreign import ccall "wrap/RTItypes.h wrap_FedTime_setEpsilon"
-    wrap_FedTime_setEpsilon :: Ptr SomeFedTime -> Ptr (Ptr RTIException) -> IO ()
+    wrap_FedTime_setEpsilon :: Ptr fedTime -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTItypes.h wrap_FedTime_setPositiveInfinity"
-    wrap_FedTime_setPositiveInfinity :: Ptr SomeFedTime -> Ptr (Ptr RTIException) -> IO ()
+    wrap_FedTime_setPositiveInfinity :: Ptr fedTime -> Ptr (Ptr RTIException) -> IO ()
 foreign import ccall "wrap/RTItypes.h wrap_FedTime_isPositiveInfinity"
-    wrap_FedTime_isPositiveInfinity :: Ptr SomeFedTime -> Ptr (Ptr RTIException) -> IO Bool
+    wrap_FedTime_isPositiveInfinity :: Ptr fedTime -> Ptr (Ptr RTIException) -> IO Bool
 
     --   virtual FedTime& operator+= (const FedTime&)
     --   virtual FedTime& operator-= (const FedTime&)
@@ -270,17 +270,17 @@ foreign import ccall "wrap/RTItypes.h wrap_FedTime_isPositiveInfinity"
     --   virtual FedTime& operator= (const FedTime&)
 
 foreign import ccall "wrap/RTItypes.h wrap_FedTime_encodedLength"
-    wrap_FedTime_encodedLength :: Ptr SomeFedTime -> Ptr (Ptr RTIException) -> IO CInt
+    wrap_FedTime_encodedLength :: Ptr fedTime -> Ptr (Ptr RTIException) -> IO CInt
 foreign import ccall "wrap/RTItypes.h wrap_FedTime_encode"
-    wrap_FedTime_encode :: Ptr SomeFedTime -> CString -> Ptr (Ptr RTIException) -> IO ()
+    wrap_FedTime_encode :: Ptr fedTime -> CString -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTItypes.h wrap_FedTime_getPrintableLength"
-    wrap_FedTime_getPrintableLength :: Ptr SomeFedTime -> Ptr (Ptr RTIException) -> IO CInt
+    wrap_FedTime_getPrintableLength :: Ptr fedTime -> Ptr (Ptr RTIException) -> IO CInt
 foreign import ccall "wrap/RTItypes.h wrap_FedTime_getPrintableString"
-    wrap_FedTime_getPrintableString :: Ptr SomeFedTime -> CString -> Ptr (Ptr RTIException) -> IO ()
+    wrap_FedTime_getPrintableString :: Ptr fedTime -> CString -> Ptr (Ptr RTIException) -> IO ()
 
 -- FedTimeFactory:
 foreign import ccall "wrap/RTItypes.h wrap_FedTimeFactory_makeZero"
-    wrap_FedTimeFactory_makeZero :: Ptr (Ptr RTIException) -> IO (Ptr SomeFedTime)
+    wrap_FedTimeFactory_makeZero :: Ptr (Ptr RTIException) -> IO (Ptr fedTime)
 -- foreign import ccall "wrap/RTItypes.h wrap_FedTimeFactory_decode"
---     wrap_FedTimeFactory_decode :: CString -> Ptr (Ptr RTIException) -> IO (Ptr SomeFedTime)
+--     wrap_FedTimeFactory_decode :: CString -> Ptr (Ptr RTIException) -> IO (Ptr fedTime)
