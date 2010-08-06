@@ -15,6 +15,8 @@ import Network.HLA.RTI13.BaseTypes
 import Text.Printf
 import Data.ByteString
 
+-- * ResignAction (An enumeration)
+
 data ResignAction
     = ReleaseAttributes
     | DeleteObjects
@@ -34,6 +36,7 @@ instance Enum ResignAction where
     fromEnum DeleteObjectsAndReleaseAttributes  = 3
     fromEnum NoAction                           = 4
 
+-- * FedTime (an abstract representation of time)
 
 class FedTimeImpl time where
     type FedTime time
@@ -50,17 +53,14 @@ class FedTimeImpl (FedAmbTime fedAmb) => FederateAmbassador fedAmb where
     type FedAmbTime fedAmb
     withFederateAmbassador :: fedAmb -> (Ptr fedAmb -> IO a) -> IO a
 
--- primitive numeric types
-newtype ExtentIndex            = ExtentIndex            ULong   deriving (Eq, Ord, Bits, Enum, Real, Integral, Data, Typeable, Storable)
+-- * Primitive numeric types
+newtype ExtentIndex = ExtentIndex ULong
+    deriving (Eq, Ord, Bits, Enum, Real, Integral, Data, Typeable, Storable)
 instance Show ExtentIndex            where showsPrec p (ExtentIndex            x) = showsPrec p x
 instance Read ExtentIndex            where readsPrec p s = [(extentIndexCheck "readsPrec" (ExtentIndex x), rest) | (x, rest) <- readsPrec p s]
 instance Bounded ExtentIndex where
     minBound = wrap_MIN_EXTENT
     maxBound = wrap_MAX_EXTENT
-extentIndexCheck cxt c
-    | c < wrap_MIN_EXTENT   = error (cxt ++ ": ExtentIndex underflow")
-    | c > wrap_MAX_EXTENT   = error (cxt ++ ": ExtentIndex overflow")
-    | otherwise             = c
 instance Num ExtentIndex where
     ExtentIndex a + ExtentIndex b = extentIndexCheck "+" (ExtentIndex (a + b))
     ExtentIndex a - ExtentIndex b = extentIndexCheck "-" (ExtentIndex (a - b))
@@ -69,25 +69,22 @@ instance Num ExtentIndex where
     signum (ExtentIndex x) = extentIndexCheck "signum" (ExtentIndex (signum x))
     fromInteger x = extentIndexCheck "fromInteger" (ExtentIndex (fromInteger x))
 
+extentIndexCheck cxt c
+    | c < wrap_MIN_EXTENT   = error (cxt ++ ": ExtentIndex underflow")
+    | c > wrap_MAX_EXTENT   = error (cxt ++ ": ExtentIndex overflow")
+    | otherwise             = c
 foreign import ccall "wrap/RTItypes.h wrap_MIN_EXTENT" wrap_MIN_EXTENT :: ExtentIndex
 foreign import ccall "wrap/RTItypes.h wrap_MAX_EXTENT" wrap_MAX_EXTENT :: ExtentIndex
 
-
-newtype FederateID             = FederateID             ULong   deriving (Eq, Ord, Bits, Enum, Bounded, Num, Real, Integral, Data, Typeable, Storable, PrintfArg)
-newtype UniqueID               = UniqueID               ULong   deriving (Eq, Ord, Bits, Enum, Bounded, Num, Real, Integral, Data, Typeable, Storable, PrintfArg)
-newtype RegionToken            = RegionToken            ULong   deriving (Eq, Ord, Bits, Enum, Bounded, Num, Real, Integral, Data, Typeable, Storable, PrintfArg)
-instance Show FederateID             where showsPrec p (FederateID             x) = showsPrec p x
-instance Show UniqueID               where showsPrec p (UniqueID               x) = showsPrec p x
-instance Show RegionToken            where showsPrec p (RegionToken            x) = showsPrec p x
-instance Read FederateID             where readsPrec p s = [(FederateID             x, rest) | (x, rest) <- readsPrec p s]
-instance Read UniqueID               where readsPrec p s = [(UniqueID               x, rest) | (x, rest) <- readsPrec p s]
-instance Read RegionToken            where readsPrec p s = [(RegionToken            x, rest) | (x, rest) <- readsPrec p s]
-
-newtype TickTime               = TickTime               Double  deriving (Eq, Ord, Enum, Num, Real, Fractional, Floating, RealFrac, RealFloat, Data, Typeable, Storable, PrintfArg)
+newtype TickTime = TickTime Double
+    deriving (Eq, Ord, Enum, Num, Real, Fractional, Floating, RealFrac, RealFloat, Data, Typeable, Storable, PrintfArg)
 instance Show TickTime               where showsPrec p (TickTime               x) = showsPrec p x
 instance Read TickTime               where readsPrec p s = [(TickTime               x, rest) | (x, rest) <- readsPrec p s]
 
--- primitive non-numeric types (handles, etc.)
+-- * Primitive non-numeric types (handles, etc.)
+newtype FederateID             = FederateID             ULong                   deriving (Eq, Ord, Data, Typeable, Storable, PrintfArg)
+newtype UniqueID               = UniqueID               ULong                   deriving (Eq, Ord, Data, Typeable, Storable, PrintfArg)
+newtype RegionToken            = RegionToken            ULong                   deriving (Eq, Ord, Data, Typeable, Storable, PrintfArg)
 newtype Handle                 = Handle                 ULong                   deriving (Eq, Ord, Data, Typeable, Storable, PrintfArg)
 newtype FederateHandle         = FederateHandle         ULong                   deriving (Eq, Ord, Data, Typeable, Storable, PrintfArg)
 newtype SpaceHandle            = SpaceHandle            Long                    deriving (Eq, Ord, Data, Typeable, Storable, PrintfArg)
@@ -101,6 +98,12 @@ newtype TransportationHandle   = TransportationHandle   Handle                  
 newtype TransportType          = TransportType          TransportationHandle    deriving (Eq, Ord, Data, Typeable, Storable, PrintfArg)
 newtype OrderingHandle         = OrderingHandle         Handle                  deriving (Eq, Ord, Data, Typeable, Storable, PrintfArg)
 newtype OrderType              = OrderType              OrderingHandle          deriving (Eq, Ord, Data, Typeable, Storable, PrintfArg)
+instance Show FederateID             where showsPrec p (FederateID             x) = showsPrec p x
+instance Show UniqueID               where showsPrec p (UniqueID               x) = showsPrec p x
+instance Show RegionToken            where showsPrec p (RegionToken            x) = showsPrec p x
+instance Read FederateID             where readsPrec p s = [(FederateID             x, rest) | (x, rest) <- readsPrec p s]
+instance Read UniqueID               where readsPrec p s = [(UniqueID               x, rest) | (x, rest) <- readsPrec p s]
+instance Read RegionToken            where readsPrec p s = [(RegionToken            x, rest) | (x, rest) <- readsPrec p s]
 instance Show Handle                 where showsPrec p (Handle                 x) = showsPrec p x
 instance Show FederateHandle         where showsPrec p (FederateHandle         x) = showsPrec p x
 instance Show SpaceHandle            where showsPrec p (SpaceHandle            x) = showsPrec p x
@@ -116,7 +119,7 @@ instance Show OrderingHandle         where showsPrec p (OrderingHandle         x
 instance Show OrderType              where showsPrec p (OrderType              x) = showsPrec p x
 
 
-
+-- * Containers and structures
 
 -- |Instances of class HandleValuePairSet are the containers used to pass
 -- object attribute values and interaction parameter values between the
