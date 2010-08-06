@@ -9,7 +9,7 @@ module Network.HLA.RTI13.NullFederateAmbassador
 import Foreign hiding (newForeignPtr)
 import Foreign.Concurrent
 
-import Network.HLA.RTI13.BaseTypes
+import Network.HLA.RTI13.FedTime
 import Network.HLA.RTI13.RTITypes
 import Network.HLA.RTI13.RTIException
 
@@ -31,7 +31,7 @@ newNullFederateAmbassador = do
         delete_NullFederateAmbassador fedAmb = wrapExceptions (wrap_delete_NullFederateAmbassador fedAmb)
 
 instance FederateAmbassador NullFederateAmbassador where
-    type FedAmbTime NullFederateAmbassador = SomeFedTime
+    type FedAmbTime NullFederateAmbassador = RTIFedTime
     withFederateAmbassador (NullFederateAmbassador fedAmb) action = 
         withForeignPtr fedAmb $ \fedAmb -> 
             action (castPtr fedAmb)

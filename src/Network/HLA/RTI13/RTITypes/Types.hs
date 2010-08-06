@@ -171,10 +171,6 @@ newtype Region = Region (ForeignPtr Region) deriving (Eq, Ord)
 instance Show Region where showsPrec p (Region r) = showsPrec p r
 withRegion (Region r) = withForeignPtr r
 
-newtype SomeFedTime = SomeFedTime (ForeignPtr SomeFedTime)
-instance FedTimeImpl SomeFedTime where
-    type FedTime SomeFedTime = ByteString
-
 data FedTimeFactory
 
 data EventRetractionHandle = EventRetractionHandle
