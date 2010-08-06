@@ -10,6 +10,8 @@ import Network.HLA.RTI13.BaseTypes
 import Network.HLA.RTI13.RTIException
 import Network.HLA.RTI13.RTITypes.Types
 
+-- * Constants
+
 foreign import ccall "wrap/RTItypes.h wrap_DEFAULT_SPACE_NAME" 
     wrap_DEFAULT_SPACE_NAME :: CString
 {-# NOINLINE defaultSpaceName #-}
@@ -58,7 +60,7 @@ rtiInternalRelease = fromIntegral wrap_RTI_INTERNAL_RELEASE
 
 
 
--- AttributeHandleValuePairSet:
+-- * AttributeHandleValuePairSet
 
 delete_AttributeHandleValuePairSet ahSet
     = wrapExceptions (wrap_delete_AttributeHandleValuePairSet ahSet)
@@ -101,11 +103,11 @@ foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_valid"
 foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_next"
     wrap_AttributeHandleValuePairSet_next :: Ptr AttributeHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO ULong
 
--- AttributeSetFactory:
+-- * AttributeSetFactory
 foreign import ccall "wrap/RTItypes.h wrap_AttributeSetFactory_create"
     wrap_AttributeSetFactory_create :: ULong -> Ptr (Ptr RTIException) -> IO (Ptr AttributeHandleValuePairSet)
 
--- AttributeHandleSet:
+-- * AttributeHandleSet
 
 delete_AttributeHandleSet :: Ptr AttributeHandleSet -> IO ()
 delete_AttributeHandleSet ahSet = 
@@ -134,12 +136,12 @@ foreign import ccall unsafe "wrap/RTItypes.h wrap_AttributeHandleSet_isEmpty"
 foreign import ccall unsafe "wrap/RTItypes.h wrap_AttributeHandleSet_isMember"
     wrap_AttributeHandleSet_isMember :: Ptr AttributeHandleSet -> AttributeHandle -> Ptr (Ptr RTIException) -> IO Bool
 
--- AttributeHandleSetFactory:
+-- * AttributeHandleSetFactory
 
 foreign import ccall unsafe "wrap/RTItypes.h wrap_AttributeHandleSetFactory_create"
     wrap_AttributeHandleSetFactory_create :: ULong -> Ptr (Ptr RTIException) -> IO (Ptr AttributeHandleSet)
 
--- FederateHandleSet:
+-- * FederateHandleSet
 
 delete_FederateHandleSet :: Ptr FederateHandleSet -> IO ()
 delete_FederateHandleSet fhSet = 
@@ -165,13 +167,13 @@ foreign import ccall unsafe "wrap/RTItypes.h wrap_FederateHandleSet_empty"
 foreign import ccall unsafe "wrap/RTItypes.h wrap_FederateHandleSet_isMember"
     wrap_FederateHandleSet_isMember :: Ptr FederateHandleSet -> FederateHandle -> Ptr (Ptr RTIException) -> IO Bool
 
--- FederateHandleSetFactory:
+-- * FederateHandleSetFactory
 
 foreign import ccall unsafe "wrap/RTItypes.h wrap_FederateHandleSetFactory_create"
     wrap_FederateHandleSetFactory_create :: ULong -> Ptr (Ptr RTIException) -> IO (Ptr FederateHandleSet)
 
--- data ParameterHandleValuePairSet
-    -- public:
+-- * ParameterHandleValuePairSet
+
 delete_ParameterHandleValuePairSet :: Ptr ParameterHandleValuePairSet -> IO ()
 delete_ParameterHandleValuePairSet pSet = 
     wrapExceptions (wrap_delete_ParameterHandleValuePairSet pSet)
@@ -214,11 +216,11 @@ foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_valid"
 foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_next"
     wrap_ParameterHandleValuePairSet_next :: Ptr ParameterHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO ULong
 
--- ParameterSetFactory:
+-- * ParameterSetFactory
 foreign import ccall unsafe "wrap/RTItypes.h wrap_ParameterSetFactory_create"
     wrap_ParameterSetFactory_create :: ULong -> Ptr (Ptr RTIException) -> IO (Ptr ParameterHandleValuePairSet)
 
--- Region:
+-- * Region
 delete_Region region = 
     wrapExceptions (wrap_delete_Region region)
 foreign import ccall "wrap/RTItypes.h wrap_delete_Region"
@@ -245,7 +247,7 @@ foreign import ccall "wrap/RTItypes.h wrap_Region_getRangeLowerBoundNotification
 foreign import ccall "wrap/RTItypes.h wrap_Region_getRangeUpperBoundNotificationLimit"
     wrap_Region_getRangeUpperBoundNotificationLimit :: Ptr Region -> ExtentIndex -> DimensionHandle -> Ptr (Ptr RTIException) -> IO ULong
 
--- FedTime:
+-- * FedTime
 delete_FedTime fedTime
     = wrapExceptions (wrap_delete_FedTime fedTime)
 foreign import ccall "wrap/RTItypes.h wrap_delete_FedTime"
@@ -283,7 +285,7 @@ foreign import ccall "wrap/RTItypes.h wrap_FedTime_getPrintableLength"
 foreign import ccall "wrap/RTItypes.h wrap_FedTime_getPrintableString"
     wrap_FedTime_getPrintableString :: Ptr fedTime -> CString -> Ptr (Ptr RTIException) -> IO ()
 
--- FedTimeFactory:
+-- * FedTimeFactory
 foreign import ccall "wrap/RTItypes.h wrap_FedTimeFactory_makeZero"
     wrap_FedTimeFactory_makeZero :: Ptr (Ptr RTIException) -> IO (Ptr fedTime)
 -- foreign import ccall "wrap/RTItypes.h wrap_FedTimeFactory_decode"
