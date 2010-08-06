@@ -13,7 +13,6 @@ import Data.Generics
 import Foreign
 import Network.HLA.RTI13.BaseTypes
 import Text.Printf
-import Data.ByteString
 
 -- * ResignAction (An enumeration)
 

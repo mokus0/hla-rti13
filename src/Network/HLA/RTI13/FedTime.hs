@@ -22,5 +22,6 @@ instance WriteRef RTIFedTime IO Double where
 
 instance FedTimeImpl RTIFedTime where
     type FedTime RTIFedTime = Double
-    withFedTimeIn d = bracket (new_RTIFedTime d) (delete_RTIFedTime)
+    withFedTimeIn  t      = bracket (new_RTIFedTime t) (delete_RTIFedTime)
+    withFedTimeOut action = withFedTimeIn 0 $ \t -> action t >> importFedTime t
     importFedTime = getTime
