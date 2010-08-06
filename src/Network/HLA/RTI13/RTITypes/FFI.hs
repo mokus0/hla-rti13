@@ -3,30 +3,30 @@
   #-}
 module Network.HLA.RTI13.RTITypes.FFI where
 
+import Data.ByteString (packCString)
 import Foreign
 import Foreign.C
 import Network.HLA.RTI13.BaseTypes
 import Network.HLA.RTI13.RTIException
 import Network.HLA.RTI13.RTITypes.Types
-import System.IO.Unsafe
 
 foreign import ccall "wrap/RTItypes.h wrap_DEFAULT_SPACE_NAME" 
     wrap_DEFAULT_SPACE_NAME :: CString
 {-# NOINLINE defaultSpaceName #-}
-defaultSpaceName = unsafePerformIO (peekCString wrap_DEFAULT_SPACE_NAME)
+defaultSpaceName = unsafePerformIO (packCString wrap_DEFAULT_SPACE_NAME)
 foreign import ccall "wrap/RTItypes.h wrap_DEFAULT_SPACE_DIMENSION_NAME"
     wrap_DEFAULT_SPACE_DIMENSION_NAME :: CString
 {-# NOINLINE defaultSpaceDimensionName #-}
-defaultSpaceDimensionName = unsafePerformIO (peekCString wrap_DEFAULT_SPACE_DIMENSION_NAME)
+defaultSpaceDimensionName = unsafePerformIO (packCString wrap_DEFAULT_SPACE_DIMENSION_NAME)
 
 foreign import ccall "wrap/RTItypes.h wrap_RTI_VERSION"
     wrap_RTI_VERSION :: CString
 {-# NOINLINE rtiVersion #-}
-rtiVersion = unsafePerformIO (peekCString wrap_RTI_VERSION)
+rtiVersion = unsafePerformIO (packCString wrap_RTI_VERSION)
 foreign import ccall "wrap/RTItypes.h wrap_RTI_INTERNAL_VERSION"
     wrap_RTI_INTERNAL_VERSION :: CString
 {-# NOINLINE rtiInternalVersion #-}
-rtiInternalVersion = unsafePerformIO (peekCString wrap_RTI_INTERNAL_VERSION)
+rtiInternalVersion = unsafePerformIO (packCString wrap_RTI_INTERNAL_VERSION)
 
 foreign import ccall "wrap/RTItypes.h wrap_RTI_MAJOR_VERSION"
     wrap_RTI_MAJOR_VERSION :: ULong
