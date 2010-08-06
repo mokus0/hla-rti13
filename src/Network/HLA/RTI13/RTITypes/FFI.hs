@@ -282,5 +282,5 @@ foreign import ccall "wrap/RTItypes.h wrap_FedTime_getPrintableString"
 -- FedTimeFactory:
 foreign import ccall "wrap/RTItypes.h wrap_FedTimeFactory_makeZero"
     wrap_FedTimeFactory_makeZero :: Ptr (Ptr RTIException) -> IO (Ptr SomeFedTime)
-foreign import ccall "wrap/RTItypes.h wrap_FedTimeFactory_decode"
-    wrap_FedTimeFactory_decode :: CString -> Ptr (Ptr RTIException) -> IO (Ptr SomeFedTime)
+-- foreign import ccall "wrap/RTItypes.h wrap_FedTimeFactory_decode"
+--     wrap_FedTimeFactory_decode :: CString -> Ptr (Ptr RTIException) -> IO (Ptr SomeFedTime)

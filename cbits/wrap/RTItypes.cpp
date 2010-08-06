@@ -370,11 +370,11 @@ ccall void *wrap_FedTimeFactory_makeZero(void **out_exc) {
     )
 }
 
-ccall void *wrap_FedTimeFactory_decode(const char *buf, void **out_exc) {
-    wrap(
-        return rti13::FedTimeFactory::decode(buf);
-    )
-}
+// ccall void *wrap_FedTimeFactory_decode(const char *buf, void **out_exc) {
+//     wrap(
+//         return rti13::FedTimeFactory::decode(buf);
+//     )
+// }
 
 ///// EventRetractionHandle
 ccall void dissect_EventRetractionHandle(void *in_erh, RTI_ULong *out_serial, RTI_ULong *out_federate) {

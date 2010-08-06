@@ -151,7 +151,7 @@ ccall void wrap_FedTime_getPrintableString(void *fTime, char *buf, void **out_ex
 
 ///// FedTimeFactory
 ccall void *wrap_FedTimeFactory_makeZero(void **out_exc);
-ccall void *wrap_FedTimeFactory_decode(const char *buf, void **out_exc);
+// ccall void *wrap_FedTimeFactory_decode(const char *buf, void **out_exc);
 
 ///// EventRetractionHandle
 ccall void dissect_EventRetractionHandle(void *in_erh, RTI_ULong *out_serial, RTI_ULong *out_federate);

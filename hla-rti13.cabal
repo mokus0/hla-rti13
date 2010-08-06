@@ -19,9 +19,15 @@ Flag dlc-api
   description:          Use the DLC API (untested!)
   default:              False
 
-Flag rti-ng-matrex
-  description:          Use the RTI-NG API version included with the MATREX 
-                        tools (v4.1.1 and v4.3.4 are what I developed against)
+Flag rti-ng
+  description:          Use the RTI-NG API  (The versions included with the 
+                        MATREX tools v4.1.1 and v4.3.4 are what I developed
+                        against)
+  default:              True
+
+Flag need-fedtime
+  description:          Include the 'fedtime' library as a link-time 
+                        dependency.  Some RTIs have one, some don't.
   default:              True
 
 Flag debug
@@ -55,13 +61,20 @@ Library
   
   include-dirs:         include
   
+  if os(darwin) 
+    extra-libraries:    stdc++
+  
   if flag(dlc-api)
     cc-options:         -DDLC_API
-    extra-libraries:    rti13, fedtime13
+    extra-libraries:    rti13
+    if flag(need-fedtime)
+      extra-libraries:  fedtime13
 
-  if flag(rti-ng-matrex)
+  if flag(rti-ng)
     cc-options:         -DRTI_NG_MATREX_API
-    extra-libraries:    RTI-NG, fedtime
+    extra-libraries:    RTI-NG
+    if flag(need-fedtime)
+      extra-libraries:  fedtime
   
   if flag(debug)
     cc-options:         -DDEBUG
