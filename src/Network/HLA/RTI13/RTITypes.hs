@@ -14,7 +14,6 @@ import Network.HLA.RTI13.BaseTypes
 import Network.HLA.RTI13.RTIException
 
 import qualified Data.ByteString as BS
-import qualified Data.ByteString.Unsafe as BS
 import Data.Container.Mutable
 import Data.List (genericLength)
 import Foreign hiding (newForeignPtr)
@@ -75,7 +74,7 @@ attributeHandleValuePairSet_getRegion ahSet i =
 instance Insert IO AttributeHandleValuePairSet where
     insert ahSet (h, bs) =
         withAttributeHandleValuePairSet ahSet $ \ahSet ->
-            BS.unsafeUseAsCString bs $ \buf -> 
+            BS.useAsCString bs $ \buf -> 
                 wrapExceptions (wrap_AttributeHandleValuePairSet_add ahSet h buf len)
         where len = fromIntegral (BS.length bs)
 
@@ -312,7 +311,7 @@ parameterHandleValuePairSet_getRegion phSet i =
 
 instance Insert IO ParameterHandleValuePairSet where
     insert pSet (h,buff) = withParameterHandleValuePairSet pSet $ \pSet ->
-        BS.unsafeUseAsCString buff $ \buff ->
+        BS.useAsCString buff $ \buff ->
             wrapExceptions (wrap_ParameterHandleValuePairSet_add pSet h buff valueLength)
         where 
             valueLength = fromIntegral (BS.length buff)
