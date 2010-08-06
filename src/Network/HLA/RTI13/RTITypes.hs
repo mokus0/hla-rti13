@@ -7,18 +7,20 @@ module Network.HLA.RTI13.RTITypes
     , module Network.HLA.RTI13.RTITypes
     ) where
 
-import Network.HLA.RTI13.BaseTypes
-import Network.HLA.RTI13.RTIException
 import Network.HLA.RTI13.RTITypes.Types
 import Network.HLA.RTI13.RTITypes.FFI
-import Foreign hiding (newForeignPtr)
-import Foreign.Concurrent
-import Data.Container.Mutable
+
+import Network.HLA.RTI13.BaseTypes
+import Network.HLA.RTI13.RTIException
+
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Unsafe as BS
+import Data.Container.Mutable
 import Data.List (genericLength)
+import Foreign hiding (newForeignPtr)
+import Foreign.Concurrent
 
--- AttributeHandleValuePairSet:
+-- * AttributeHandleValuePairSet
 
 instance Container AttributeHandleValuePairSet where
     type Elem AttributeHandleValuePairSet = (AttributeHandle, BS.ByteString)
@@ -126,7 +128,7 @@ attributeHandleValuePairSet_next ahSet i =
     withAttributeHandleValuePairSet ahSet $ \ahSet ->
         wrapExceptions (wrap_AttributeHandleValuePairSet_next ahSet i)
 
--- AttributeSetFactory:
+-- * AttributeSetFactory
 
 instance NewContainer IO AttributeHandleValuePairSet where
     newContainer n = attributeSetFactory_create (maybe 0 fromIntegral n)
@@ -142,7 +144,7 @@ attributeSetFactory_create n = do
     ahvps <- newForeignPtr ahvps (delete_AttributeHandleValuePairSet ahvps)
     return (AttributeHandleValuePairSet ahvps)
 
--- data AttributeHandleSet
+-- * AttributeHandleSet
 
 -- |Import an AttributeHandleSet pointer, accepting responsibility to delete
 -- it when the object goes out of scope.
@@ -191,7 +193,7 @@ instance Contains IO AttributeHandleSet where
             wrapExceptions (wrap_AttributeHandleSet_isMember ahSet h)
 
 
--- AttributeHandleSetFactory:
+-- * AttributeHandleSetFactory
 
 instance NewContainer IO AttributeHandleSet where
     newContainer n = attributeHandleSetFactory_create (maybe 0 fromIntegral n)
@@ -206,7 +208,7 @@ attributeHandleSetFactory_create n = do
     ahSet <- newForeignPtr ahSet (delete_AttributeHandleSet ahSet)
     return (AttributeHandleSet ahSet)
 
--- FederateHandleSet:
+-- * FederateHandleSet
 
 instance Container FederateHandleSet where
     type Elem FederateHandleSet = FederateHandle
@@ -241,7 +243,7 @@ instance Contains IO FederateHandleSet where
         withFederateHandleSet fhSet $ \fhSet ->
             wrapExceptions (wrap_FederateHandleSet_isMember fhSet h)
 
--- data FederateHandleSetFactory
+-- * FederateHandleSetFactory
 
 instance NewContainer IO FederateHandleSet where
     newContainer n = federateHandleSetFactory_create (maybe 0 fromIntegral n)
@@ -256,7 +258,7 @@ federateHandleSetFactory_create n = do
     fhSet <- newForeignPtr fhSet (delete_FederateHandleSet fhSet)
     return (FederateHandleSet fhSet)
 
--- data ParameterHandleValuePairSet
+-- * ParameterHandleValuePairSet
 instance Container ParameterHandleValuePairSet where
     type Elem ParameterHandleValuePairSet = (ParameterHandle, BS.ByteString)
 
@@ -363,7 +365,7 @@ parameterHandleValuePairSet_next phSet i =
     withParameterHandleValuePairSet phSet $ \phSet ->
         wrapExceptions (wrap_ParameterHandleValuePairSet_next phSet i)
 
--- data ParameterSetFactory
+-- * ParameterSetFactory
 
 instance NewContainer IO ParameterHandleValuePairSet where
     newContainer n = parameterSetFactory_create (maybe 0 fromIntegral n)
@@ -378,7 +380,7 @@ parameterSetFactory_create count = do
     pSet <- newForeignPtr pSet (delete_ParameterHandleValuePairSet pSet)
     return (ParameterHandleValuePairSet pSet)
 
--- Region:
+-- * Region
 
 getRangeLowerBound :: Region -> ExtentIndex -> DimensionHandle -> IO ULong
 getRangeLowerBound theRegion theExtent theDimension =
@@ -418,7 +420,7 @@ getRangeUpperBoundNotificationLimit theRegion theExtent theDimension =
     withRegion theRegion $ \theRegion -> 
         wrapExceptions (wrap_Region_getRangeUpperBoundNotificationLimit theRegion theExtent theDimension)
 
--- data FedTime
+-- * FedTime
     -- public:
     --   virtual ~FedTime();
     -- 
@@ -476,7 +478,7 @@ getRangeUpperBoundNotificationLimit theRegion theExtent theDimension =
     --   
     -- };
 
---data FedTimeFactory
+-- * FedTimeFactory
     -- public:
     --   static FedTime* makeZero()
     --     throw (
