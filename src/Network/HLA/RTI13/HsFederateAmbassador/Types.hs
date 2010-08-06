@@ -17,8 +17,7 @@ import Foreign
 newtype HsFederateAmbassador t = HsFederateAmbassador (ForeignPtr (HsFederateAmbassador t))
 instance FedTimeImpl t => FederateAmbassador (HsFederateAmbassador t) where
     type FedAmbTime (HsFederateAmbassador t) = t
-    withFederateAmbassador fedAmb action = 
-        withHsFederateAmbassador fedAmb (action . castPtr)
+    withFederateAmbassador = withHsFederateAmbassador
 
 withHsFederateAmbassador :: HsFederateAmbassador fedTime -> (Ptr (HsFederateAmbassador fedTime) -> IO a) -> IO a
 withHsFederateAmbassador (HsFederateAmbassador fedAmb) = withForeignPtr fedAmb

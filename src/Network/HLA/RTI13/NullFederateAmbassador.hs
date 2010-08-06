@@ -32,6 +32,5 @@ newNullFederateAmbassador = do
 
 instance FederateAmbassador NullFederateAmbassador where
     type FedAmbTime NullFederateAmbassador = RTIFedTime
-    withFederateAmbassador (NullFederateAmbassador fedAmb) action = 
-        withForeignPtr fedAmb $ \fedAmb -> 
-            action (castPtr fedAmb)
+    withFederateAmbassador (NullFederateAmbassador fedAmb) = 
+        withForeignPtr fedAmb
