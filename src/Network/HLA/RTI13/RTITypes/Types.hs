@@ -46,7 +46,6 @@ class FedTimeImpl time where
     withFedTimeOut :: (Ptr time -> IO a) ->  IO (FedTimeRepr time)
     importFedTime :: Ptr time -> IO (FedTimeRepr time)
 
-type FedTime fedAmb = FedTimeRepr (FedAmbTime fedAmb)
 class FedTimeImpl (FedAmbTime fedAmb) => FederateAmbassador fedAmb where
     type FedAmbTime fedAmb
     withFederateAmbassador :: fedAmb -> (Ptr fedAmb -> IO a) -> IO a
