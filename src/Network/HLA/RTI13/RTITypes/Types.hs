@@ -117,7 +117,7 @@ instance Show OrderingHandle         where showsPrec p (OrderingHandle         x
 instance Show OrderType              where showsPrec p (OrderType              x) = showsPrec p x
 
 
--- * Containers and structures
+-- * Data structures
 
 newtype Region = Region (ForeignPtr Region) deriving (Eq, Ord)
 instance Show Region where showsPrec p (Region r) = showsPrec p r
