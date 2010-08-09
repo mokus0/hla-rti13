@@ -13,6 +13,7 @@ import Network.HLA.RTI13.RTITypes
 
 import Control.Monad.Reader
 import Data.ByteString (ByteString, packCString)
+import qualified Data.Set as S (Set)
 import Foreign hiding (newForeignPtr)
 import Foreign.Concurrent
 
@@ -237,50 +238,50 @@ onRemoveObjectInstance removeObjectInstance = do
         
         FFI.set_removeObjectInstance fedAmb funPtr
 
-onAttributesInScope :: (ObjectHandle -> AttributeHandleSet -> IO ()) -> FedHandlers t ()
+onAttributesInScope :: (ObjectHandle -> S.Set AttributeHandle -> IO ()) -> FedHandlers t ()
 onAttributesInScope attributesInScope = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_O_P_V $ \theObject theAttrs -> do
-            theAttrs <- newForeignPtr_ theAttrs
-            attributesInScope theObject (AttributeHandleSet theAttrs)
+            theAttrs <- importAttributeHandleSet theAttrs
+            attributesInScope theObject theAttrs
         FFI.set_attributesInScope fedAmb funPtr
 
-onAttributesOutOfScope :: (ObjectHandle -> AttributeHandleSet -> IO ()) -> FedHandlers t ()
+onAttributesOutOfScope :: (ObjectHandle -> S.Set AttributeHandle -> IO ()) -> FedHandlers t ()
 onAttributesOutOfScope attributesOutOfScope = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_O_P_V $ \theObject theAttrs -> do
-            theAttrs <- newForeignPtr_ theAttrs
-            attributesOutOfScope theObject (AttributeHandleSet theAttrs)
+            theAttrs <- importAttributeHandleSet theAttrs
+            attributesOutOfScope theObject theAttrs
         FFI.set_attributesOutOfScope fedAmb funPtr
 
 
-onProvideAttributeValueUpdate :: (ObjectHandle -> AttributeHandleSet -> IO ()) -> FedHandlers t ()
+onProvideAttributeValueUpdate :: (ObjectHandle -> S.Set AttributeHandle -> IO ()) -> FedHandlers t ()
 onProvideAttributeValueUpdate provideAttributeValueUpdate = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_O_P_V $ \theObject theAttrs -> do
-            theAttrs <- newForeignPtr_ theAttrs
-            provideAttributeValueUpdate theObject (AttributeHandleSet theAttrs)
+            theAttrs <- importAttributeHandleSet theAttrs
+            provideAttributeValueUpdate theObject theAttrs
         FFI.set_provideAttributeValueUpdate fedAmb funPtr
 
-onTurnUpdatesOnForObjectInstance :: (ObjectHandle -> AttributeHandleSet -> IO ()) -> FedHandlers t ()
+onTurnUpdatesOnForObjectInstance :: (ObjectHandle -> S.Set AttributeHandle -> IO ()) -> FedHandlers t ()
 onTurnUpdatesOnForObjectInstance turnUpdatesOnForObjectInstance = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_O_P_V $ \theObject theAttrs -> do
-            theAttrs <- newForeignPtr_ theAttrs
-            turnUpdatesOnForObjectInstance theObject (AttributeHandleSet theAttrs)
+            theAttrs <- importAttributeHandleSet theAttrs
+            turnUpdatesOnForObjectInstance theObject theAttrs
         FFI.set_turnUpdatesOnForObjectInstance fedAmb funPtr
 
-onTurnUpdatesOffForObjectInstance :: (ObjectHandle -> AttributeHandleSet -> IO ()) -> FedHandlers t ()
+onTurnUpdatesOffForObjectInstance :: (ObjectHandle -> S.Set AttributeHandle -> IO ()) -> FedHandlers t ()
 onTurnUpdatesOffForObjectInstance turnUpdatesOffForObjectInstance = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_O_P_V $ \theObject theAttrs -> do
-            theAttrs <- newForeignPtr_ theAttrs
-            turnUpdatesOffForObjectInstance theObject (AttributeHandleSet theAttrs)
+            theAttrs <- importAttributeHandleSet theAttrs
+            turnUpdatesOffForObjectInstance theObject theAttrs
         FFI.set_turnUpdatesOffForObjectInstance fedAmb funPtr
 
 
@@ -288,61 +289,61 @@ onTurnUpdatesOffForObjectInstance turnUpdatesOffForObjectInstance = do
 -- * Ownership Management Services
 ------------------------------------
 
-onRequestAttributeOwnershipAssumption :: (ObjectHandle -> AttributeHandleSet -> ByteString -> IO ()) -> FedHandlers t ()
+onRequestAttributeOwnershipAssumption :: (ObjectHandle -> S.Set AttributeHandle -> ByteString -> IO ()) -> FedHandlers t ()
 onRequestAttributeOwnershipAssumption requestAttributeOwnershipAssumption = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_O_P2_V $ \theObject theAttrs theTag -> do
-            theAttrs <- newForeignPtr_ theAttrs
+            theAttrs <- importAttributeHandleSet theAttrs
             theTag <- packCString theTag
-            requestAttributeOwnershipAssumption theObject (AttributeHandleSet theAttrs) theTag
+            requestAttributeOwnershipAssumption theObject  theAttrs theTag
         FFI.set_requestAttributeOwnershipAssumption fedAmb funPtr
 
-onAttributeOwnershipDivestitureNotification :: (ObjectHandle -> AttributeHandleSet -> IO ()) -> FedHandlers t ()
+onAttributeOwnershipDivestitureNotification :: (ObjectHandle -> S.Set AttributeHandle -> IO ()) -> FedHandlers t ()
 onAttributeOwnershipDivestitureNotification attributeOwnershipDivestitureNotification = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_O_P_V $ \theObject theAttrs -> do
-            theAttrs <- newForeignPtr_ theAttrs
-            attributeOwnershipDivestitureNotification theObject (AttributeHandleSet theAttrs)
+            theAttrs <- importAttributeHandleSet theAttrs
+            attributeOwnershipDivestitureNotification theObject theAttrs
         FFI.set_attributeOwnershipDivestitureNotification fedAmb funPtr
 
-onAttributeOwnershipAcquisitionNotification :: (ObjectHandle -> AttributeHandleSet -> IO ()) -> FedHandlers t ()
+onAttributeOwnershipAcquisitionNotification :: (ObjectHandle -> S.Set AttributeHandle -> IO ()) -> FedHandlers t ()
 onAttributeOwnershipAcquisitionNotification attributeOwnershipAcquisitionNotification = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_O_P_V $ \theObject theAttrs -> do
-            theAttrs <- newForeignPtr_ theAttrs
-            attributeOwnershipAcquisitionNotification theObject (AttributeHandleSet theAttrs)
+            theAttrs <- importAttributeHandleSet theAttrs
+            attributeOwnershipAcquisitionNotification theObject theAttrs
         FFI.set_attributeOwnershipAcquisitionNotification fedAmb funPtr
 
-onAttributeOwnershipUnavailable :: (ObjectHandle -> AttributeHandleSet -> IO ()) -> FedHandlers t ()
+onAttributeOwnershipUnavailable :: (ObjectHandle -> S.Set AttributeHandle -> IO ()) -> FedHandlers t ()
 onAttributeOwnershipUnavailable attributeOwnershipUnavailable = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_O_P_V $ \theObject theAttrs -> do
-            theAttrs <- newForeignPtr_ theAttrs
-            attributeOwnershipUnavailable theObject (AttributeHandleSet theAttrs)
+            theAttrs <- importAttributeHandleSet theAttrs
+            attributeOwnershipUnavailable theObject theAttrs
         FFI.set_attributeOwnershipUnavailable fedAmb funPtr
 
-onRequestAttributeOwnershipRelease :: (ObjectHandle -> AttributeHandleSet -> ByteString -> IO ()) -> FedHandlers t ()
+onRequestAttributeOwnershipRelease :: (ObjectHandle -> S.Set AttributeHandle -> ByteString -> IO ()) -> FedHandlers t ()
 onRequestAttributeOwnershipRelease requestAttributeOwnershipRelease = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_O_P2_V $ \theObject theAttrs theTag -> do
-            theAttrs <- newForeignPtr_ theAttrs
+            theAttrs <- importAttributeHandleSet theAttrs
             theTag <- packCString theTag
-            requestAttributeOwnershipRelease theObject (AttributeHandleSet theAttrs) theTag
+            requestAttributeOwnershipRelease theObject theAttrs theTag
         FFI.set_requestAttributeOwnershipRelease fedAmb funPtr
 
 
-onConfirmAttributeOwnershipAcquisitionCancellation :: (ObjectHandle -> AttributeHandleSet -> IO ()) -> FedHandlers t ()
+onConfirmAttributeOwnershipAcquisitionCancellation :: (ObjectHandle -> S.Set AttributeHandle -> IO ()) -> FedHandlers t ()
 onConfirmAttributeOwnershipAcquisitionCancellation confirmAttributeOwnershipAcquisitionCancellation = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_O_P_V $ \theObject theAttrs -> do
-            theAttrs <- newForeignPtr_ theAttrs
-            confirmAttributeOwnershipAcquisitionCancellation theObject (AttributeHandleSet theAttrs)
+            theAttrs <- importAttributeHandleSet theAttrs
+            confirmAttributeOwnershipAcquisitionCancellation theObject theAttrs
         FFI.set_confirmAttributeOwnershipAcquisitionCancellation fedAmb funPtr
 
 onInformAttributeOwnership :: (ObjectHandle -> AttributeHandle -> FederateHandle -> IO ()) -> FedHandlers t ()

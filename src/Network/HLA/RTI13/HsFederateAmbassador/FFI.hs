@@ -5,6 +5,7 @@ import Network.HLA.RTI13.HsFederateAmbassador.Types
 import Network.HLA.RTI13.RTIException
 import Network.HLA.RTI13.RTITypes
 
+import qualified Data.Set as S (Set)
 import Foreign
 import Foreign.C
 
@@ -98,41 +99,41 @@ foreign import ccall "hsFederateAmb.h hsfa_set_removeObjectInstance"
     set_removeObjectInstance :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr t -> CString -> UniqueID -> FederateHandle -> IO ()) -> IO ()
 
 foreign import ccall "hsFederateAmb.h hsfa_set_attributesInScope"
-    set_attributesInScope :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> IO ()) -> IO ()
+    set_attributesInScope :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr (S.Set AttributeHandle) -> IO ()) -> IO ()
 
 foreign import ccall "hsFederateAmb.h hsfa_set_attributesOutOfScope"
-    set_attributesOutOfScope :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> IO ()) -> IO ()
+    set_attributesOutOfScope :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr (S.Set AttributeHandle) -> IO ()) -> IO ()
 
 foreign import ccall "hsFederateAmb.h hsfa_set_provideAttributeValueUpdate"
-    set_provideAttributeValueUpdate :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> IO ()) -> IO ()
+    set_provideAttributeValueUpdate :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr (S.Set AttributeHandle) -> IO ()) -> IO ()
 
 foreign import ccall "hsFederateAmb.h hsfa_set_turnUpdatesOnForObjectInstance"
-    set_turnUpdatesOnForObjectInstance :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> IO ()) -> IO ()
+    set_turnUpdatesOnForObjectInstance :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr (S.Set AttributeHandle) -> IO ()) -> IO ()
 
 foreign import ccall "hsFederateAmb.h hsfa_set_turnUpdatesOffForObjectInstance"
-    set_turnUpdatesOffForObjectInstance :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> IO ()) -> IO ()
+    set_turnUpdatesOffForObjectInstance :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr (S.Set AttributeHandle) -> IO ()) -> IO ()
 
 ------------------------------------
 -- * Ownership Management Services
 ------------------------------------
 
 foreign import ccall "hsFederateAmb.h hsfa_set_requestAttributeOwnershipAssumption"
-    set_requestAttributeOwnershipAssumption :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> CString -> IO ()) -> IO ()
+    set_requestAttributeOwnershipAssumption :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr (S.Set AttributeHandle) -> CString -> IO ()) -> IO ()
 
 foreign import ccall "hsFederateAmb.h hsfa_set_attributeOwnershipDivestitureNotification"
-    set_attributeOwnershipDivestitureNotification :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> IO ()) -> IO ()
+    set_attributeOwnershipDivestitureNotification :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr (S.Set AttributeHandle) -> IO ()) -> IO ()
 
 foreign import ccall "hsFederateAmb.h hsfa_set_attributeOwnershipAcquisitionNotification"
-    set_attributeOwnershipAcquisitionNotification :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> IO ()) -> IO ()
+    set_attributeOwnershipAcquisitionNotification :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr (S.Set AttributeHandle) -> IO ()) -> IO ()
 
 foreign import ccall "hsFederateAmb.h hsfa_set_attributeOwnershipUnavailable"
-    set_attributeOwnershipUnavailable :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> IO ()) -> IO ()
+    set_attributeOwnershipUnavailable :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr (S.Set AttributeHandle) -> IO ()) -> IO ()
 
 foreign import ccall "hsFederateAmb.h hsfa_set_requestAttributeOwnershipRelease"
-    set_requestAttributeOwnershipRelease :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> CString -> IO ()) -> IO ()
+    set_requestAttributeOwnershipRelease :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr (S.Set AttributeHandle) -> CString -> IO ()) -> IO ()
 
 foreign import ccall "hsFederateAmb.h hsfa_set_confirmAttributeOwnershipAcquisitionCancellation"
-    set_confirmAttributeOwnershipAcquisitionCancellation :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleSet -> IO ()) -> IO ()
+    set_confirmAttributeOwnershipAcquisitionCancellation :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr (S.Set AttributeHandle) -> IO ()) -> IO ()
 
 foreign import ccall "hsFederateAmb.h hsfa_set_informAttributeOwnership"
     set_informAttributeOwnership :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> AttributeHandle -> FederateHandle -> IO ()) -> IO ()

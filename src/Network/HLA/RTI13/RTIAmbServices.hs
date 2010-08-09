@@ -5,6 +5,7 @@ module Network.HLA.RTI13.RTIAmbServices
 
 import Network.HLA.RTI13.RTIAmbServices.FFI (RTIAmbassador(..), withRTIAmbassador)
 import qualified Network.HLA.RTI13.RTIAmbServices.FFI as FFI
+import qualified Network.HLA.RTI13.RTITypes.FFI as FFI
 
 import Network.HLA.RTI13.BaseTypes
 import Network.HLA.RTI13.OddsAndEnds
@@ -14,6 +15,7 @@ import Network.HLA.RTI13.RTIException
 import Control.Exception (bracket_)
 import Data.ByteString (ByteString, useAsCString)
 import Data.IORef
+import qualified Data.Set as S (Set)
 import Foreign hiding (newForeignPtr)
 import Foreign.Concurrent
 import System.Mem
@@ -140,7 +142,7 @@ federateRestoreNotComplete rtiAmb = withRTIAmbassador rtiAmb
 -- * Declaration Management Services
 --------------------------------------
 
-publishObjectClass :: RTIAmbassador t -> ObjectClassHandle -> AttributeHandleSet -> IO ()
+publishObjectClass :: RTIAmbassador t -> ObjectClassHandle -> S.Set AttributeHandle -> IO ()
 publishObjectClass rtiAmb theClass attributeList =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withAttributeHandleSet attributeList $ \attributeList ->
@@ -161,7 +163,7 @@ unpublishInteractionClass rtiAmb theInteraction =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (FFI.unpublishInteractionClass rtiAmb theInteraction)
 
-subscribeObjectClassAttributes :: RTIAmbassador t -> ObjectClassHandle -> AttributeHandleSet -> IO ()
+subscribeObjectClassAttributes :: RTIAmbassador t -> ObjectClassHandle -> S.Set AttributeHandle -> IO ()
 subscribeObjectClassAttributes rtiAmb theClass attributeList =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withAttributeHandleSet attributeList $ \attributeList ->
@@ -248,7 +250,7 @@ localDeleteObjectInstance rtiAmb theObject =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (FFI.localDeleteObjectInstance rtiAmb theObject)
 
-changeAttributeTransportationType :: RTIAmbassador t -> ObjectHandle -> AttributeHandleSet -> TransportationHandle -> IO ()
+changeAttributeTransportationType :: RTIAmbassador t -> ObjectHandle -> S.Set AttributeHandle -> TransportationHandle -> IO ()
 changeAttributeTransportationType rtiAmb theObject theAttributes theType =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withAttributeHandleSet theAttributes $ \theAttributes ->
@@ -259,13 +261,13 @@ changeInteractionTransportationType rtiAmb theClass theType =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (FFI.changeInteractionTransportationType rtiAmb theClass theType)
 
-requestObjectAttributeValueUpdate :: RTIAmbassador t -> ObjectHandle -> AttributeHandleSet -> IO ()
+requestObjectAttributeValueUpdate :: RTIAmbassador t -> ObjectHandle -> S.Set AttributeHandle -> IO ()
 requestObjectAttributeValueUpdate rtiAmb theObject theAttributes =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withAttributeHandleSet theAttributes $ \theAttributes ->
             wrapExceptions (FFI.requestObjectAttributeValueUpdate rtiAmb theObject theAttributes)
 
-requestClassAttributeValueUpdate :: RTIAmbassador t -> ObjectClassHandle -> AttributeHandleSet -> IO ()
+requestClassAttributeValueUpdate :: RTIAmbassador t -> ObjectClassHandle -> S.Set AttributeHandle -> IO ()
 requestClassAttributeValueUpdate rtiAmb theClass theAttributes =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withAttributeHandleSet theAttributes $ \theAttributes ->
@@ -275,46 +277,48 @@ requestClassAttributeValueUpdate rtiAmb theClass theAttributes =
 -- * Ownership Management Services
 ------------------------------------
 
-unconditionalAttributeOwnershipDivestiture :: RTIAmbassador t -> ObjectHandle -> AttributeHandleSet -> IO ()
+unconditionalAttributeOwnershipDivestiture :: RTIAmbassador t -> ObjectHandle -> S.Set AttributeHandle -> IO ()
 unconditionalAttributeOwnershipDivestiture rtiAmb theObject theAttributes =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withAttributeHandleSet theAttributes $ \theAttributes ->
             wrapExceptions (FFI.unconditionalAttributeOwnershipDivestiture rtiAmb theObject theAttributes)
 
-negotiatedAttributeOwnershipDivestiture :: RTIAmbassador t -> ObjectHandle -> AttributeHandleSet -> ByteString -> IO ()
+negotiatedAttributeOwnershipDivestiture :: RTIAmbassador t -> ObjectHandle -> S.Set AttributeHandle -> ByteString -> IO ()
 negotiatedAttributeOwnershipDivestiture rtiAmb theObject theAttributes theTag =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withAttributeHandleSet theAttributes $ \theAttributes ->
             useAsCString theTag $ \theTag ->
                 wrapExceptions (FFI.negotiatedAttributeOwnershipDivestiture rtiAmb theObject theAttributes theTag)
 
-attributeOwnershipAcquisition :: RTIAmbassador t -> ObjectHandle -> AttributeHandleSet -> ByteString -> IO ()
+attributeOwnershipAcquisition :: RTIAmbassador t -> ObjectHandle -> S.Set AttributeHandle -> ByteString -> IO ()
 attributeOwnershipAcquisition rtiAmb theObject theAttributes theTag =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withAttributeHandleSet theAttributes $ \theAttributes ->
             useAsCString theTag $ \theTag ->
                 wrapExceptions (FFI.attributeOwnershipAcquisition rtiAmb theObject theAttributes theTag)
 
-attributeOwnershipAcquisitionIfAvailable :: RTIAmbassador t -> ObjectHandle -> AttributeHandleSet -> IO ()
+attributeOwnershipAcquisitionIfAvailable :: RTIAmbassador t -> ObjectHandle -> S.Set AttributeHandle -> IO ()
 attributeOwnershipAcquisitionIfAvailable rtiAmb theObject theAttributes =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withAttributeHandleSet theAttributes $ \theAttributes ->
             wrapExceptions (FFI.attributeOwnershipAcquisitionIfAvailable rtiAmb theObject theAttributes)
 
-attributeOwnershipReleaseResponse :: RTIAmbassador t -> ObjectHandle -> AttributeHandleSet -> IO AttributeHandleSet
+attributeOwnershipReleaseResponse :: RTIAmbassador t -> ObjectHandle -> S.Set AttributeHandle -> IO (S.Set AttributeHandle)
 attributeOwnershipReleaseResponse rtiAmb theObject theAttributes = do
-    response <- withRTIAmbassador rtiAmb $ \rtiAmb ->
+    ahSet <- withRTIAmbassador rtiAmb $ \rtiAmb ->
         withAttributeHandleSet theAttributes $ \theAttributes ->
             wrapExceptions (FFI.attributeOwnershipReleaseResponse rtiAmb theObject theAttributes)
-    importAttributeHandleSet response
+    theAttrs <- importAttributeHandleSet ahSet
+    FFI.delete_AttributeHandleSet ahSet
+    return theAttrs
 
-cancelNegotiatedAttributeOwnershipDivestiture :: RTIAmbassador t -> ObjectHandle -> AttributeHandleSet -> IO ()
+cancelNegotiatedAttributeOwnershipDivestiture :: RTIAmbassador t -> ObjectHandle -> S.Set AttributeHandle -> IO ()
 cancelNegotiatedAttributeOwnershipDivestiture rtiAmb theObject theAttributes =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withAttributeHandleSet theAttributes $ \theAttributes ->
             wrapExceptions (FFI.cancelNegotiatedAttributeOwnershipDivestiture rtiAmb theObject theAttributes)
 
-cancelAttributeOwnershipAcquisition :: RTIAmbassador t -> ObjectHandle -> AttributeHandleSet -> IO ()
+cancelAttributeOwnershipAcquisition :: RTIAmbassador t -> ObjectHandle -> S.Set AttributeHandle -> IO ()
 cancelAttributeOwnershipAcquisition rtiAmb theObject theAttributes =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withAttributeHandleSet theAttributes $ \theAttributes ->
@@ -438,7 +442,7 @@ retract rtiAmb (EventRetractionHandle u fh) =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (FFI.retract rtiAmb u fh)
 
-changeAttributeOrderType :: RTIAmbassador t -> ObjectHandle -> AttributeHandleSet -> OrderingHandle -> IO ()
+changeAttributeOrderType :: RTIAmbassador t -> ObjectHandle -> S.Set AttributeHandle -> OrderingHandle -> IO ()
 changeAttributeOrderType rtiAmb theObject theAttributes theType =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withAttributeHandleSet theAttributes $ \theAttributes ->
@@ -503,7 +507,7 @@ unassociateRegionForUpdates rtiAmb theRegion theObject =
         withRegion theRegion $ \theRegion ->
             wrapExceptions (FFI.unassociateRegionForUpdates rtiAmb theRegion theObject)
 
-subscribeObjectClassAttributesWithRegion :: RTIAmbassador t -> ObjectClassHandle -> Region -> AttributeHandleSet -> Bool -> IO ()
+subscribeObjectClassAttributesWithRegion :: RTIAmbassador t -> ObjectClassHandle -> Region -> S.Set AttributeHandle -> Bool -> IO ()
 subscribeObjectClassAttributesWithRegion rtiAmb theClass theRegion attributeList active =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withRegion theRegion $ \theRegion ->
@@ -547,7 +551,7 @@ sendInteractionWithRegion rtiAmb theInteraction theParameters theTag theRegion =
                 withRegion theRegion $ \theRegion ->
                     wrapExceptions (FFI.sendInteractionWithRegion rtiAmb theInteraction theParameters theTag theRegion)
 
-requestClassAttributeValueUpdateWithRegion :: RTIAmbassador t -> ObjectClassHandle -> AttributeHandleSet -> Region -> IO ()
+requestClassAttributeValueUpdateWithRegion :: RTIAmbassador t -> ObjectClassHandle -> S.Set AttributeHandle -> Region -> IO ()
 requestClassAttributeValueUpdateWithRegion rtiAmb theClass theAttributes theRegion =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withAttributeHandleSet theAttributes $ \theAttributes ->

@@ -10,6 +10,7 @@
 module Network.HLA.RTI13.RTITypes.Types where
 
 import Data.Generics
+import qualified Data.Set as S
 import Foreign
 import Network.HLA.RTI13.BaseTypes
 import Text.Printf
@@ -137,15 +138,11 @@ instance Show OrderType              where showsPrec p (OrderType              x
 -- Attribute Values or Send Interaction service invocation.  
 newtype AttributeHandleValuePairSet = AttributeHandleValuePairSet (ForeignPtr AttributeHandleValuePairSet)
 withAttributeHandleValuePairSet (AttributeHandleValuePairSet ahvpSet) = withForeignPtr ahvpSet
-data AttributeSetFactory
-
-newtype AttributeHandleSet = AttributeHandleSet (ForeignPtr AttributeHandleSet)
-withAttributeHandleSet (AttributeHandleSet ahSet) = withForeignPtr ahSet
-data AttributeHandleSetFactory
+-- data AttributeSetFactory
 
 newtype FederateHandleSet = FederateHandleSet (ForeignPtr FederateHandleSet)
 withFederateHandleSet (FederateHandleSet fhSet) = withForeignPtr fhSet
-data FederateHandleSetFactory
+-- data FederateHandleSetFactory
 
 -- |Instances of class HandleValuePairSet are the containers used to pass
 -- object attribute values and interaction parameter values between the

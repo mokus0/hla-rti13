@@ -4,6 +4,7 @@
 module Network.HLA.RTI13.RTITypes.FFI where
 
 import Data.ByteString (ByteString, packCString)
+import qualified Data.Set as S (Set)
 import Foreign
 import Foreign.C
 import Network.HLA.RTI13.BaseTypes
@@ -109,37 +110,37 @@ foreign import ccall "wrap/RTItypes.h wrap_AttributeSetFactory_create"
 
 -- * AttributeHandleSet
 
-delete_AttributeHandleSet :: Ptr AttributeHandleSet -> IO ()
+delete_AttributeHandleSet :: Ptr (S.Set AttributeHandle) -> IO ()
 delete_AttributeHandleSet ahSet = 
     wrapExceptions (wrap_delete_AttributeHandleSet ahSet)
 foreign import ccall unsafe "wrap/RTItypes.h wrap_delete_AttributeHandleSet"
-    wrap_delete_AttributeHandleSet :: Ptr AttributeHandleSet -> Ptr (Ptr RTIException) -> IO ()
+    wrap_delete_AttributeHandleSet :: Ptr (S.Set AttributeHandle) -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall unsafe "wrap/RTItypes.h wrap_AttributeHandleSet_size"
-    wrap_AttributeHandleSet_size :: Ptr AttributeHandleSet -> Ptr (Ptr RTIException) -> IO ULong
+    wrap_AttributeHandleSet_size :: Ptr (S.Set AttributeHandle) -> Ptr (Ptr RTIException) -> IO ULong
 
 foreign import ccall unsafe "wrap/RTItypes.h wrap_AttributeHandleSet_getHandle"
-    wrap_AttributeHandleSet_getHandle :: Ptr AttributeHandleSet -> ULong -> Ptr (Ptr RTIException) -> IO AttributeHandle
+    wrap_AttributeHandleSet_getHandle :: Ptr (S.Set AttributeHandle) -> ULong -> Ptr (Ptr RTIException) -> IO AttributeHandle
 
 foreign import ccall unsafe "wrap/RTItypes.h wrap_AttributeHandleSet_add"
-    wrap_AttributeHandleSet_add :: Ptr AttributeHandleSet -> AttributeHandle -> Ptr (Ptr RTIException) -> IO ()
+    wrap_AttributeHandleSet_add :: Ptr (S.Set AttributeHandle) -> AttributeHandle -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall unsafe "wrap/RTItypes.h wrap_AttributeHandleSet_remove"
-    wrap_AttributeHandleSet_remove :: Ptr AttributeHandleSet -> AttributeHandle -> Ptr (Ptr RTIException) -> IO ()
+    wrap_AttributeHandleSet_remove :: Ptr (S.Set AttributeHandle) -> AttributeHandle -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall unsafe "wrap/RTItypes.h wrap_AttributeHandleSet_empty"
-    wrap_AttributeHandleSet_empty :: Ptr AttributeHandleSet -> Ptr (Ptr RTIException) -> IO ()
+    wrap_AttributeHandleSet_empty :: Ptr (S.Set AttributeHandle) -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall unsafe "wrap/RTItypes.h wrap_AttributeHandleSet_isEmpty"
-    wrap_AttributeHandleSet_isEmpty :: Ptr AttributeHandleSet -> Ptr (Ptr RTIException) -> IO Bool
+    wrap_AttributeHandleSet_isEmpty :: Ptr (S.Set AttributeHandle) -> Ptr (Ptr RTIException) -> IO Bool
 
 foreign import ccall unsafe "wrap/RTItypes.h wrap_AttributeHandleSet_isMember"
-    wrap_AttributeHandleSet_isMember :: Ptr AttributeHandleSet -> AttributeHandle -> Ptr (Ptr RTIException) -> IO Bool
+    wrap_AttributeHandleSet_isMember :: Ptr (S.Set AttributeHandle) -> AttributeHandle -> Ptr (Ptr RTIException) -> IO Bool
 
 -- * AttributeHandleSetFactory
 
 foreign import ccall unsafe "wrap/RTItypes.h wrap_AttributeHandleSetFactory_create"
-    wrap_AttributeHandleSetFactory_create :: ULong -> Ptr (Ptr RTIException) -> IO (Ptr AttributeHandleSet)
+    wrap_AttributeHandleSetFactory_create :: ULong -> Ptr (Ptr RTIException) -> IO (Ptr (S.Set AttributeHandle))
 
 -- * FederateHandleSet
 

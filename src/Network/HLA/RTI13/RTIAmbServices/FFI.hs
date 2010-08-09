@@ -4,6 +4,7 @@
 module Network.HLA.RTI13.RTIAmbServices.FFI where
 
 import Data.IORef
+import qualified Data.Set as S (Set)
 import Foreign
 import Foreign.C
 import Network.HLA.RTI13.BaseTypes
@@ -86,7 +87,7 @@ foreign import ccall unsafe "wrap/RTIambServices.h wrap_federateRestoreNotComple
 --------------------------------------
 
 foreign import ccall "wrap/RTIambServices.h wrap_publishObjectClass"
-    publishObjectClass :: Ptr (RTIAmbassador t) -> ObjectClassHandle -> Ptr AttributeHandleSet -> Ptr (Ptr RTIException) -> IO ()
+    publishObjectClass :: Ptr (RTIAmbassador t) -> ObjectClassHandle -> Ptr (S.Set AttributeHandle) -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTIambServices.h wrap_unpublishObjectClass"
     unpublishObjectClass :: Ptr (RTIAmbassador t) -> ObjectClassHandle -> Ptr (Ptr RTIException) -> IO ()
@@ -98,7 +99,7 @@ foreign import ccall "wrap/RTIambServices.h wrap_unpublishInteractionClass"
     unpublishInteractionClass :: Ptr (RTIAmbassador t) -> InteractionClassHandle -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTIAmbServices.h wrap_subscribeObjectClassAttributes"
-    subscribeObjectClassAttributes :: Ptr (RTIAmbassador t) -> ObjectClassHandle -> Ptr AttributeHandleSet -> Ptr (Ptr RTIException) -> IO ()
+    subscribeObjectClassAttributes :: Ptr (RTIAmbassador t) -> ObjectClassHandle -> Ptr (S.Set AttributeHandle) -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTIAmbServices.h wrap_unsubscribeObjectClass"
     unsubscribeObjectClass :: Ptr (RTIAmbassador t) -> ObjectClassHandle -> Ptr (Ptr RTIException) -> IO ()
@@ -141,41 +142,41 @@ foreign import ccall "wrap/RTIAmbServices.h wrap_localDeleteObjectInstance"
     localDeleteObjectInstance :: Ptr (RTIAmbassador t) -> ObjectHandle -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTIAmbServices.h wrap_changeAttributeTransportationType"
-    changeAttributeTransportationType :: Ptr (RTIAmbassador t) -> ObjectHandle -> Ptr AttributeHandleSet -> TransportationHandle -> Ptr (Ptr RTIException) -> IO ()
+    changeAttributeTransportationType :: Ptr (RTIAmbassador t) -> ObjectHandle -> Ptr (S.Set AttributeHandle) -> TransportationHandle -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTIAmbServices.h wrap_changeInteractionTransportationType"
     changeInteractionTransportationType :: Ptr (RTIAmbassador t) -> InteractionClassHandle -> TransportationHandle -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTIAmbServices.h wrap_requestObjectAttributeValueUpdate"
-    requestObjectAttributeValueUpdate :: Ptr (RTIAmbassador t) -> ObjectHandle -> Ptr AttributeHandleSet -> Ptr (Ptr RTIException) -> IO ()
+    requestObjectAttributeValueUpdate :: Ptr (RTIAmbassador t) -> ObjectHandle -> Ptr (S.Set AttributeHandle) -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTIAmbServices.h wrap_requestClassAttributeValueUpdate"
-    requestClassAttributeValueUpdate :: Ptr (RTIAmbassador t) -> ObjectClassHandle -> Ptr AttributeHandleSet -> Ptr (Ptr RTIException) -> IO ()
+    requestClassAttributeValueUpdate :: Ptr (RTIAmbassador t) -> ObjectClassHandle -> Ptr (S.Set AttributeHandle) -> Ptr (Ptr RTIException) -> IO ()
 
 ------------------------------------
 -- * Ownership Management Services
 ------------------------------------
 
 foreign import ccall "wrap/RTIAmbServices.h wrap_unconditionalAttributeOwnershipDivestiture"
-    unconditionalAttributeOwnershipDivestiture :: Ptr (RTIAmbassador t) -> ObjectHandle -> Ptr AttributeHandleSet -> Ptr (Ptr RTIException) -> IO ()
+    unconditionalAttributeOwnershipDivestiture :: Ptr (RTIAmbassador t) -> ObjectHandle -> Ptr (S.Set AttributeHandle) -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTIAmbServices.h wrap_negotiatedAttributeOwnershipDivestiture"
-    negotiatedAttributeOwnershipDivestiture :: Ptr (RTIAmbassador t) -> ObjectHandle -> Ptr AttributeHandleSet -> CString -> Ptr (Ptr RTIException) -> IO ()
+    negotiatedAttributeOwnershipDivestiture :: Ptr (RTIAmbassador t) -> ObjectHandle -> Ptr (S.Set AttributeHandle) -> CString -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTIAmbServices.h wrap_attributeOwnershipAcquisition"
-    attributeOwnershipAcquisition :: Ptr (RTIAmbassador t) -> ObjectHandle -> Ptr AttributeHandleSet -> CString -> Ptr (Ptr RTIException) -> IO ()
+    attributeOwnershipAcquisition :: Ptr (RTIAmbassador t) -> ObjectHandle -> Ptr (S.Set AttributeHandle) -> CString -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTIAmbServices.h wrap_attributeOwnershipAcquisitionIfAvailable"
-    attributeOwnershipAcquisitionIfAvailable :: Ptr (RTIAmbassador t) -> ObjectHandle -> Ptr AttributeHandleSet -> Ptr (Ptr RTIException) -> IO ()
+    attributeOwnershipAcquisitionIfAvailable :: Ptr (RTIAmbassador t) -> ObjectHandle -> Ptr (S.Set AttributeHandle) -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTIAmbServices.h wrap_attributeOwnershipReleaseResponse"
-    attributeOwnershipReleaseResponse :: Ptr (RTIAmbassador t) -> ObjectHandle -> Ptr AttributeHandleSet -> Ptr (Ptr RTIException) -> IO (Ptr AttributeHandleSet)
+    attributeOwnershipReleaseResponse :: Ptr (RTIAmbassador t) -> ObjectHandle -> Ptr (S.Set AttributeHandle) -> Ptr (Ptr RTIException) -> IO (Ptr (S.Set AttributeHandle))
 
 foreign import ccall "wrap/RTIAmbServices.h wrap_cancelNegotiatedAttributeOwnershipDivestiture"
-    cancelNegotiatedAttributeOwnershipDivestiture :: Ptr (RTIAmbassador t) -> ObjectHandle -> Ptr AttributeHandleSet -> Ptr (Ptr RTIException) -> IO ()
+    cancelNegotiatedAttributeOwnershipDivestiture :: Ptr (RTIAmbassador t) -> ObjectHandle -> Ptr (S.Set AttributeHandle) -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTIAmbServices.h wrap_cancelAttributeOwnershipAcquisition"
-    cancelAttributeOwnershipAcquisition :: Ptr (RTIAmbassador t) -> ObjectHandle -> Ptr AttributeHandleSet -> Ptr (Ptr RTIException) -> IO ()
+    cancelAttributeOwnershipAcquisition :: Ptr (RTIAmbassador t) -> ObjectHandle -> Ptr (S.Set AttributeHandle) -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTIAmbServices.h wrap_queryAttributeOwnership"
     queryAttributeOwnership :: Ptr (RTIAmbassador t) -> ObjectHandle -> AttributeHandle -> Ptr (Ptr RTIException) -> IO ()
@@ -239,7 +240,7 @@ foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_retract"
     retract :: Ptr (RTIAmbassador t) -> UniqueID -> FederateHandle -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_changeAttributeOrderType"
-    changeAttributeOrderType :: Ptr (RTIAmbassador t) -> ObjectHandle -> Ptr (AttributeHandleSet) -> OrderingHandle -> Ptr (Ptr RTIException) -> IO ()
+    changeAttributeOrderType :: Ptr (RTIAmbassador t) -> ObjectHandle -> Ptr (S.Set AttributeHandle) -> OrderingHandle -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_changeInteractionOrderType"
     changeInteractionOrderType :: Ptr (RTIAmbassador t) -> InteractionClassHandle -> OrderingHandle -> Ptr (Ptr RTIException) -> IO ()
@@ -270,7 +271,7 @@ foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_unassociateRegionForUpda
     unassociateRegionForUpdates :: Ptr (RTIAmbassador t) -> Ptr Region -> ObjectHandle -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_subscribeObjectClassAttributesWithRegion" 
-    subscribeObjectClassAttributesWithRegion :: Ptr (RTIAmbassador t) -> ObjectClassHandle -> Ptr Region -> Ptr AttributeHandleSet -> Bool -> Ptr (Ptr RTIException) -> IO ()
+    subscribeObjectClassAttributesWithRegion :: Ptr (RTIAmbassador t) -> ObjectClassHandle -> Ptr Region -> Ptr (S.Set AttributeHandle) -> Bool -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_unsubscribeObjectClassWithRegion" 
     unsubscribeObjectClassWithRegion :: Ptr (RTIAmbassador t) -> ObjectClassHandle -> Ptr Region -> Ptr (Ptr RTIException) -> IO ()
@@ -288,7 +289,7 @@ foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_sendInteractionWithRegio
     sendInteractionWithRegion :: Ptr (RTIAmbassador t) -> InteractionClassHandle -> Ptr ParameterHandleValuePairSet -> CString -> Ptr Region -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_requestClassAttributeValueUpdateWithRegion" 
-    requestClassAttributeValueUpdateWithRegion :: Ptr (RTIAmbassador t) -> ObjectClassHandle -> Ptr AttributeHandleSet -> Ptr Region -> Ptr (Ptr RTIException) -> IO ()
+    requestClassAttributeValueUpdateWithRegion :: Ptr (RTIAmbassador t) -> ObjectClassHandle -> Ptr (S.Set AttributeHandle) -> Ptr Region -> Ptr (Ptr RTIException) -> IO ()
 
 
 ---------------------------

@@ -16,6 +16,7 @@ import Network.HLA.RTI13.RTIException
 import qualified Data.ByteString as BS
 import Data.Container.Mutable
 import Data.List (genericLength)
+import qualified Data.Set as S
 import Foreign hiding (newForeignPtr)
 import Foreign.Concurrent
 
@@ -145,72 +146,85 @@ attributeSetFactory_create n = do
 
 -- * AttributeHandleSet
 
--- |Import an AttributeHandleSet pointer, accepting responsibility to delete
--- it when the object goes out of scope.
-importAttributeHandleSet :: Ptr AttributeHandleSet -> IO AttributeHandleSet
-importAttributeHandleSet ahSetPtr = do
-    fPtr <- newForeignPtr ahSetPtr (delete_AttributeHandleSet ahSetPtr)
-    return (AttributeHandleSet fPtr)
+withAttributeHandleSet :: S.Set AttributeHandle -> (Ptr (S.Set AttributeHandle) -> IO a) -> IO a
+withAttributeHandleSet theAttrs action = do
+    ahSet <- wrapExceptions (wrap_AttributeHandleSetFactory_create (fromIntegral (S.size theAttrs)))
+    mapM_ (wrapExceptions . wrap_AttributeHandleSet_add ahSet) (S.toList theAttrs)
+    
+    result <- action ahSet
+    
+    delete_AttributeHandleSet ahSet
+    return result
     
 
-instance Container AttributeHandleSet where
-    type Elem AttributeHandleSet = AttributeHandle
-
-instance HasCount IO AttributeHandleSet where
-    count ahSet =
-        withAttributeHandleSet ahSet $ \ahSet ->
-            fmap fromIntegral $
-                wrapExceptions (wrap_AttributeHandleSet_size ahSet)
-
-attributeHandleSet_getHandle ahSet i =
-    withAttributeHandleSet ahSet $ \ahSet -> 
-        wrapExceptions (wrap_AttributeHandleSet_getHandle ahSet i)
-
-instance Insert IO AttributeHandleSet where
-    insert ahSet ah = 
-        withAttributeHandleSet ahSet $ \ahSet ->
-            wrapExceptions (wrap_AttributeHandleSet_add ahSet ah)
-
-instance Remove IO AttributeHandleSet where
-    remove ahSet ah = 
-        withAttributeHandleSet ahSet $ \ahSet ->
-            wrapExceptions (wrap_AttributeHandleSet_remove ahSet ah)
-
-instance Empty IO AttributeHandleSet where
-    empty ahSet =
-        withAttributeHandleSet ahSet $ \ahSet ->
-            wrapExceptions (wrap_AttributeHandleSet_empty ahSet)
-
-instance IsEmpty IO AttributeHandleSet where
-    isEmpty ahSet =
-        withAttributeHandleSet ahSet $ \ahSet ->
-            wrapExceptions (wrap_AttributeHandleSet_isEmpty ahSet)
-
-instance Contains IO AttributeHandleSet where
-    ahSet `contains` h =
-        withAttributeHandleSet ahSet $ \ahSet ->
-            wrapExceptions (wrap_AttributeHandleSet_isMember ahSet h)
-
-instance ToList IO AttributeHandleSet where
-    toList ahSet = do
-        n <- count ahSet
-        mapM (attributeHandleSet_getHandle ahSet) [0 .. fromIntegral n - 1]
+-- |Read an AttributeHandleSet pointer into Haskell-space (copies the data, so
+-- the pointer may be subsequently deleted)
+importAttributeHandleSet :: Ptr (S.Set AttributeHandle) -> IO (S.Set AttributeHandle)
+importAttributeHandleSet ahSetPtr = do
+    n <- wrapExceptions (wrap_AttributeHandleSet_size ahSetPtr)
+    theAttrs <- mapM (wrapExceptions . wrap_AttributeHandleSet_getHandle ahSetPtr) [0 .. n - 1]
+    
+    return (S.fromList theAttrs)
+    
+-- 
+-- instance Container AttributeHandleSet where
+--     type Elem AttributeHandleSet = AttributeHandle
+-- 
+-- instance HasCount IO AttributeHandleSet where
+--     count ahSet =
+--         withAttributeHandleSet ahSet $ \ahSet ->
+--             fmap fromIntegral $
+--                 wrapExceptions (wrap_AttributeHandleSet_size ahSet)
+-- 
+-- attributeHandleSet_getHandle ahSet i =
+--     withAttributeHandleSet ahSet $ \ahSet -> 
+--         wrapExceptions (wrap_AttributeHandleSet_getHandle ahSet i)
+-- 
+-- instance Insert IO AttributeHandleSet where
+--     insert ahSet ah = 
+--         withAttributeHandleSet ahSet $ \ahSet ->
+--             wrapExceptions (wrap_AttributeHandleSet_add ahSet ah)
+-- 
+-- instance Remove IO AttributeHandleSet where
+--     remove ahSet ah = 
+--         withAttributeHandleSet ahSet $ \ahSet ->
+--             wrapExceptions (wrap_AttributeHandleSet_remove ahSet ah)
+-- 
+-- instance Empty IO AttributeHandleSet where
+--     empty ahSet =
+--         withAttributeHandleSet ahSet $ \ahSet ->
+--             wrapExceptions (wrap_AttributeHandleSet_empty ahSet)
+-- 
+-- instance IsEmpty IO AttributeHandleSet where
+--     isEmpty ahSet =
+--         withAttributeHandleSet ahSet $ \ahSet ->
+--             wrapExceptions (wrap_AttributeHandleSet_isEmpty ahSet)
+-- 
+-- instance Contains IO AttributeHandleSet where
+--     ahSet `contains` h =
+--         withAttributeHandleSet ahSet $ \ahSet ->
+--             wrapExceptions (wrap_AttributeHandleSet_isMember ahSet h)
+-- 
+-- instance ToList IO AttributeHandleSet where
+--     toList ahSet = do
+--         n <- count ahSet
+--         mapM (attributeHandleSet_getHandle ahSet) [0 .. fromIntegral n - 1]
 
 
 -- * AttributeHandleSetFactory
 
-instance NewContainer IO AttributeHandleSet where
-    newContainer n = attributeHandleSetFactory_create (maybe 0 fromIntegral n)
-    fromList xs = do
-        ahSet <- attributeHandleSetFactory_create (genericLength xs)
-        mapM_ (insert ahSet) xs
-        return ahSet
-
-attributeHandleSetFactory_create :: ULong -> IO AttributeHandleSet
-attributeHandleSetFactory_create n = do
-    ahSet <- wrapExceptions (wrap_AttributeHandleSetFactory_create n)
-    ahSet <- newForeignPtr ahSet (delete_AttributeHandleSet ahSet)
-    return (AttributeHandleSet ahSet)
+-- instance NewContainer IO AttributeHandleSet where
+--     newContainer n = attributeHandleSetFactory_create (maybe 0 fromIntegral n)
+--     fromList xs = do
+--         ahSet <- attributeHandleSetFactory_create (genericLength xs)
+--         mapM_ (insert ahSet) xs
+--         return ahSet
+-- 
+-- attributeHandleSetFactory_create :: ULong -> IO AttributeHandleSet
+-- attributeHandleSetFactory_create n = do
+--     ahSet <- wrapExceptions (wrap_AttributeHandleSetFactory_create n)
+--     ahSet <- newForeignPtr ahSet (delete_AttributeHandleSet ahSet)
+--     return (AttributeHandleSet ahSet)
 
 -- * FederateHandleSet
 
