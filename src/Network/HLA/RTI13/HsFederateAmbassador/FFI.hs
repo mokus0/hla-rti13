@@ -95,7 +95,7 @@ foreign import ccall "hsFederateAmb.h hsfa_set_reflectAttributeValues"
     set_reflectAttributeValues :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr (M.Map AttributeHandle ByteString) -> Ptr t -> CString -> UniqueID -> FederateHandle -> IO ()) -> IO ()
 
 foreign import ccall "hsFederateAmb.h hsfa_set_receiveInteraction"
-    set_receiveInteraction :: Ptr (HsFederateAmbassador t) -> FunPtr (InteractionClassHandle -> Ptr ParameterHandleValuePairSet -> Ptr t -> CString -> UniqueID -> FederateHandle -> IO ()) -> IO ()
+    set_receiveInteraction :: Ptr (HsFederateAmbassador t) -> FunPtr (InteractionClassHandle -> Ptr (M.Map ParameterHandle ByteString) -> Ptr t -> CString -> UniqueID -> FederateHandle -> IO ()) -> IO ()
 
 foreign import ccall "hsFederateAmb.h hsfa_set_removeObjectInstance"
     set_removeObjectInstance :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr t -> CString -> UniqueID -> FederateHandle -> IO ()) -> IO ()

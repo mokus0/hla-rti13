@@ -216,7 +216,7 @@ updateAttributeValues rtiAmb theObject theAttributes theTag =
             useAsCString theTag $ \theTag ->
                 wrapExceptions (FFI.updateAttributeValues rtiAmb theObject theAttributes theTag)
 
-sendInteractionAtTime :: FedTimeImpl t => RTIAmbassador t -> InteractionClassHandle -> ParameterHandleValuePairSet -> FedTime t -> ByteString -> IO EventRetractionHandle
+sendInteractionAtTime :: FedTimeImpl t => RTIAmbassador t -> InteractionClassHandle -> M.Map ParameterHandle ByteString -> FedTime t -> ByteString -> IO EventRetractionHandle
 sendInteractionAtTime rtiAmb theInteraction theParameters theTime theTag = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withParameterHandleValuePairSet theParameters $ \theParameters ->
@@ -225,7 +225,7 @@ sendInteractionAtTime rtiAmb theInteraction theParameters theTime theTag =
                     withEventRetractionHandleReturn $ \u fh ->
                         wrapExceptions (FFI.sendInteractionAtTime rtiAmb theInteraction theParameters theTime theTag u fh)
 
-sendInteraction :: RTIAmbassador t -> InteractionClassHandle -> ParameterHandleValuePairSet -> ByteString -> IO ()
+sendInteraction :: RTIAmbassador t -> InteractionClassHandle -> M.Map ParameterHandle ByteString -> ByteString -> IO ()
 sendInteraction rtiAmb theInteraction theParameters theTag = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withParameterHandleValuePairSet theParameters $ \theParameters ->
@@ -534,7 +534,7 @@ unsubscribeInteractionClassWithRegion rtiAmb theClass theRegion =
         withRegion theRegion $ \theRegion ->
             wrapExceptions (FFI.unsubscribeInteractionClassWithRegion rtiAmb theClass theRegion)
 
-sendInteractionWithRegionAtTime :: FedTimeImpl t => RTIAmbassador t -> InteractionClassHandle -> ParameterHandleValuePairSet -> FedTime t -> ByteString -> Region -> IO EventRetractionHandle
+sendInteractionWithRegionAtTime :: FedTimeImpl t => RTIAmbassador t -> InteractionClassHandle -> M.Map ParameterHandle ByteString -> FedTime t -> ByteString -> Region -> IO EventRetractionHandle
 sendInteractionWithRegionAtTime rtiAmb theInteraction theParameters theTime theTag theRegion =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withParameterHandleValuePairSet theParameters $ \theParameters ->
@@ -544,7 +544,7 @@ sendInteractionWithRegionAtTime rtiAmb theInteraction theParameters theTime theT
                         withEventRetractionHandleReturn $ \u fh ->
                             wrapExceptions (FFI.sendInteractionWithRegionAtTime rtiAmb theInteraction theParameters theTime theTag theRegion u fh)
 
-sendInteractionWithRegion :: RTIAmbassador t -> InteractionClassHandle -> ParameterHandleValuePairSet -> ByteString -> Region -> IO ()
+sendInteractionWithRegion :: RTIAmbassador t -> InteractionClassHandle -> M.Map ParameterHandle ByteString -> ByteString -> Region -> IO ()
 sendInteractionWithRegion rtiAmb theInteraction theParameters theTag theRegion =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withParameterHandleValuePairSet theParameters $ \theParameters ->

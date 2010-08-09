@@ -210,13 +210,13 @@ onReflectAttributeValues reflectAttributeValues = do
                     reflectAttributeValues theObject theAttrs theTag (Just (theTime, EventRetractionHandle theHandleSerial theHandleFed))
         FFI.set_reflectAttributeValues fedAmb funPtr
 
-onReceiveInteraction :: FedTimeImpl t => (InteractionClassHandle -> ParameterHandleValuePairSet -> ByteString -> Maybe (FedTime t, EventRetractionHandle) -> IO ()) -> FedHandlers t ()
+onReceiveInteraction :: FedTimeImpl t => (InteractionClassHandle -> M.Map ParameterHandle ByteString -> ByteString -> Maybe (FedTime t, EventRetractionHandle) -> IO ()) -> FedHandlers t ()
 onReceiveInteraction receiveInteraction = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_IC_P3_U_F_V $ \theInteraction theParameters theTime theTag theHandleSerial theHandleFed -> do
             theTag <- packCString theTag
-            theParameters <- fmap ParameterHandleValuePairSet (newForeignPtr_ theParameters)
+            theParameters <- importParameterHandleValuePairSet theParameters
             
             if theTime == nullPtr
                 then receiveInteraction theInteraction theParameters theTag Nothing

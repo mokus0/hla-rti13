@@ -129,10 +129,10 @@ foreign import ccall "wrap/RTIAmbServices.h wrap_registerObjectInstance"
     registerObjectInstance :: Ptr (RTIAmbassador t) -> ObjectClassHandle -> Ptr (Ptr RTIException) -> IO ObjectHandle
 
 foreign import ccall "wrap/RTIAmbServices.h wrap_sendInteractionAtTime"
-    sendInteractionAtTime :: Ptr (RTIAmbassador t) -> InteractionClassHandle -> Ptr ParameterHandleValuePairSet -> Ptr t -> CString -> Ptr UniqueID -> Ptr FederateHandle -> Ptr (Ptr RTIException) -> IO ()
+    sendInteractionAtTime :: Ptr (RTIAmbassador t) -> InteractionClassHandle -> Ptr (M.Map ParameterHandle ByteString) -> Ptr t -> CString -> Ptr UniqueID -> Ptr FederateHandle -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTIAmbServices.h wrap_sendInteraction"
-    sendInteraction :: Ptr (RTIAmbassador t) -> InteractionClassHandle -> Ptr ParameterHandleValuePairSet -> CString -> Ptr (Ptr RTIException) -> IO ()
+    sendInteraction :: Ptr (RTIAmbassador t) -> InteractionClassHandle -> Ptr (M.Map ParameterHandle ByteString) -> CString -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTIAmbServices.h wrap_deleteObjectInstanceAtTime"
     deleteObjectInstanceAtTime :: Ptr (RTIAmbassador t) -> ObjectHandle -> Ptr t -> CString -> Ptr UniqueID -> Ptr FederateHandle -> Ptr (Ptr RTIException) -> IO ()
@@ -285,10 +285,10 @@ foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_unsubscribeInteractionCl
     unsubscribeInteractionClassWithRegion :: Ptr (RTIAmbassador t) -> InteractionClassHandle -> Ptr Region -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_sendInteractionWithRegionAtTime" 
-    sendInteractionWithRegionAtTime :: Ptr (RTIAmbassador t) -> InteractionClassHandle -> Ptr ParameterHandleValuePairSet -> Ptr t -> CString -> Ptr Region -> Ptr UniqueID -> Ptr FederateHandle -> Ptr (Ptr RTIException) -> IO ()
+    sendInteractionWithRegionAtTime :: Ptr (RTIAmbassador t) -> InteractionClassHandle -> Ptr (M.Map ParameterHandle ByteString) -> Ptr t -> CString -> Ptr Region -> Ptr UniqueID -> Ptr FederateHandle -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_sendInteractionWithRegion" 
-    sendInteractionWithRegion :: Ptr (RTIAmbassador t) -> InteractionClassHandle -> Ptr ParameterHandleValuePairSet -> CString -> Ptr Region -> Ptr (Ptr RTIException) -> IO ()
+    sendInteractionWithRegion :: Ptr (RTIAmbassador t) -> InteractionClassHandle -> Ptr (M.Map ParameterHandle ByteString) -> CString -> Ptr Region -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall unsafe "wrap/RTIAmbServices.h wrap_requestClassAttributeValueUpdateWithRegion" 
     requestClassAttributeValueUpdateWithRegion :: Ptr (RTIAmbassador t) -> ObjectClassHandle -> Ptr (S.Set AttributeHandle) -> Ptr Region -> Ptr (Ptr RTIException) -> IO ()

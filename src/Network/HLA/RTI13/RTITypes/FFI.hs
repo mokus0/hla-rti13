@@ -176,51 +176,51 @@ foreign import ccall unsafe "wrap/RTItypes.h wrap_FederateHandleSetFactory_creat
 
 -- * ParameterHandleValuePairSet
 
-delete_ParameterHandleValuePairSet :: Ptr ParameterHandleValuePairSet -> IO ()
+delete_ParameterHandleValuePairSet :: Ptr (M.Map ParameterHandle ByteString) -> IO ()
 delete_ParameterHandleValuePairSet pSet = 
     wrapExceptions (wrap_delete_ParameterHandleValuePairSet pSet)
 foreign import ccall unsafe "wrap/RTItypes.h wrap_delete_ParameterHandleValuePairSet"
-    wrap_delete_ParameterHandleValuePairSet :: Ptr ParameterHandleValuePairSet -> Ptr (Ptr RTIException) -> IO ()
+    wrap_delete_ParameterHandleValuePairSet :: Ptr (M.Map ParameterHandle ByteString) -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_size"
-    wrap_ParameterHandleValuePairSet_size :: Ptr ParameterHandleValuePairSet -> Ptr (Ptr RTIException) -> IO ULong
+    wrap_ParameterHandleValuePairSet_size :: Ptr (M.Map ParameterHandle ByteString) -> Ptr (Ptr RTIException) -> IO ULong
 
 foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_getHandle"
-    wrap_ParameterHandleValuePairSet_getHandle :: Ptr ParameterHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO ParameterHandle
+    wrap_ParameterHandleValuePairSet_getHandle :: Ptr (M.Map ParameterHandle ByteString) -> ULong -> Ptr (Ptr RTIException) -> IO ParameterHandle
 foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_getValueLength"
-    wrap_ParameterHandleValuePairSet_getValueLength :: Ptr ParameterHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO ULong
+    wrap_ParameterHandleValuePairSet_getValueLength :: Ptr (M.Map ParameterHandle ByteString) -> ULong -> Ptr (Ptr RTIException) -> IO ULong
         
 foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_getValue"
-    wrap_ParameterHandleValuePairSet_getValue :: Ptr ParameterHandleValuePairSet -> ULong -> CString -> Ptr ULong -> Ptr (Ptr RTIException) -> IO ()
+    wrap_ParameterHandleValuePairSet_getValue :: Ptr (M.Map ParameterHandle ByteString) -> ULong -> CString -> Ptr ULong -> Ptr (Ptr RTIException) -> IO ()
 foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_getValuePointer"
-    wrap_ParameterHandleValuePairSet_getValuePointer :: Ptr ParameterHandleValuePairSet -> ULong -> Ptr ULong -> Ptr (Ptr RTIException) -> IO CString
+    wrap_ParameterHandleValuePairSet_getValuePointer :: Ptr (M.Map ParameterHandle ByteString) -> ULong -> Ptr ULong -> Ptr (Ptr RTIException) -> IO CString
 foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_getTransportType"
-    wrap_ParameterHandleValuePairSet_getTransportType :: Ptr ParameterHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO TransportType
+    wrap_ParameterHandleValuePairSet_getTransportType :: Ptr (M.Map ParameterHandle ByteString) -> ULong -> Ptr (Ptr RTIException) -> IO TransportType
 foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_getOrderType"
-    wrap_ParameterHandleValuePairSet_getOrderType :: Ptr ParameterHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO OrderType
+    wrap_ParameterHandleValuePairSet_getOrderType :: Ptr (M.Map ParameterHandle ByteString) -> ULong -> Ptr (Ptr RTIException) -> IO OrderType
 foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_getRegion"
-    wrap_ParameterHandleValuePairSet_getRegion :: Ptr ParameterHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO (Ptr Region)
+    wrap_ParameterHandleValuePairSet_getRegion :: Ptr (M.Map ParameterHandle ByteString) -> ULong -> Ptr (Ptr RTIException) -> IO (Ptr Region)
 
 foreign import ccall unsafe "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_add"
-    wrap_ParameterHandleValuePairSet_add :: Ptr ParameterHandleValuePairSet -> ParameterHandle -> CString -> ULong -> Ptr (Ptr RTIException) -> IO ()
+    wrap_ParameterHandleValuePairSet_add :: Ptr (M.Map ParameterHandle ByteString) -> ParameterHandle -> CString -> ULong -> Ptr (Ptr RTIException) -> IO ()
 foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_remove"
-    wrap_ParameterHandleValuePairSet_remove :: Ptr ParameterHandleValuePairSet -> ParameterHandle -> Ptr (Ptr RTIException) -> IO ()
+    wrap_ParameterHandleValuePairSet_remove :: Ptr (M.Map ParameterHandle ByteString) -> ParameterHandle -> Ptr (Ptr RTIException) -> IO ()
 foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_moveFrom"
-    wrap_ParameterHandleValuePairSet_moveFrom  :: Ptr ParameterHandleValuePairSet -> Ptr ParameterHandleValuePairSet -> Ptr ULong -> Ptr (Ptr RTIException) -> IO ()
+    wrap_ParameterHandleValuePairSet_moveFrom  :: Ptr (M.Map ParameterHandle ByteString) -> Ptr (M.Map ParameterHandle ByteString) -> Ptr ULong -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_empty"
-    wrap_ParameterHandleValuePairSet_empty :: Ptr ParameterHandleValuePairSet -> Ptr (Ptr RTIException) -> IO ()
+    wrap_ParameterHandleValuePairSet_empty :: Ptr (M.Map ParameterHandle ByteString) -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_start"
-    wrap_ParameterHandleValuePairSet_start :: Ptr ParameterHandleValuePairSet -> Ptr (Ptr RTIException) -> IO ULong
+    wrap_ParameterHandleValuePairSet_start :: Ptr (M.Map ParameterHandle ByteString) -> Ptr (Ptr RTIException) -> IO ULong
 foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_valid"
-    wrap_ParameterHandleValuePairSet_valid :: Ptr ParameterHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO ULong
+    wrap_ParameterHandleValuePairSet_valid :: Ptr (M.Map ParameterHandle ByteString) -> ULong -> Ptr (Ptr RTIException) -> IO ULong
 foreign import ccall "wrap/RTItypes.h wrap_ParameterHandleValuePairSet_next"
-    wrap_ParameterHandleValuePairSet_next :: Ptr ParameterHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO ULong
+    wrap_ParameterHandleValuePairSet_next :: Ptr (M.Map ParameterHandle ByteString) -> ULong -> Ptr (Ptr RTIException) -> IO ULong
 
 -- * ParameterSetFactory
 foreign import ccall unsafe "wrap/RTItypes.h wrap_ParameterSetFactory_create"
-    wrap_ParameterSetFactory_create :: ULong -> Ptr (Ptr RTIException) -> IO (Ptr ParameterHandleValuePairSet)
+    wrap_ParameterSetFactory_create :: ULong -> Ptr (Ptr RTIException) -> IO (Ptr (M.Map ParameterHandle ByteString))
 
 -- * Region
 delete_Region region = 

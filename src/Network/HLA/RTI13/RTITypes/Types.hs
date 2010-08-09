@@ -119,9 +119,6 @@ instance Show OrderType              where showsPrec p (OrderType              x
 
 -- * Containers and structures
 
-newtype ParameterHandleValuePairSet = ParameterHandleValuePairSet (ForeignPtr ParameterHandleValuePairSet)
-withParameterHandleValuePairSet (ParameterHandleValuePairSet fp) = withForeignPtr fp
-
 newtype Region = Region (ForeignPtr Region) deriving (Eq, Ord)
 instance Show Region where showsPrec p (Region r) = showsPrec p r
 withRegion (Region r) = withForeignPtr r
