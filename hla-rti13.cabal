@@ -56,7 +56,7 @@ Library
                         
   build-depends:        base >= 4, containers, syb, mtl,
                         bytestring,
-                        stateref, mutable-containers
+                        stateref
   
   include-dirs:         include
   
