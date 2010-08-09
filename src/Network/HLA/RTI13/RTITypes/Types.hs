@@ -53,24 +53,12 @@ class FedTimeImpl (FedAmbTime fedAmb) => FederateAmbassador fedAmb where
 
 -- * Primitive numeric types
 newtype ExtentIndex = ExtentIndex ULong
-    deriving (Eq, Ord, Bits, Enum, Real, Integral, Data, Typeable, Storable)
+    deriving (Eq, Ord, Bits, Enum, Num, Real, Integral, Data, Typeable, Storable)
 instance Show ExtentIndex            where showsPrec p (ExtentIndex            x) = showsPrec p x
-instance Read ExtentIndex            where readsPrec p s = [(extentIndexCheck "readsPrec" (ExtentIndex x), rest) | (x, rest) <- readsPrec p s]
+instance Read ExtentIndex            where readsPrec p s = [(ExtentIndex x, rest) | (x, rest) <- readsPrec p s]
 instance Bounded ExtentIndex where
     minBound = wrap_MIN_EXTENT
     maxBound = wrap_MAX_EXTENT
-instance Num ExtentIndex where
-    ExtentIndex a + ExtentIndex b = extentIndexCheck "+" (ExtentIndex (a + b))
-    ExtentIndex a - ExtentIndex b = extentIndexCheck "-" (ExtentIndex (a - b))
-    ExtentIndex a * ExtentIndex b = extentIndexCheck "*" (ExtentIndex (a * b))
-    abs = id
-    signum (ExtentIndex x) = extentIndexCheck "signum" (ExtentIndex (signum x))
-    fromInteger x = extentIndexCheck "fromInteger" (ExtentIndex (fromInteger x))
-
-extentIndexCheck cxt c
-    | c < wrap_MIN_EXTENT   = error (cxt ++ ": ExtentIndex underflow")
-    | c > wrap_MAX_EXTENT   = error (cxt ++ ": ExtentIndex overflow")
-    | otherwise             = c
 foreign import ccall "wrap/RTItypes.h wrap_MIN_EXTENT" wrap_MIN_EXTENT :: ExtentIndex
 foreign import ccall "wrap/RTItypes.h wrap_MAX_EXTENT" wrap_MAX_EXTENT :: ExtentIndex
 
