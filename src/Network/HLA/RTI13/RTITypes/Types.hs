@@ -119,9 +119,6 @@ instance Show OrderType              where showsPrec p (OrderType              x
 
 -- * Containers and structures
 
-newtype FederateHandleSet = FederateHandleSet (ForeignPtr FederateHandleSet)
-withFederateHandleSet (FederateHandleSet fhSet) = withForeignPtr fhSet
-
 newtype ParameterHandleValuePairSet = ParameterHandleValuePairSet (ForeignPtr ParameterHandleValuePairSet)
 withParameterHandleValuePairSet (ParameterHandleValuePairSet fp) = withForeignPtr fp
 

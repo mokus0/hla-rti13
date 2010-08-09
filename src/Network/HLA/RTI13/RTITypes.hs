@@ -85,54 +85,22 @@ importAttributeHandleSet ahSetPtr = do
 
 -- * FederateHandleSet
 
-instance Container FederateHandleSet where
-    type Elem FederateHandleSet = FederateHandle
+withFederateHandleSet :: S.Set FederateHandle -> (Ptr (S.Set FederateHandle) -> IO a) -> IO a
+withFederateHandleSet theHandles action = do
+    fhSet <- wrapExceptions (wrap_FederateHandleSetFactory_create (fromIntegral (S.size theHandles)))
+    
+    mapM_ (wrapExceptions . wrap_FederateHandleSet_add fhSet) (S.toList theHandles)
+    
+    result <- action fhSet
+    delete_FederateHandleSet fhSet
+    return result
 
-instance HasCount IO FederateHandleSet where
-    count fhSet =
-        withFederateHandleSet fhSet $ \fhSet ->
-            fmap fromIntegral $
-                wrapExceptions (wrap_FederateHandleSet_size fhSet)
-
-federateHandleSet_getHandle fhSet i =
-    withFederateHandleSet fhSet $ \fhSet -> 
-        wrapExceptions (wrap_FederateHandleSet_getHandle fhSet i)
-
-instance Insert IO FederateHandleSet where
-    insert fhSet fh = 
-        withFederateHandleSet fhSet $ \fhSet ->
-            wrapExceptions (wrap_FederateHandleSet_add fhSet fh)
-
-instance Remove IO FederateHandleSet where
-    remove fhSet fh = 
-        withFederateHandleSet fhSet $ \fhSet ->
-            wrapExceptions (wrap_FederateHandleSet_remove fhSet fh)
-
-instance Empty IO FederateHandleSet where
-    empty fhSet =
-        withFederateHandleSet fhSet $ \fhSet ->
-            wrapExceptions (wrap_FederateHandleSet_empty fhSet)
-
-instance Contains IO FederateHandleSet where
-    fhSet `contains` h =
-        withFederateHandleSet fhSet $ \fhSet ->
-            wrapExceptions (wrap_FederateHandleSet_isMember fhSet h)
-
--- * FederateHandleSetFactory
-
-instance NewContainer IO FederateHandleSet where
-    newContainer n = federateHandleSetFactory_create (maybe 0 fromIntegral n)
-    fromList xs = do
-        fhSet <- federateHandleSetFactory_create (genericLength xs)
-        mapM_ (insert fhSet) xs
-        return fhSet
-
-federateHandleSetFactory_create :: ULong -> IO FederateHandleSet
-federateHandleSetFactory_create n = do
-    fhSet <- wrapExceptions (wrap_FederateHandleSetFactory_create n)
-    fhSet <- newForeignPtr fhSet (delete_FederateHandleSet fhSet)
-    return (FederateHandleSet fhSet)
-
+importFederateHandleSet :: Ptr (S.Set FederateHandle) -> IO (S.Set FederateHandle)
+importFederateHandleSet fhSet = do
+    n <- wrapExceptions (wrap_FederateHandleSet_size fhSet)
+    theHandles <- mapM (wrapExceptions . wrap_FederateHandleSet_getHandle fhSet) [0..n-1]
+    return (S.fromList theHandles)
+    
 -- * ParameterHandleValuePairSet
 instance Container ParameterHandleValuePairSet where
     type Elem ParameterHandleValuePairSet = (ParameterHandle, BS.ByteString)

@@ -145,34 +145,34 @@ foreign import ccall unsafe "wrap/RTItypes.h wrap_AttributeHandleSetFactory_crea
 
 -- * FederateHandleSet
 
-delete_FederateHandleSet :: Ptr FederateHandleSet -> IO ()
+delete_FederateHandleSet :: Ptr (S.Set FederateHandle) -> IO ()
 delete_FederateHandleSet fhSet = 
     wrapExceptions (wrap_delete_FederateHandleSet fhSet)
 foreign import ccall unsafe "wrap/RTItypes.h wrap_delete_FederateHandleSet"
-    wrap_delete_FederateHandleSet :: Ptr FederateHandleSet -> Ptr (Ptr RTIException) -> IO ()
+    wrap_delete_FederateHandleSet :: Ptr (S.Set FederateHandle) -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall unsafe "wrap/RTItypes.h wrap_FederateHandleSet_size"
-    wrap_FederateHandleSet_size :: Ptr FederateHandleSet -> Ptr (Ptr RTIException) -> IO ULong
+    wrap_FederateHandleSet_size :: Ptr (S.Set FederateHandle) -> Ptr (Ptr RTIException) -> IO ULong
 
 foreign import ccall unsafe "wrap/RTItypes.h wrap_FederateHandleSet_getHandle"
-    wrap_FederateHandleSet_getHandle :: Ptr FederateHandleSet -> ULong -> Ptr (Ptr RTIException) -> IO FederateHandle
+    wrap_FederateHandleSet_getHandle :: Ptr (S.Set FederateHandle) -> ULong -> Ptr (Ptr RTIException) -> IO FederateHandle
 
 foreign import ccall unsafe "wrap/RTItypes.h wrap_FederateHandleSet_add"
-    wrap_FederateHandleSet_add :: Ptr FederateHandleSet -> FederateHandle -> Ptr (Ptr RTIException) -> IO ()
+    wrap_FederateHandleSet_add :: Ptr (S.Set FederateHandle) -> FederateHandle -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall unsafe "wrap/RTItypes.h wrap_FederateHandleSet_remove"
-    wrap_FederateHandleSet_remove :: Ptr FederateHandleSet -> FederateHandle -> Ptr (Ptr RTIException) -> IO ()
+    wrap_FederateHandleSet_remove :: Ptr (S.Set FederateHandle) -> FederateHandle -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall unsafe "wrap/RTItypes.h wrap_FederateHandleSet_empty"
-    wrap_FederateHandleSet_empty :: Ptr FederateHandleSet -> Ptr (Ptr RTIException) -> IO ()
+    wrap_FederateHandleSet_empty :: Ptr (S.Set FederateHandle) -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall unsafe "wrap/RTItypes.h wrap_FederateHandleSet_isMember"
-    wrap_FederateHandleSet_isMember :: Ptr FederateHandleSet -> FederateHandle -> Ptr (Ptr RTIException) -> IO Bool
+    wrap_FederateHandleSet_isMember :: Ptr (S.Set FederateHandle) -> FederateHandle -> Ptr (Ptr RTIException) -> IO Bool
 
 -- * FederateHandleSetFactory
 
 foreign import ccall unsafe "wrap/RTItypes.h wrap_FederateHandleSetFactory_create"
-    wrap_FederateHandleSetFactory_create :: ULong -> Ptr (Ptr RTIException) -> IO (Ptr FederateHandleSet)
+    wrap_FederateHandleSetFactory_create :: ULong -> Ptr (Ptr RTIException) -> IO (Ptr (S.Set FederateHandle))
 
 -- * ParameterHandleValuePairSet
 

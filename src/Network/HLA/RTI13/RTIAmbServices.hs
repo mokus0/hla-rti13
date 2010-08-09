@@ -87,7 +87,7 @@ resignFederationExecution rtiAmb resignAction = do
     writeIORef (rtiFedAmb rtiAmb) Nothing
     performGC
 
-registerFederationSynchronizationPoint :: RTIAmbassador t -> ByteString -> ByteString -> Maybe FederateHandleSet -> IO ()
+registerFederationSynchronizationPoint :: RTIAmbassador t -> ByteString -> ByteString -> Maybe (S.Set FederateHandle) -> IO ()
 registerFederationSynchronizationPoint rtiAmb label theTag mbSyncSet = do
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         useAsCString label $ \label ->
