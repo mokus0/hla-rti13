@@ -21,7 +21,7 @@ data ResignAction
     | DeleteObjects
     | DeleteObjectsAndReleaseAttributes
     | NoAction
-    deriving (Eq, Show)
+    deriving (Eq, Show, Read, Ord, Bounded)
 
 instance Enum ResignAction where
     toEnum 1 = ReleaseAttributes
