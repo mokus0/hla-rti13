@@ -191,6 +191,11 @@ instance Contains IO AttributeHandleSet where
         withAttributeHandleSet ahSet $ \ahSet ->
             wrapExceptions (wrap_AttributeHandleSet_isMember ahSet h)
 
+instance ToList IO AttributeHandleSet where
+    toList ahSet = do
+        n <- count ahSet
+        mapM (attributeHandleSet_getHandle ahSet) [0 .. fromIntegral n - 1]
+
 
 -- * AttributeHandleSetFactory
 
