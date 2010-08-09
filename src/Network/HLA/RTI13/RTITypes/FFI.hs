@@ -4,6 +4,7 @@
 module Network.HLA.RTI13.RTITypes.FFI where
 
 import Data.ByteString (ByteString, packCString)
+import qualified Data.Map as M (Map)
 import qualified Data.Set as S (Set)
 import Foreign
 import Foreign.C
@@ -66,47 +67,47 @@ rtiInternalRelease = fromIntegral wrap_RTI_INTERNAL_RELEASE
 delete_AttributeHandleValuePairSet ahSet
     = wrapExceptions (wrap_delete_AttributeHandleValuePairSet ahSet)
 foreign import ccall "wrap/RTItypes.h wrap_delete_AttributeHandleValuePairSet"
-    wrap_delete_AttributeHandleValuePairSet :: Ptr AttributeHandleValuePairSet -> Ptr (Ptr RTIException) -> IO ()
+    wrap_delete_AttributeHandleValuePairSet :: Ptr (M.Map AttributeHandle ByteString) -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_size"
-    wrap_AttributeHandleValuePairSet_size :: Ptr AttributeHandleValuePairSet -> Ptr (Ptr RTIException) -> IO ULong
+    wrap_AttributeHandleValuePairSet_size :: Ptr (M.Map AttributeHandle ByteString) -> Ptr (Ptr RTIException) -> IO ULong
 
 foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_getHandle"
-    wrap_AttributeHandleValuePairSet_getHandle :: Ptr AttributeHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO AttributeHandle
+    wrap_AttributeHandleValuePairSet_getHandle :: Ptr (M.Map AttributeHandle ByteString) -> ULong -> Ptr (Ptr RTIException) -> IO AttributeHandle
 foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_getValueLength"
-    wrap_AttributeHandleValuePairSet_getValueLength :: Ptr AttributeHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO ULong
+    wrap_AttributeHandleValuePairSet_getValueLength :: Ptr (M.Map AttributeHandle ByteString) -> ULong -> Ptr (Ptr RTIException) -> IO ULong
         
 foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_getValue"
-    wrap_AttributeHandleValuePairSet_getValue :: Ptr AttributeHandleValuePairSet -> ULong -> CString -> Ptr ULong -> Ptr (Ptr RTIException) -> IO ()
+    wrap_AttributeHandleValuePairSet_getValue :: Ptr (M.Map AttributeHandle ByteString) -> ULong -> CString -> Ptr ULong -> Ptr (Ptr RTIException) -> IO ()
 foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_getValuePointer"
-    wrap_AttributeHandleValuePairSet_getValuePointer :: Ptr AttributeHandleValuePairSet -> ULong -> Ptr ULong -> Ptr (Ptr RTIException) -> IO CString
+    wrap_AttributeHandleValuePairSet_getValuePointer :: Ptr (M.Map AttributeHandle ByteString) -> ULong -> Ptr ULong -> Ptr (Ptr RTIException) -> IO CString
 foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_getTransportType"
-    wrap_AttributeHandleValuePairSet_getTransportType :: Ptr AttributeHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO TransportType
+    wrap_AttributeHandleValuePairSet_getTransportType :: Ptr (M.Map AttributeHandle ByteString) -> ULong -> Ptr (Ptr RTIException) -> IO TransportType
 foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_getOrderType"
-    wrap_AttributeHandleValuePairSet_getOrderType :: Ptr AttributeHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO OrderType
+    wrap_AttributeHandleValuePairSet_getOrderType :: Ptr (M.Map AttributeHandle ByteString) -> ULong -> Ptr (Ptr RTIException) -> IO OrderType
 foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_getRegion"
-    wrap_AttributeHandleValuePairSet_getRegion :: Ptr AttributeHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO (Ptr Region)
+    wrap_AttributeHandleValuePairSet_getRegion :: Ptr (M.Map AttributeHandle ByteString) -> ULong -> Ptr (Ptr RTIException) -> IO (Ptr Region)
 
 foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_add"
-    wrap_AttributeHandleValuePairSet_add :: Ptr AttributeHandleValuePairSet -> AttributeHandle -> CString -> ULong -> Ptr (Ptr RTIException) -> IO ()
+    wrap_AttributeHandleValuePairSet_add :: Ptr (M.Map AttributeHandle ByteString) -> AttributeHandle -> CString -> ULong -> Ptr (Ptr RTIException) -> IO ()
 foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_remove"
-    wrap_AttributeHandleValuePairSet_remove :: Ptr AttributeHandleValuePairSet -> AttributeHandle -> Ptr (Ptr RTIException) -> IO ()
+    wrap_AttributeHandleValuePairSet_remove :: Ptr (M.Map AttributeHandle ByteString) -> AttributeHandle -> Ptr (Ptr RTIException) -> IO ()
 foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_moveFrom"
-    wrap_AttributeHandleValuePairSet_moveFrom  :: Ptr AttributeHandleValuePairSet -> Ptr AttributeHandleValuePairSet -> Ptr ULong -> Ptr (Ptr RTIException) -> IO ()
+    wrap_AttributeHandleValuePairSet_moveFrom  :: Ptr (M.Map AttributeHandle ByteString) -> Ptr (M.Map AttributeHandle ByteString) -> Ptr ULong -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_empty"
-    wrap_AttributeHandleValuePairSet_empty :: Ptr AttributeHandleValuePairSet -> Ptr (Ptr RTIException) -> IO ()
+    wrap_AttributeHandleValuePairSet_empty :: Ptr (M.Map AttributeHandle ByteString) -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_start"
-    wrap_AttributeHandleValuePairSet_start :: Ptr AttributeHandleValuePairSet -> Ptr (Ptr RTIException) -> IO ULong
+    wrap_AttributeHandleValuePairSet_start :: Ptr (M.Map AttributeHandle ByteString) -> Ptr (Ptr RTIException) -> IO ULong
 foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_valid"
-    wrap_AttributeHandleValuePairSet_valid :: Ptr AttributeHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO ULong
+    wrap_AttributeHandleValuePairSet_valid :: Ptr (M.Map AttributeHandle ByteString) -> ULong -> Ptr (Ptr RTIException) -> IO ULong
 foreign import ccall "wrap/RTItypes.h wrap_AttributeHandleValuePairSet_next"
-    wrap_AttributeHandleValuePairSet_next :: Ptr AttributeHandleValuePairSet -> ULong -> Ptr (Ptr RTIException) -> IO ULong
+    wrap_AttributeHandleValuePairSet_next :: Ptr (M.Map AttributeHandle ByteString) -> ULong -> Ptr (Ptr RTIException) -> IO ULong
 
 -- * AttributeSetFactory
 foreign import ccall "wrap/RTItypes.h wrap_AttributeSetFactory_create"
-    wrap_AttributeSetFactory_create :: ULong -> Ptr (Ptr RTIException) -> IO (Ptr AttributeHandleValuePairSet)
+    wrap_AttributeSetFactory_create :: ULong -> Ptr (Ptr RTIException) -> IO (Ptr (M.Map AttributeHandle ByteString))
 
 -- * AttributeHandleSet
 

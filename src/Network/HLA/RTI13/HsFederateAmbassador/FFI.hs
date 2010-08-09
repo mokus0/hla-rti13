@@ -5,6 +5,8 @@ import Network.HLA.RTI13.HsFederateAmbassador.Types
 import Network.HLA.RTI13.RTIException
 import Network.HLA.RTI13.RTITypes
 
+import Data.ByteString (ByteString)
+import qualified Data.Map as M (Map)
 import qualified Data.Set as S (Set)
 import Foreign
 import Foreign.C
@@ -90,7 +92,7 @@ foreign import ccall "hsFederateAmb.h hsfa_set_discoverObjectInstance"
     set_discoverObjectInstance :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> ObjectClassHandle -> CString -> IO ()) -> IO ()
 
 foreign import ccall "hsFederateAmb.h hsfa_set_reflectAttributeValues"
-    set_reflectAttributeValues :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr AttributeHandleValuePairSet -> Ptr t -> CString -> UniqueID -> FederateHandle -> IO ()) -> IO ()
+    set_reflectAttributeValues :: Ptr (HsFederateAmbassador t) -> FunPtr (ObjectHandle -> Ptr (M.Map AttributeHandle ByteString) -> Ptr t -> CString -> UniqueID -> FederateHandle -> IO ()) -> IO ()
 
 foreign import ccall "hsFederateAmb.h hsfa_set_receiveInteraction"
     set_receiveInteraction :: Ptr (HsFederateAmbassador t) -> FunPtr (InteractionClassHandle -> Ptr ParameterHandleValuePairSet -> Ptr t -> CString -> UniqueID -> FederateHandle -> IO ()) -> IO ()

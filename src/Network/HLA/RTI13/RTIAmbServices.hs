@@ -15,6 +15,7 @@ import Network.HLA.RTI13.RTIException
 import Control.Exception (bracket_)
 import Data.ByteString (ByteString, useAsCString)
 import Data.IORef
+import qualified Data.Map as M (Map)
 import qualified Data.Set as S (Set)
 import Foreign hiding (newForeignPtr)
 import Foreign.Concurrent
@@ -199,7 +200,7 @@ registerObjectInstance rtiAmb theClass mbObject =
                 wrapExceptions (FFI.registerObjectInstance rtiAmb theClass)
 
 
-updateAttributeValuesAtTime :: FedTimeImpl t => RTIAmbassador t -> ObjectHandle -> AttributeHandleValuePairSet -> FedTime t -> ByteString -> IO EventRetractionHandle
+updateAttributeValuesAtTime :: FedTimeImpl t => RTIAmbassador t -> ObjectHandle -> M.Map AttributeHandle ByteString -> FedTime t -> ByteString -> IO EventRetractionHandle
 updateAttributeValuesAtTime rtiAmb theObject theAttributes theTime theTag =
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
         withAttributeHandleValuePairSet theAttributes $ \theAttributes ->
@@ -208,7 +209,7 @@ updateAttributeValuesAtTime rtiAmb theObject theAttributes theTime theTag =
                     withEventRetractionHandleReturn $ \u fh ->
                         wrapExceptions (FFI.updateAttributeValuesAtTime rtiAmb theObject theAttributes theTime theTag u fh)
 
-updateAttributeValues :: RTIAmbassador t -> ObjectHandle -> AttributeHandleValuePairSet -> ByteString -> IO ()
+updateAttributeValues :: RTIAmbassador t -> ObjectHandle -> M.Map AttributeHandle ByteString -> ByteString -> IO ()
 updateAttributeValues rtiAmb theObject theAttributes theTag =
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
         withAttributeHandleValuePairSet theAttributes $ \theAttributes ->

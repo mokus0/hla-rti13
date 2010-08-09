@@ -13,6 +13,7 @@ import Network.HLA.RTI13.RTITypes
 
 import Control.Monad.Reader
 import Data.ByteString (ByteString, packCString)
+import qualified Data.Map as M (Map)
 import qualified Data.Set as S (Set)
 import Foreign hiding (newForeignPtr)
 import Foreign.Concurrent
@@ -194,13 +195,13 @@ onDiscoverObjectInstance discoverObjectInstance = do
             discoverObjectInstance theObject theObjectHandle theName
         FFI.set_discoverObjectInstance fedAmb funPtr
 
-onReflectAttributeValues :: FedTimeImpl t => (ObjectHandle -> AttributeHandleValuePairSet -> ByteString -> Maybe (FedTime t, EventRetractionHandle) -> IO ()) -> FedHandlers t ()
+onReflectAttributeValues :: FedTimeImpl t => (ObjectHandle -> M.Map AttributeHandle ByteString -> ByteString -> Maybe (FedTime t, EventRetractionHandle) -> IO ()) -> FedHandlers t ()
 onReflectAttributeValues reflectAttributeValues = do
     fedAmb <- ask
     liftIO $ withHsFederateAmbassador fedAmb $ \fedAmb -> do
         funPtr <- mkFunPtr_O_P3_U_F_V $ \theObject theAttrs theTime theTag theHandleSerial theHandleFed -> do
             theTag <- packCString theTag
-            theAttrs <- fmap AttributeHandleValuePairSet (newForeignPtr_ theAttrs)
+            theAttrs <- importAttributeHandleValuePairSet theAttrs
             
             if theTime == nullPtr
                 then reflectAttributeValues theObject theAttrs theTag Nothing

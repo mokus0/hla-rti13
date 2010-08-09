@@ -3,7 +3,9 @@
   #-}
 module Network.HLA.RTI13.RTIAmbServices.FFI where
 
+import Data.ByteString (ByteString)
 import Data.IORef
+import qualified Data.Map as M (Map)
 import qualified Data.Set as S (Set)
 import Foreign
 import Foreign.C
@@ -118,10 +120,10 @@ foreign import ccall "wrap/RTIAmbServices.h wrap_registerObjectInstance_withName
     registerObjectInstance_withName :: Ptr (RTIAmbassador t) -> ObjectClassHandle -> CString -> Ptr (Ptr RTIException) -> IO ObjectHandle
 
 foreign import ccall "wrap/RTIAmbServices.h wrap_updateAttributeValuesAtTime"
-    updateAttributeValuesAtTime :: Ptr (RTIAmbassador t) -> ObjectHandle -> Ptr AttributeHandleValuePairSet -> Ptr t -> CString -> Ptr UniqueID -> Ptr FederateHandle -> Ptr (Ptr RTIException) -> IO ()
+    updateAttributeValuesAtTime :: Ptr (RTIAmbassador t) -> ObjectHandle -> Ptr (M.Map AttributeHandle ByteString) -> Ptr t -> CString -> Ptr UniqueID -> Ptr FederateHandle -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTIAmbServices.h wrap_updateAttributeValues"
-    updateAttributeValues :: Ptr (RTIAmbassador t) -> ObjectHandle -> Ptr AttributeHandleValuePairSet -> CString -> Ptr (Ptr RTIException) -> IO ()
+    updateAttributeValues :: Ptr (RTIAmbassador t) -> ObjectHandle -> Ptr (M.Map AttributeHandle ByteString) -> CString -> Ptr (Ptr RTIException) -> IO ()
 
 foreign import ccall "wrap/RTIAmbServices.h wrap_registerObjectInstance"
     registerObjectInstance :: Ptr (RTIAmbassador t) -> ObjectClassHandle -> Ptr (Ptr RTIException) -> IO ObjectHandle
