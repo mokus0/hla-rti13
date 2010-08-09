@@ -1,5 +1,4 @@
 {-# LANGUAGE 
-        EmptyDataDecls,
         GeneralizedNewtypeDeriving,
         DeriveDataTypeable,
         ForeignFunctionInterface,
@@ -122,7 +121,6 @@ instance Show OrderType              where showsPrec p (OrderType              x
 
 newtype FederateHandleSet = FederateHandleSet (ForeignPtr FederateHandleSet)
 withFederateHandleSet (FederateHandleSet fhSet) = withForeignPtr fhSet
--- data FederateHandleSetFactory
 
 -- |Instances of class HandleValuePairSet are the containers used to pass
 -- object attribute values and interaction parameter values between the
@@ -141,13 +139,10 @@ withFederateHandleSet (FederateHandleSet fhSet) = withForeignPtr fhSet
 -- Attribute Values or Send Interaction service invocation.  
 newtype ParameterHandleValuePairSet = ParameterHandleValuePairSet (ForeignPtr ParameterHandleValuePairSet)
 withParameterHandleValuePairSet (ParameterHandleValuePairSet fp) = withForeignPtr fp
-data ParameterSetFactory
 
 newtype Region = Region (ForeignPtr Region) deriving (Eq, Ord)
 instance Show Region where showsPrec p (Region r) = showsPrec p r
 withRegion (Region r) = withForeignPtr r
-
-data FedTimeFactory
 
 data EventRetractionHandle = EventRetractionHandle
     { erhSerial             :: UniqueID
