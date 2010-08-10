@@ -143,43 +143,60 @@ federateRestoreNotComplete rtiAmb = withRTIAmbassador rtiAmb
 -- * Declaration Management Services
 --------------------------------------
 
+-- |Indicates to the RTI that this federate is capable of sending updates for
+-- the specified set of attributes of the specified object class.
 publishObjectClass :: RTIAmbassador t -> ObjectClassHandle -> S.Set AttributeHandle -> IO ()
 publishObjectClass rtiAmb theClass attributeList =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withAttributeHandleSet attributeList $ \attributeList ->
             wrapExceptions (FFI.publishObjectClass rtiAmb theClass attributeList)
 
+-- |Indicates to the RTI that this federate is no longer capable of sending
+-- updates for the specified set of attributes of the specified object class.
 unpublishObjectClass :: RTIAmbassador t -> ObjectClassHandle -> IO ()
 unpublishObjectClass rtiAmb theClass =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (FFI.unpublishObjectClass rtiAmb theClass)
 
+-- |Indicates to the RTI that this federate is capable of sending interactions
+-- of the specified interaction class.
 publishInteractionClass :: RTIAmbassador t -> InteractionClassHandle -> IO ()
 publishInteractionClass rtiAmb theInteraction =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (FFI.publishInteractionClass rtiAmb theInteraction)
 
+-- |Indicates to the RTI that this federate is no longer capable of sending
+-- interactions of the specified interaction class.
 unpublishInteractionClass :: RTIAmbassador t -> InteractionClassHandle -> IO ()
 unpublishInteractionClass rtiAmb theInteraction =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (FFI.unpublishInteractionClass rtiAmb theInteraction)
 
+-- |Indicates to the RTI that this federate is interested in the specified set
+-- of attributes for all objects of the specified class.
 subscribeObjectClassAttributes :: RTIAmbassador t -> ObjectClassHandle -> S.Set AttributeHandle -> IO ()
 subscribeObjectClassAttributes rtiAmb theClass attributeList =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         withAttributeHandleSet attributeList $ \attributeList ->
             wrapExceptions (FFI.subscribeObjectClassAttributes rtiAmb theClass attributeList)
 
+-- |Indicates to the RTI that this federate is no longer interested in updates
+-- for any attributes of any objects of the specified class.
 unsubscribeObjectClass :: RTIAmbassador t -> ObjectClassHandle -> IO ()
 unsubscribeObjectClass rtiAmb theClass =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (FFI.unsubscribeObjectClass rtiAmb theClass)
 
+-- |Indicates to the RTI that this federate is interested in any occurences of
+-- interactions of the specified class.  The 'Bool' flag indicates whether this
+-- interest is \"active\", which means something to someone, probably.
 subscribeInteractionClass :: RTIAmbassador t -> InteractionClassHandle -> Bool -> IO ()
 subscribeInteractionClass rtiAmb theClass active =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (FFI.subscribeInteractionClass rtiAmb theClass active)
 
+-- |Indicates to the RTI that this federate is no longer interested in 
+-- interactions of the specified class.
 unsubscribeInteractionClass :: RTIAmbassador t -> InteractionClassHandle -> IO ()
 unsubscribeInteractionClass rtiAmb theClass =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
@@ -189,6 +206,17 @@ unsubscribeInteractionClass rtiAmb theClass =
 -- * Object Management Services
 ---------------------------------
 
+-- |Report to the federation the existence of an object of the specified class.  
+-- 
+-- This should be a class previously \"published\" via 'publishObjectClass', 
+-- and if \"class relevance advisories\" are enabled  
+-- (see 'enableClassRelevanceAdvisorySwitch') then this only needs to be
+-- sent if the federate has received a \"start registration\" message for
+-- the class of the object.
+-- 
+-- In the case where registration is off for a class, all object instances
+-- /should/ be registered upon later receipt of a \"start registration\" 
+-- message for that class.
 registerObjectInstance :: RTIAmbassador t -> ObjectClassHandle -> Maybe ByteString -> IO ObjectHandle
 registerObjectInstance rtiAmb theClass mbObject =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
@@ -200,6 +228,12 @@ registerObjectInstance rtiAmb theClass mbObject =
                 wrapExceptions (FFI.registerObjectInstance rtiAmb theClass)
 
 
+-- |Sends an attribute value update to the federation for the specified object,
+-- along with a time stamp at which the attributes values take effect.
+--
+-- Returns an 'EventRetractionHandle' which can be used to cancel the change
+-- by calling 'retract', as long as it's not too late  (TODO: figure out and
+-- document the exact criteria under which events can be retracted).
 updateAttributeValuesAtTime :: FedTimeImpl t => RTIAmbassador t -> ObjectHandle -> M.Map AttributeHandle ByteString -> FedTime t -> ByteString -> IO EventRetractionHandle
 updateAttributeValuesAtTime rtiAmb theObject theAttributes theTime theTag =
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
@@ -209,6 +243,8 @@ updateAttributeValuesAtTime rtiAmb theObject theAttributes theTime theTag =
                     withEventRetractionHandleReturn $ \u fh ->
                         wrapExceptions (FFI.updateAttributeValuesAtTime rtiAmb theObject theAttributes theTime theTag u fh)
 
+-- |Sends an attribute value update to the federation for the specified object.
+-- The new attribute values take effect immediately.
 updateAttributeValues :: RTIAmbassador t -> ObjectHandle -> M.Map AttributeHandle ByteString -> ByteString -> IO ()
 updateAttributeValues rtiAmb theObject theAttributes theTag =
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
@@ -216,6 +252,11 @@ updateAttributeValues rtiAmb theObject theAttributes theTag =
             useAsCString theTag $ \theTag ->
                 wrapExceptions (FFI.updateAttributeValues rtiAmb theObject theAttributes theTag)
 
+-- |Send an interaction to the federation which is considered to \"occur\" at
+-- a given time.
+-- 
+-- Returns an 'EventRetractionHandle' which can be passed to 'retract' in 
+-- order to cancel the event, if retracted soon enough.
 sendInteractionAtTime :: FedTimeImpl t => RTIAmbassador t -> InteractionClassHandle -> M.Map ParameterHandle ByteString -> FedTime t -> ByteString -> IO EventRetractionHandle
 sendInteractionAtTime rtiAmb theInteraction theParameters theTime theTag = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
@@ -225,6 +266,8 @@ sendInteractionAtTime rtiAmb theInteraction theParameters theTime theTag =
                     withEventRetractionHandleReturn $ \u fh ->
                         wrapExceptions (FFI.sendInteractionAtTime rtiAmb theInteraction theParameters theTime theTag u fh)
 
+-- |Send an interaction to the federation which is considered to \"occur\"
+-- immediately.
 sendInteraction :: RTIAmbassador t -> InteractionClassHandle -> M.Map ParameterHandle ByteString -> ByteString -> IO ()
 sendInteraction rtiAmb theInteraction theParameters theTag = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
@@ -368,6 +411,15 @@ disableTimeConstrained rtiAmb =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (FFI.disableTimeConstrained rtiAmb)
 
+-- |Request that the federate's local \"logical time\" (the time returned by
+-- 'queryFederateTime') be advanced to the specified time.  If the federate
+-- is not time-constrained, this request will be granted unconditionally.  If
+-- the federate is time-constrained, the time may be advanced less than 
+-- requested.
+-- 
+-- In either case, the time is not actually advanced until the federate is
+-- sent the \"Time Advance Grant\" message, and the granted time advance
+-- will be no farther into the future than requested.
 timeAdvanceRequest :: FedTimeImpl t => RTIAmbassador t -> FedTime t -> IO ()
 timeAdvanceRequest rtiAmb theTime = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
@@ -380,6 +432,12 @@ timeAdvanceRequestAvailable rtiAmb theTime =
         withFedTimeIn theTime $ \theTime -> 
             wrapExceptions (FFI.timeAdvanceRequestAvailable rtiAmb theTime)
 
+-- |Request that the federate's local \"logical time\" (the time returned by
+-- 'queryFederateTime') be advanced to the time of the next incoming simulation
+-- event, or to the time specified if no events are received before then.
+-- 
+-- The time is not actually advanced until the federate is sent the \"Time
+-- Advance Grant\" message.
 nextEventRequest :: FedTimeImpl t => RTIAmbassador t -> FedTime t -> IO ()
 nextEventRequest rtiAmb theTime =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
@@ -398,6 +456,8 @@ flushQueueRequest rtiAmb theTime =
         withFedTimeIn theTime $ \theTime -> 
             wrapExceptions (FFI.flushQueueRequest rtiAmb theTime)
 
+-- |Requests that Receive-Ordered events be delivered during any 'tick' call
+-- rather than only during time advances.
 enableAsynchronousDelivery :: RTIAmbassador t -> IO ()
 enableAsynchronousDelivery rtiAmb = 
     withRTIAmbassador rtiAmb
@@ -408,18 +468,27 @@ disableAsynchronousDelivery rtiAmb =
     withRTIAmbassador rtiAmb
         (wrapExceptions . FFI.disableAsynchronousDelivery)
 
+-- |For a time-constrained federate, the LBTS (\"Lower Bound Time Stamp\") is
+-- the latest time to which it is currently allowed to advance.  It is (by
+-- definition) the earliest possible time stamp of all simulation events that
+-- have not yet been delivered.
 queryLBTS :: FedTimeImpl t => RTIAmbassador t -> IO (FedTime t)
 queryLBTS rtiAmb =
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
         withFedTimeOut $ \fedTime -> 
             wrapExceptions (FFI.queryLBTS rtiAmb fedTime)
 
+-- |Look up the current \"Logical Time\", or local time, of the federate.
 queryFederateTime :: FedTimeImpl t => RTIAmbassador t -> IO (FedTime t)
 queryFederateTime rtiAmb =
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
         withFedTimeOut $ \fedTime -> 
             wrapExceptions (FFI.queryFederateTime rtiAmb fedTime)
 
+-- |For a time-regulating federate, this call returns the earliest time at 
+-- which a new event may be scheduled.  This is the same as the federate's
+-- current logical time plus the lookahead interval.  This is also known as
+-- the federate's \"Effective Time\".
 queryMinNextEventTime :: FedTimeImpl t => RTIAmbassador t -> IO (FedTime t)
 queryMinNextEventTime rtiAmb =
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
@@ -686,41 +755,64 @@ getOrderingName rtiAmb theHandle = do
         wrapExceptions (FFI.getOrderingName rtiAmb theHandle)
     unsafePackNewCString cStr
 
+-- |Enable the sending of \"Start/Stop Object Registration\" messages to the
+-- federate.  These messages indicate, for each object class, whether any
+-- other federate cares about the existence of objects of that class.
 enableClassRelevanceAdvisorySwitch :: RTIAmbassador t -> IO ()
 enableClassRelevanceAdvisorySwitch rtiAmb = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (FFI.enableClassRelevanceAdvisorySwitch rtiAmb)
     
+-- |Disable the sending of \"Start/Stop Object Registration\" messages to the
+-- federate (see 'enableClassRelevanceAdvisorySwitch').
 disableClassRelevanceAdvisorySwitch :: RTIAmbassador t -> IO ()
 disableClassRelevanceAdvisorySwitch rtiAmb = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (FFI.disableClassRelevanceAdvisorySwitch rtiAmb)
 
+-- |Enables the sending of \"Turn updates on/off\" messages to this federate
+-- which indicate whether or not there are federates interested in each 
+-- attribute's values.
 enableAttributeRelevanceAdvisorySwitch :: RTIAmbassador t -> IO ()
 enableAttributeRelevanceAdvisorySwitch rtiAmb = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (FFI.enableAttributeRelevanceAdvisorySwitch rtiAmb)
     
+-- |Disables the sending of \"Turn updates on/off\" messages to this federate
+-- which indicate whether or not there are federates interested in each 
+-- attribute's values.
 disableAttributeRelevanceAdvisorySwitch :: RTIAmbassador t -> IO ()
 disableAttributeRelevanceAdvisorySwitch rtiAmb = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (FFI.disableAttributeRelevanceAdvisorySwitch rtiAmb)
 
+-- |Enables the sending of \"Attributes In/Out of Scope\" messages to this 
+-- federate, which indicate the presence or absence (respectively) of other
+-- federates capable of setting attributes this federate is subscribed to.
 enableAttributeScopeAdvisorySwitch :: RTIAmbassador t -> IO ()
 enableAttributeScopeAdvisorySwitch rtiAmb = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (FFI.enableAttributeScopeAdvisorySwitch rtiAmb)
     
+-- |Disables the sending of \"Attributes In/Out of Scope\" messages to this 
+-- federate, which indicate the presence or absence (respectively) of other
+-- federates capable of setting attributes this federate is subscribed to.
 disableAttributeScopeAdvisorySwitch :: RTIAmbassador t -> IO ()
 disableAttributeScopeAdvisorySwitch rtiAmb = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (FFI.disableAttributeScopeAdvisorySwitch rtiAmb)
 
+-- |Enables the sending of \"Turn Interactions On/Off\" messages to this
+-- federate, which indicate that there are or are not (respectively) one or
+-- more remote federates interested in interactions of any given class.
 enableInteractionRelevanceAdvisorySwitch :: RTIAmbassador t -> IO ()
 enableInteractionRelevanceAdvisorySwitch rtiAmb = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->
         wrapExceptions (FFI.enableInteractionRelevanceAdvisorySwitch rtiAmb)
     
+-- |Disables the sending of \"Turn Interactions On/Off\" messages to this
+-- federate, which indicate that there are or are not (respectively) one or
+-- more remote federates interested in interactions of any given class.
 disableInteractionRelevanceAdvisorySwitch :: RTIAmbassador t -> IO ()
 disableInteractionRelevanceAdvisorySwitch rtiAmb = 
     withRTIAmbassador rtiAmb $ \rtiAmb ->

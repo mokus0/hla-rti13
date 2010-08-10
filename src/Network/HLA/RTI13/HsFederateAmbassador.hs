@@ -170,6 +170,10 @@ onTurnInteractionsOff turnInteractionsOff = do
 -- * Object Management
 ------------------------
 
+-- |This message indicates that there is at least one other federate that is 
+-- subscribed to the given object class, and so any instances being modeled
+-- by this federate should be announced.  This message is only sent if
+-- \"class revelance advisories\" are enabled.
 onStartRegistrationForObjectClass :: (ObjectClassHandle -> IO ()) -> FedHandlers t ()
 onStartRegistrationForObjectClass startRegistrationForObjectClass = do
     fedAmb <- ask
@@ -178,6 +182,10 @@ onStartRegistrationForObjectClass startRegistrationForObjectClass = do
         FFI.set_startRegistrationForObjectClass fedAmb funPtr
 
 
+-- |This message indicates that there are no other federates subscribed to
+-- the given object class, and so any instances being modeled by this federate
+-- need not be announced.  This message is only sent if \"class revelance
+-- advisories\" are enabled.
 onStopRegistrationForObjectClass :: (ObjectClassHandle -> IO ()) -> FedHandlers t ()
 onStopRegistrationForObjectClass stopRegistrationForObjectClass = do
     fedAmb <- ask
@@ -195,6 +203,9 @@ onDiscoverObjectInstance discoverObjectInstance = do
             discoverObjectInstance theObject theObjectHandle theName
         FFI.set_discoverObjectInstance fedAmb funPtr
 
+-- |When a federate updates an object's attributes, this message is passed to
+-- every other federate subscribed to those attributes to notify them of the
+-- change.
 onReflectAttributeValues :: FedTimeImpl t => (ObjectHandle -> M.Map AttributeHandle ByteString -> ByteString -> Maybe (FedTime t, EventRetractionHandle) -> IO ()) -> FedHandlers t ()
 onReflectAttributeValues reflectAttributeValues = do
     fedAmb <- ask
@@ -210,6 +221,8 @@ onReflectAttributeValues reflectAttributeValues = do
                     reflectAttributeValues theObject theAttrs theTag (Just (theTime, EventRetractionHandle theHandleSerial theHandleFed))
         FFI.set_reflectAttributeValues fedAmb funPtr
 
+-- |When a remote federate publishes an interaction this federate is 
+-- subscribed to,  This message will be used to deliver the interaction.
 onReceiveInteraction :: FedTimeImpl t => (InteractionClassHandle -> M.Map ParameterHandle ByteString -> ByteString -> Maybe (FedTime t, EventRetractionHandle) -> IO ()) -> FedHandlers t ()
 onReceiveInteraction receiveInteraction = do
     fedAmb <- ask
@@ -239,6 +252,12 @@ onRemoveObjectInstance removeObjectInstance = do
         
         FFI.set_removeObjectInstance fedAmb funPtr
 
+-- |This message indicates that, for some set of attributes to which the
+-- federate is subscribed, a federate has appeared which is capable of
+-- updating some of those attributes, and thus is a sort of \"warning order\"
+-- that 'onReflectAttributeValues' messages may now occur for those attributes.
+-- 
+-- This message is only sent if \"attribute scope advisories\" are enabled.
 onAttributesInScope :: (ObjectHandle -> S.Set AttributeHandle -> IO ()) -> FedHandlers t ()
 onAttributesInScope attributesInScope = do
     fedAmb <- ask
@@ -248,6 +267,12 @@ onAttributesInScope attributesInScope = do
             attributesInScope theObject theAttrs
         FFI.set_attributesInScope fedAmb funPtr
 
+-- |This message indicates that, for some set of attributes to which the
+-- federate is subscribed, no federate exists which is capable of
+-- updating any of those attributes, and thus 'onReflectAttributeValues' 
+-- messages will not occur for those attributes.
+-- 
+-- This message is only sent if \"attribute scope advisories\" are enabled.
 onAttributesOutOfScope :: (ObjectHandle -> S.Set AttributeHandle -> IO ()) -> FedHandlers t ()
 onAttributesOutOfScope attributesOutOfScope = do
     fedAmb <- ask
@@ -267,6 +292,12 @@ onProvideAttributeValueUpdate provideAttributeValueUpdate = do
             provideAttributeValueUpdate theObject theAttrs
         FFI.set_provideAttributeValueUpdate fedAmb funPtr
 
+-- |This message indicates that there is at least one federate interested in
+-- the values of the given attributes, and so updates should be sent to the
+-- federation whenever the values change.
+-- 
+-- This message is only sent when \"attribute relevance advisories\" are 
+-- enabled.
 onTurnUpdatesOnForObjectInstance :: (ObjectHandle -> S.Set AttributeHandle -> IO ()) -> FedHandlers t ()
 onTurnUpdatesOnForObjectInstance turnUpdatesOnForObjectInstance = do
     fedAmb <- ask
@@ -276,6 +307,12 @@ onTurnUpdatesOnForObjectInstance turnUpdatesOnForObjectInstance = do
             turnUpdatesOnForObjectInstance theObject theAttrs
         FFI.set_turnUpdatesOnForObjectInstance fedAmb funPtr
 
+-- |This message indicates that there are no federates interested in the
+-- values of the given attributes, and so updates need not be sent to the
+-- federation.
+-- 
+-- This message is only sent when \"attribute relevance advisories\" are 
+-- enabled.
 onTurnUpdatesOffForObjectInstance :: (ObjectHandle -> S.Set AttributeHandle -> IO ()) -> FedHandlers t ()
 onTurnUpdatesOffForObjectInstance turnUpdatesOffForObjectInstance = do
     fedAmb <- ask
