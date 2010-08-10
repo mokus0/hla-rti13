@@ -19,9 +19,20 @@ data SomeFedAmb t where
 
 data RTIAmbassador t = RTIAmbassador
     { rtiAmbPtr :: ForeignPtr (RTIAmbassador t)
-    , rtiFedAmb :: IORef (Maybe (SomeFedAmb t)) -- used to keep fedamb alive after joining federation
+    , rtiFedAmb :: IORef (Maybe (SomeFedAmb t))
+        -- ^ Used to keep the federate ambassador alive after joining the 
+        -- federation.
     , rtiCreatedRegions :: MVar (S.Set (Ptr Region))
-        -- ^ In order to ensure that all 'Region's are deleted before the 
+        -- ^ Deallocating regions is a bit tricky.  Regions cannot just be
+        -- deleted using the C++ \"delete\" keyword (at least, I don't think 
+        -- they can).  If I understand correctly, they must be deleted by the
+        -- RTIAmbassador's 'deleteRegion' method.  Thus, they must all be
+        -- deleted before the RTIAmbassador.  They also should be deleted
+        -- whenever they become unreachable, like any other garbage collected
+        -- object, so the 'RTIAmbassador' can't keep a reference to the
+        -- 'Region'\'s 'ForeignPtr'.
+        -- 
+        -- In order to ensure that all 'Region's are deleted before the 
         -- 'RTIAmbassador', a pointer to every 'Region' created is stored 
         -- here.  Whenever a 'Region' is deleted, it first checks to ensure
         -- that its pointer is in this set then, if so, deletes itself and 
@@ -30,7 +41,7 @@ data RTIAmbassador t = RTIAmbassador
         -- 'RTIAmbassador' will be explicitly depended-upon by every 'Region'
         -- (via its finalizer closure).
         --
-        -- When the 'RTIAmbassador' is deleted, which may happen before any
+        -- When the 'RTIAmbassador' is finalized, which may happen before any
         -- 'Region's that simultaneously become unreachable, it will delete
         -- all 'Region's in the set and fill the MVar with S.empty so that 
         -- they don't subsequently try to delete themselves again.
