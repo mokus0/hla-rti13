@@ -410,6 +410,8 @@ onAttributeOwnedByRTI attributeOwnedByRTI = do
 -- * Time Management
 ----------------------
 
+-- |Indicates completion of the federate's transition to time-regulated mode, 
+-- along with the federate's current logical time.
 onTimeRegulationEnabled :: FedTimeImpl t => (FedTime t -> IO ()) -> FedHandlers t ()
 onTimeRegulationEnabled timeRegulationEnabled = do
     fedAmb <- ask
@@ -419,6 +421,8 @@ onTimeRegulationEnabled timeRegulationEnabled = do
             timeRegulationEnabled someFedTime
         FFI.set_timeRegulationEnabled fedAmb funPtr
 
+-- |Indicates completion of the federate's transition to time-constrained mode, 
+-- along with the federate's current logical time.
 onTimeConstrainedEnabled :: FedTimeImpl t => (FedTime t -> IO ()) -> FedHandlers t ()
 onTimeConstrainedEnabled timeConstrainedEnabled = do
     fedAmb <- ask
@@ -428,6 +432,9 @@ onTimeConstrainedEnabled timeConstrainedEnabled = do
             timeConstrainedEnabled someFedTime
         FFI.set_timeConstrainedEnabled fedAmb funPtr
 
+-- |This message is a response to the \"Request Time Advance\" or  \"Next
+-- Event Request\" RTI services, indicating that the federate's time has
+-- advanced and the time to which it has been advanced.
 onTimeAdvanceGrant :: FedTimeImpl t => (FedTime t -> IO ()) -> FedHandlers t ()
 onTimeAdvanceGrant timeAdvanceGrant = do
     fedAmb <- ask
@@ -437,6 +444,12 @@ onTimeAdvanceGrant timeAdvanceGrant = do
             timeAdvanceGrant someFedTime
         FFI.set_timeAdvanceGrant fedAmb funPtr
 
+-- |This message indicates that a previously-delivered message with a future 
+-- timestamp has been retracted.  Despite having been delivered, it should
+-- be considered as having never existed and any effects it caused should be
+-- reverted or forgotten.  In other words, the simulation state should be made
+-- (as far as possible) identical to what it would have been had the event
+-- never occurred in the first place.
 onRequestRetraction :: (EventRetractionHandle -> IO ()) -> FedHandlers t ()
 onRequestRetraction requestRetraction = do
     fedAmb <- ask

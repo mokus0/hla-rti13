@@ -222,7 +222,8 @@ unsubscribeObjectClass rtiAmb theClass =
 
 -- |Indicates to the RTI that this federate is interested in any occurences of
 -- interactions of the specified class.  The 'Bool' flag indicates whether this
--- interest is \"active\", which means something to someone, probably.
+-- interest is \"active\", which means something to someone, probably.  The
+-- default value for the \"active\" parameter in C++ is 'True'.
 subscribeInteractionClass :: RTIAmbassador t -> InteractionClassHandle -> Bool -> IO ()
 subscribeInteractionClass rtiAmb theClass active =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
@@ -265,8 +266,7 @@ registerObjectInstance rtiAmb theClass mbObject =
 -- along with a time stamp at which the attributes values take effect.
 --
 -- Returns an 'EventRetractionHandle' which can be used to cancel the change
--- by calling 'retract', as long as it's not too late  (TODO: figure out and
--- document the exact criteria under which events can be retracted).
+-- by calling 'retract'.
 updateAttributeValuesAtTime :: FedTimeImpl t => RTIAmbassador t -> ObjectHandle -> M.Map AttributeHandle ByteString -> FedTime t -> ByteString -> IO EventRetractionHandle
 updateAttributeValuesAtTime rtiAmb theObject theAttributes theTime theTag =
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
@@ -540,6 +540,10 @@ queryLookahead rtiAmb =
         withFedTimeOut $ \fedTime -> 
             wrapExceptions (FFI.queryLookahead rtiAmb fedTime)
 
+-- |Retract an event previously scheduled for future delivery.  If possible, the
+-- RTI will refrain from delivering the event to other federates.  If it is too
+-- late to prevent delivery, all federates that received the event will be
+-- sent a \"Request Retraction\" message.
 retract :: RTIAmbassador t -> EventRetractionHandle -> IO ()
 retract rtiAmb (EventRetractionHandle u fh) =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
