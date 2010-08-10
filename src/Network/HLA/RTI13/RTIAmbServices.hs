@@ -564,8 +564,11 @@ changeInteractionOrderType rtiAmb theClass theType =
 -- * Data Distribution Management
 -----------------------------------
 
--- |TODO - think about this... can it ever call the finalizer for RTIAmbassador
--- before the one for Region?  Probably.  Is that a problem?  Probably...
+-- |Create a region which can then be associated with subscriptions and/or
+-- publications of objects, attributes and interactions.  Note that when the
+-- returned 'Region' is garbage-collected the corresponding region in the RTI
+-- will be deleted, and as a consequence will no longer be associated with any
+-- subscriptions or publications.
 createRegion :: RTIAmbassador t -> SpaceHandle -> ULong -> IO Region
 createRegion rtiAmb theSpace numberOfExtents =
     withRTIAmbassador rtiAmb $ \rtiAmb -> do
@@ -573,6 +576,21 @@ createRegion rtiAmb theSpace numberOfExtents =
         r <- newForeignPtr r (deleteRegion r)
         return (Region r)
     where 
+        -- TODO!  Figure out some way to enforce that the RTIAmbassador _not_
+        -- be deleted before the Regions it created (but still allow them
+        -- to be collected before the RTIAmbassador)
+        
+        -- One idea:
+        -- RTIAmbassador gets a new field of type MVar (S.Set (Ptr Region))
+        -- containing pointers to all existing regions.  Region gets a hidden 
+        -- field referencing the RTIAmbassador (if the reference from the
+        -- finalizer isn't enough).  When a Region is finalized, it
+        -- takes the RTIAmbassador's MVar, deletes itself if it was in the set,
+        -- and puts the MVar back with itself removed from the Set.
+        -- When the RTIAmbassador is deleted (which can only occur when 
+        -- it _AND_ all Regions become unreachable), it takes the MVar,
+        -- deletes _ALL_ regions, and puts the MVar back as S.empty.  Then
+        -- it deletes itself.
         deleteRegion theRegion =
             withRTIAmbassador rtiAmb $ \rtiAmb ->
                 wrapExceptions (FFI.deleteRegion rtiAmb theRegion)
