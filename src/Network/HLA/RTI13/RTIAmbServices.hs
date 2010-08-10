@@ -595,6 +595,8 @@ createRegion rtiAmb theSpace numberOfExtents =
             withRTIAmbassador rtiAmb $ \rtiAmb ->
                 wrapExceptions (FFI.deleteRegion rtiAmb theRegion)
 
+-- |This must be called if an existing region is modified in any way, in order
+-- to inform the RTI of the changes.
 notifyAboutRegionModification :: RTIAmbassador t -> Region -> IO ()
 notifyAboutRegionModification rtiAmb theRegion =
     withRTIAmbassador rtiAmb $ \rtiAmb ->
