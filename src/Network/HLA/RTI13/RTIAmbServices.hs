@@ -12,11 +12,12 @@ import Network.HLA.RTI13.OddsAndEnds
 import Network.HLA.RTI13.RTITypes
 import Network.HLA.RTI13.RTIException
 
+import Control.Concurrent.MVar
 import Control.Exception (bracket_)
 import Data.ByteString (ByteString, useAsCString)
 import Data.IORef
 import qualified Data.Map as M (Map)
-import qualified Data.Set as S (Set)
+import qualified Data.Set as S
 import Foreign hiding (newForeignPtr)
 import Foreign.Concurrent
 import System.Mem
@@ -28,9 +29,19 @@ import System.Mem
 newRTIAmbassador :: IO (RTIAmbassador t)
 newRTIAmbassador = do
     rtiAmb <- FFI.new_RTIambassador
-    rtiAmb <- newForeignPtr rtiAmb (FFI.delete_RTIambassador rtiAmb)
+    regionsMVar <- newMVar S.empty
+    let finalizer = do
+        -- Don't need to hold the MVar here, because when it's restored to S.empty
+        -- the Region finalizers become harmless.
+        theRegions <- takeMVar regionsMVar
+        putMVar regionsMVar S.empty
+        
+        mapM_ (wrapExceptions . FFI.deleteRegion rtiAmb) (S.toList theRegions)
+        FFI.delete_RTIambassador rtiAmb
+    
+    rtiAmb <- newForeignPtr rtiAmb finalizer
     fedAmb <- newIORef Nothing
-    return (RTIAmbassador rtiAmb fedAmb)
+    return (RTIAmbassador rtiAmb fedAmb regionsMVar)
 
 --------------------------------------
 -- * Federation Management Services
@@ -570,30 +581,36 @@ changeInteractionOrderType rtiAmb theClass theType =
 -- will be deleted, and as a consequence will no longer be associated with any
 -- subscriptions or publications.
 createRegion :: RTIAmbassador t -> SpaceHandle -> ULong -> IO Region
-createRegion rtiAmb theSpace numberOfExtents =
+createRegion rtiAmb theSpace numberOfExtents = do
+    let regionsMVar = rtiCreatedRegions rtiAmb
     withRTIAmbassador rtiAmb $ \rtiAmb -> do
         r <- wrapExceptions (FFI.createRegion rtiAmb theSpace numberOfExtents)
+        modifyMVar_ regionsMVar (return . S.insert r)
         r <- newForeignPtr r (deleteRegion r)
         return (Region r)
+    
     where 
-        -- TODO!  Figure out some way to enforce that the RTIAmbassador _not_
-        -- be deleted before the Regions it created (but still allow them
-        -- to be collected before the RTIAmbassador)
-        
-        -- One idea:
-        -- RTIAmbassador gets a new field of type MVar (S.Set (Ptr Region))
-        -- containing pointers to all existing regions.  Region gets a hidden 
-        -- field referencing the RTIAmbassador (if the reference from the
-        -- finalizer isn't enough).  When a Region is finalized, it
-        -- takes the RTIAmbassador's MVar, deletes itself if it was in the set,
-        -- and puts the MVar back with itself removed from the Set.
-        -- When the RTIAmbassador is deleted (which can only occur when 
-        -- it _AND_ all Regions become unreachable), it takes the MVar,
-        -- deletes _ALL_ regions, and puts the MVar back as S.empty.  Then
-        -- it deletes itself.
-        deleteRegion theRegion =
-            withRTIAmbassador rtiAmb $ \rtiAmb ->
-                wrapExceptions (FFI.deleteRegion rtiAmb theRegion)
+        deleteRegion theRegion = do
+            -- Important: we 'takeMVar' rather than 'modifyMVar_' because
+            -- the MVar also serves as a lock to prevent the RTIAmbassador
+            -- from being deleted before we finish deleting the region.  So 
+            -- the MVar must be empty from here until after the region is
+            -- safely deleted.
+            regions <- takeMVar (rtiCreatedRegions rtiAmb)
+            
+            if S.member theRegion regions
+                then do
+                    withRTIAmbassador rtiAmb $ \rtiAmb ->
+                        wrapExceptions (FFI.deleteRegion rtiAmb theRegion)
+                    
+                    putMVar (rtiCreatedRegions rtiAmb) (S.delete theRegion regions)
+                else do
+                    putMVar (rtiCreatedRegions rtiAmb) regions
+            
+            -- This is _ONLY_ to enforce that the Region not outlive the RTIAmbassador.
+            -- In particular, it does NOT ensure that the Region will be finalized
+            -- before the RTIAmbassador.
+            touchForeignPtr (rtiAmbPtr rtiAmb)
 
 -- |This must be called if an existing region is modified in any way, in order
 -- to inform the RTI of the changes.

@@ -3,6 +3,7 @@
   #-}
 module Network.HLA.RTI13.RTIAmbServices.FFI where
 
+import Control.Concurrent.MVar
 import Data.ByteString (ByteString)
 import Data.IORef
 import qualified Data.Map as M (Map)
@@ -19,11 +20,25 @@ data SomeFedAmb t where
 data RTIAmbassador t = RTIAmbassador
     { rtiAmbPtr :: ForeignPtr (RTIAmbassador t)
     , rtiFedAmb :: IORef (Maybe (SomeFedAmb t)) -- used to keep fedamb alive after joining federation
+    , rtiCreatedRegions :: MVar (S.Set (Ptr Region))
+        -- ^ In order to ensure that all 'Region's are deleted before the 
+        -- 'RTIAmbassador', a pointer to every 'Region' created is stored 
+        -- here.  Whenever a 'Region' is deleted, it first checks to ensure
+        -- that its pointer is in this set then, if so, deletes itself and 
+        -- removes itself from this 'Set'.  In order to ensure that no 'Region'
+        -- remains reachable longer than the 'RTIAmbassador', the
+        -- 'RTIAmbassador' will be explicitly depended-upon by every 'Region'
+        -- (via its finalizer closure).
+        --
+        -- When the 'RTIAmbassador' is deleted, which may happen before any
+        -- 'Region's that simultaneously become unreachable, it will delete
+        -- all 'Region's in the set and fill the MVar with S.empty so that 
+        -- they don't subsequently try to delete themselves again.
     }
-instance Show (RTIAmbassador t) where showsPrec p (RTIAmbassador x _) = showsPrec p x
+instance Show (RTIAmbassador t) where showsPrec p (RTIAmbassador x _ _) = showsPrec p x
 
 withRTIAmbassador :: RTIAmbassador t -> (Ptr (RTIAmbassador t) -> IO a) -> IO a
-withRTIAmbassador (RTIAmbassador rtiAmb _) = withForeignPtr rtiAmb
+withRTIAmbassador (RTIAmbassador rtiAmb _ _) = withForeignPtr rtiAmb
 
 new_RTIambassador :: IO (Ptr (RTIAmbassador t))
 new_RTIambassador = wrapExceptions wrap_new_RTIambassador
@@ -32,6 +47,7 @@ foreign import ccall unsafe "wrap/RTIambServices.h wrap_new_RTIambassador"
 
 delete_RTIambassador :: Ptr (RTIAmbassador t) -> IO ()
 delete_RTIambassador rtiAmb = wrapExceptions (wrap_delete_RTIambassador rtiAmb)
+
 foreign import ccall unsafe "wrap/RTIambServices.h wrap_delete_RTIambassador" 
     wrap_delete_RTIambassador :: Ptr (RTIAmbassador t) -> Ptr (Ptr RTIException) -> IO ()
 
