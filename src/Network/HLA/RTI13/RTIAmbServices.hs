@@ -36,7 +36,14 @@ newRTIAmbassador = do
         theRegions <- takeMVar regionsMVar
         putMVar regionsMVar S.empty
         
-        mapM_ (wrapExceptions . FFI.deleteRegion rtiAmb) (S.toList theRegions)
+        alloca $ \excPtr -> sequence_ 
+            [ do
+                poke excPtr nullPtr
+                FFI.deleteRegion rtiAmb theRegion excPtr
+                -- discard exceptions
+            | theRegion <- S.toList theRegions
+            ]
+        
         FFI.delete_RTIambassador rtiAmb
     
     rtiAmb <- newForeignPtr rtiAmb finalizer
