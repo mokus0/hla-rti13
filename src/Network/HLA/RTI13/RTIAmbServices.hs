@@ -603,12 +603,6 @@ notifyAboutRegionModification rtiAmb theRegion =
         withRegion theRegion $ \theRegion ->
             wrapExceptions (FFI.notifyAboutRegionModification rtiAmb theRegion)
 
--- |Should not normally be run by user; region will be properly deleted
--- when garbage collected (?)
-deleteRegion :: RTIAmbassador t -> Region -> IO ()
-deleteRegion rtiAmb (Region theRegion) = finalizeForeignPtr theRegion
-
-
 registerObjectInstanceWithRegion :: RTIAmbassador t -> ObjectClassHandle -> Maybe ByteString -> [(AttributeHandle, Region)] -> IO ObjectHandle
 registerObjectInstanceWithRegion rtiAmb theClass mbObject theHandles = do
     let (theAttributes, theRegions) = unzip theHandles
