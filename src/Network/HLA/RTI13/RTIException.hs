@@ -117,6 +117,11 @@ data RTIExceptionName
     | AttributeNotOwned
     | AttributeNotPublished
     | ConcurrentAccessAttempted
+        -- ^ RTI implementations are not expected to be re-entrant, but they
+        -- are expected to throw 'ConcurrentAccessAttempted' instead of failing
+        -- or silently corrupting state if concurrent calls are not supported.
+        -- Typically, the federate is expected to retry an operation if this
+        -- exception is thrown.
     | CouldNotDiscover
     | CouldNotOpenFED
     | CouldNotRestore
@@ -168,6 +173,11 @@ data RTIExceptionName
     | RestoreInProgress  
     | RestoreNotRequested
     | RTIinternalError
+        -- ^ Indicates an error not otherwise anticipated in the API design.
+        -- Pretty much any RTI function can potentially throw this, and 
+        -- if it does it is almost certainly fatal.  There's not much you can
+        -- do with it implementation-independently other than display it and
+        -- gracefully shut down your federate.
     | SpaceNotDefined
     | SaveInProgress
     | SaveNotInitiated
@@ -183,6 +193,10 @@ data RTIExceptionName
     | ValueCountExceeded
     | ValueLengthExceeded
     | UnknownRTIException !ByteString
+        -- ^ This should never actually be encountered.  It indicates an 
+        -- exception that was thrown that is not a part of the API, and if
+        -- it ever happens it probably indicates an error in the 
+        -- implementation of this Haskell RTI interface.
     deriving (Eq, Ord, Read, Show, Data, Typeable)
 
 -- selectors for catchJust

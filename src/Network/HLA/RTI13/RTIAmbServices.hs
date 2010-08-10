@@ -36,8 +36,15 @@ newRTIAmbassador = do
 -- * Federation Management Services
 --------------------------------------
 
--- |Attempt to create a federation on the RTI.  If the federation already exists,
--- a 'FederationExecutionAlreadyExists' exception will be thrown.
+-- |Attempt to create a federation on the RTI.
+-- 
+-- Preconditions:
+-- 
+-- * No federation execution exists with that name.  If the federation already
+-- exists, a 'FederationExecutionAlreadyExists' exception will be thrown.
+-- 
+-- Other possible exceptions include 'CouldNotOpenFED', 'ErrorReadingFED', 
+-- 'ConcurrentAccessAttempted' or 'RTIinternalError'.
 -- 
 -- Usage:
 -- 
@@ -50,8 +57,18 @@ createFederationExecution rtiAmb executionName fed =
             useAsCString fed $ \fed ->
                 wrapExceptions (FFI.createFederationExecution rtiAmb executionName fed)
 
--- |Attempt to halt a federation on the RTI.  If the federation does not exist,
+-- |Attempt to halt a federation on the RTI.
+-- 
+-- Preconditions:
+-- 
+-- * A federation with that name exists.  If the federation does not exist,
 -- a 'FederationExecutionDoesNotExist' exception will be thrown.
+-- 
+-- * No federates are joined to that federation.  If there are federates
+-- participating in the federation, a 'FederatesCurrentlyJoined' exception
+-- will be thrown.
+-- 
+-- Other possible exceptions include 'ConcurrentAccessAttempted' or 'RTIinternalError'.
 -- 
 -- Usage:
 -- 
@@ -64,6 +81,19 @@ destroyFederationExecution rtiAmb executionName =
             wrapExceptions (FFI.destroyFederationExecution rtiAmb executionName)
 
 -- |Attempt to join a federation execution.
+-- 
+-- Preconditions:
+-- 
+-- * A federation with the specified name exists.  If there is no such federation,
+-- a 'FederationExecutionDoesNotExist' exception will be thrown.
+-- 
+-- * The federation does not already have a federate with the specified name.
+-- If there is already a federate with the requested name, a
+-- 'FederateAlreadyExecutionMember' exception will be thrown.
+-- 
+-- Other possible exceptions include 'CouldNotOpenFED', 'ErrorReadingFED', 
+-- 'SaveInProgress', 'RestoreInProgress', 'ConcurrentAccessAttempted', 
+-- or 'RTIinternalError'.
 -- 
 -- Usage:
 -- 
@@ -80,6 +110,9 @@ joinFederationExecution rtiAmb yourName executionName fedAmb = do
 
 -- |Attempt to resign from a federation execution.  The 'ResignAction' 
 -- parameter describes how attributes owned by the federate will be disposed of.
+-- 
+-- Possible exceptions are 'FederateOwnsAttributes', 'FederateNotExecutionMember',
+-- 'InvalidResignAction', 'ConcurrentAccessAttempted' and 'RTIinternalError'.
 resignFederationExecution :: RTIAmbassador t -> ResignAction -> IO ()
 resignFederationExecution rtiAmb resignAction = do
     withRTIAmbassador rtiAmb $ \rtiAmb -> 
