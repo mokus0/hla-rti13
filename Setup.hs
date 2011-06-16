@@ -12,9 +12,9 @@ main = do
 hook_RTI_HOME hooks@UserHooks{preConf, confHook, postConf} = do
     env <- getEnvironment
     let rtiRoot = do
-            rti_home <- lookup "RTI_HOME"       env
-            rti_type <- lookup "RTI_BUILD_TYPE" env
-            return (rti_home </> rti_type)
+            rti_home        <- lookup "RTI_HOME"       env
+            let mb_rti_type =  lookup "RTI_BUILD_TYPE" env
+            return (maybe rti_home (rti_home </>) mb_rti_type)
         
         rtiLibDir = fmap (</> "lib")     rtiRoot
         rtiIncDir = fmap (</> "include") rtiRoot

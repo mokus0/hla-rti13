@@ -21,6 +21,7 @@ Flag portico
   description:          Include a pkgconfig dependency on portico.  This
                         requires creating and installing a pkgconfig file
                         (portico doesn't come with one).  Uses DLC interface.
+                        This is not necessary if $RTI_HOME is set.
   default:              False
 
 Flag matrex
@@ -28,6 +29,7 @@ Flag matrex
                         This requires creating and installing a pkgconfig 
                         file (MATREX doesn't come with one).  Uses RTI-NG
                         interface.
+                        This is not necessary if $RTI_HOME is set.
   default:              False
 
 Flag dlc-api
