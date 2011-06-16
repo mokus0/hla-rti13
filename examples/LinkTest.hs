@@ -8,6 +8,6 @@ import Network.HLA.RTI13.RTITypes.FFI
 -- build with "ghc --make", the hla-rti13 package's package description
 -- should include info about where to find the libraries needed.
 main = do
-    -- putStrLn ("testing constants: " ++ show [unpack rtiVersion, unpack defaultSpaceName, show wrap_RTI_MAJOR_VERSION])
+    putStrLn ("RTI version string: " ++ show (unpack rtiVersion))
     rti_ambassador <- newRTIAmbassador :: IO (RTIAmbassador ())
     putStrLn ("got rti_ambassador: " ++ show rti_ambassador)

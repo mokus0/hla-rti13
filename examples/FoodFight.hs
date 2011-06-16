@@ -12,8 +12,8 @@ import Data.Binary.Put
 import Data.Binary.IEEE754
 import Data.ByteString.Class
 import Data.ByteString.Char8 (ByteString, pack, unpack)
-import Data.Container.Mutable
 import qualified Data.Map as M
+import qualified Data.Set as S
 import Data.Random
 import Data.Random.Distribution.Categorical
 import Data.Random.Source.DevRandom
@@ -109,7 +109,7 @@ main = do
     fedAmb <- newFedAmbWithHandlers federateAmbassadorHandlers
     let ?rti_ambassador = rti_ambassador :: RTIAmbassador (FedAmbTime (HsFederateAmbassador RTIFedTime))
         ?fedAmb         = fedAmb         :: HsFederateAmbassador RTIFedTime
-
+    
     withFederation primarySimulation
 
 doTick = do
@@ -241,12 +241,7 @@ publishAndSubscribe = do
         ]
     
     -- define attribute handle set
-    attrs <- newContainer (Just 4)
-    putStrLn "Created an AttributeHandleSet"
-    insert attrs lunchMoneyHandle
-    insert attrs cleanlinessHandle
-    insert attrs ammoAmountHandle
-    insert attrs privilegeToDeleteHandle
+    let attrs = S.fromList [lunchMoneyHandle, cleanlinessHandle, ammoAmountHandle, privilegeToDeleteHandle]
     
     putStrLn "Publishing student class"
     publishObjectClass                  ?rti_ambassador studentHandle attrs
@@ -528,9 +523,10 @@ sendSplatInteraction targetObjHandle ensuingMess = do
     splatHandle         <- getHandle interactionHandles SplatHandle
     targetHandle        <- getHandle parameterHandles   TargetHandle
     ensuingMessHandle   <- getHandle parameterHandles EnsuingMessHandle
-    params <- newContainer (Just 2)
-    insert params (targetHandle,        toStrictByteString $ runPut $ putWord32be target)
-    insert params (ensuingMessHandle,   toStrictByteString $ runPut $ putFloat64be ensuingMess          )
+    let params = M.fromList
+            [ (targetHandle,        toStrictByteString $ runPut $ putWord32be target)
+            , (ensuingMessHandle,   toStrictByteString $ runPut $ putFloat64be ensuingMess)
+            ]
     
     if regulating
         then do
