@@ -17,6 +17,8 @@ synopsis:               HLA RTI 1.3NG/DLC bindings
 description:            HLA RTI bindings for DMSO RTI 1.3NG or the C++ 
                         Dynamic Link Compatible interface standard
 
+tested-with:            GHC == 6.12.1, GHC == 7.0.2
+
 Flag portico
   description:          Include a pkgconfig dependency on portico.  This
                         requires creating and installing a pkgconfig file
@@ -82,8 +84,8 @@ Library
   if flag(portico)
     pkgconfig-depends: portico
   
-    if flag(matrex)
-      pkgconfig-depends: matrex-rti
+  if flag(matrex)
+    pkgconfig-depends: matrex-rti
   
   if flag(dlc-api)
     cpp-options:        -DDLC_API
