@@ -13,12 +13,14 @@ instance NewRef RTIFedTime IO Double where
     newReference = mkRTIFedTime
 
 instance ReadRef RTIFedTime IO Double where
-    readReference (RTIFedTime fp) = withForeignPtr fp $ \rt -> do
-        getTime rt
+    readReference (RTIFedTime fp) = 
+        withForeignPtr fp $ \rt ->
+            getTime rt
 
 instance WriteRef RTIFedTime IO Double where
-    writeReference (RTIFedTime fp) t = withForeignPtr fp $ \rt -> do
-        setTime rt t
+    writeReference (RTIFedTime fp) t = 
+        withForeignPtr fp $ \rt -> 
+            setTime rt t
 
 instance FedTimeImpl RTIFedTime where
     type FedTime RTIFedTime = Double

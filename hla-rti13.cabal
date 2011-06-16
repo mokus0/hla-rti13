@@ -4,6 +4,8 @@ stability:              experimental
 
 cabal-version:          >= 1.2
 build-type:             Custom
+-- Custom Setup.hs adds -L and -I dirs based on RTI_HOME environment variable,
+-- if set.
 
 author:                 James Cook <james.cook@usma.edu>
 maintainer:             James Cook <james.cook@usma.edu>
@@ -15,20 +17,32 @@ synopsis:               HLA RTI 1.3NG/DLC bindings
 description:            HLA RTI bindings for DMSO RTI 1.3NG or the C++ 
                         Dynamic Link Compatible interface standard
 
-Flag dlc-api
-  description:          Use the DLC API (untested!)
+Flag portico
+  description:          Include a pkgconfig dependency on portico.  This
+                        requires creating and installing a pkgconfig file
+                        (portico doesn't come with one).  Uses DLC interface.
   default:              False
 
-Flag rti-ng
-  description:          Use the RTI-NG API  (The versions included with the 
-                        MATREX tools v4.1.1 and v4.3.4 are what I developed
-                        against)
+Flag matrex
+  description:          Include a pkgconfig dependency on the MATREX RTI.
+                        This requires creating and installing a pkgconfig 
+                        file (MATREX doesn't come with one).  Uses RTI-NG
+                        interface.
+  default:              False
+
+Flag dlc-api
+  description:          Use the DLC API (Tested with poRTIco 1.0.2)
   default:              True
+
+Flag rti-ng
+  description:          Use the RTI-NG API  (Tested with poRTIco 1.0.2 and
+                        MATREX tools v4.1.1 and v4.3.4)
+  default:              False
 
 Flag need-fedtime
   description:          Include the 'fedtime' library as a link-time 
                         dependency.  Some RTIs have one, some don't.
-  default:              True
+  default:              False
 
 Flag debug
   default:              True
@@ -63,19 +77,32 @@ Library
   if os(darwin) 
     extra-libraries:    stdc++
   
+  if flag(portico)
+    pkgconfig-depends: portico
+  
+    if flag(matrex)
+      pkgconfig-depends: matrex-rti
+  
   if flag(dlc-api)
+    cpp-options:        -DDLC_API
     cc-options:         -DDLC_API
+    
     extra-libraries:    rti13
+    include-dirs:       include/dlc
     if flag(need-fedtime)
       extra-libraries:  fedtime13
 
   if flag(rti-ng)
-    cc-options:         -DRTI_NG_MATREX_API
+    cpp-options:        -DRTI_NG_API
+    cc-options:         -DRTI_NG_API
     extra-libraries:    RTI-NG
+    -- no include-dirs; RTI-NG interface needs actual headers from the actual
+    -- implementation, because they include some macro "constants".
     if flag(need-fedtime)
       extra-libraries:  fedtime
   
   if flag(debug)
+    cpp-options:        -DDEBUG
     cc-options:         -DDEBUG
   
   c-sources:            cbits/hsFederateAmb.cpp
@@ -87,3 +114,22 @@ Library
                         cbits/wrap/RTItypes.cpp
                         
   cc-options:           -DRTI_USES_STD_FSTREAM -DREENTRANT -DRTI_HAS_THREADS -DPOSIX_PTHREAD_SEMANTICS
+  
+  -- Various forbidden flag combinations
+  -- ===================================
+  if flag(dlc-api) && flag(rti-ng) || (!flag(dlc-api) && !flag(rti-ng))
+    -- must select exactly one API
+    build-depends:      base > 1 && < 0
+    buildable:          False
+  
+  if flag(portico) && flag(matrex)
+    -- must select no more than one implementation
+    build-depends:      base > 1 && < 0
+    buildable:          False
+  
+  if flag(matrex) && !(flag(rti-ng) && flag(need-fedtime))
+    -- MATREX RTI requires RTI-NG API and fedtime lib
+    -- (fedtime part should probably be in .pc file instead of .cabal file)
+    build-depends:      base > 1 && < 0
+    buildable:          False
+

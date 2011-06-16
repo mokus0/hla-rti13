@@ -31,7 +31,7 @@ data RTIAmbassador t = RTIAmbassador
         -- whenever they become unreachable, like any other garbage collected
         -- object, so the 'RTIAmbassador' can't keep a reference to the
         -- 'Region'\'s 'ForeignPtr'.
-        -- 
+        --
         -- In order to ensure that all 'Region's are deleted before the 
         -- 'RTIAmbassador', a pointer to every 'Region' created is stored 
         -- here.  Whenever a 'Region' is deleted, it first checks to ensure

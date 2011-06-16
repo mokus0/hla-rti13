@@ -1,5 +1,5 @@
 {-# LANGUAGE 
-        ForeignFunctionInterface
+        ForeignFunctionInterface, CPP
   #-}
 module Network.HLA.RTI13.RTITypes.FFI where
 
@@ -14,6 +14,14 @@ import Network.HLA.RTI13.RTITypes.Types
 
 -- * Constants
 
+foreign import ccall "wrap/RTItypes.h wrap_RTI_VERSION"
+    wrap_RTI_VERSION :: CString
+{-# NOINLINE rtiVersion #-}
+rtiVersion :: ByteString
+rtiVersion = unsafePerformIO (packCString wrap_RTI_VERSION)
+
+#ifdef RTI_NG_API
+
 foreign import ccall "wrap/RTItypes.h wrap_DEFAULT_SPACE_NAME" 
     wrap_DEFAULT_SPACE_NAME :: CString
 {-# NOINLINE defaultSpaceName #-}
@@ -25,11 +33,6 @@ foreign import ccall "wrap/RTItypes.h wrap_DEFAULT_SPACE_DIMENSION_NAME"
 defaultSpaceDimensionName :: ByteString
 defaultSpaceDimensionName = unsafePerformIO (packCString wrap_DEFAULT_SPACE_DIMENSION_NAME)
 
-foreign import ccall "wrap/RTItypes.h wrap_RTI_VERSION"
-    wrap_RTI_VERSION :: CString
-{-# NOINLINE rtiVersion #-}
-rtiVersion :: ByteString
-rtiVersion = unsafePerformIO (packCString wrap_RTI_VERSION)
 foreign import ccall "wrap/RTItypes.h wrap_RTI_INTERNAL_VERSION"
     wrap_RTI_INTERNAL_VERSION :: CString
 {-# NOINLINE rtiInternalVersion #-}
@@ -60,6 +63,7 @@ rtiInternalMajorVersion = fromIntegral wrap_RTI_INTERNAL_MAJOR_VERSION
 rtiInternalMinorVersion = fromIntegral wrap_RTI_INTERNAL_MINOR_VERSION
 rtiInternalRelease = fromIntegral wrap_RTI_INTERNAL_RELEASE
 
+#endif
 
 
 -- * AttributeHandleValuePairSet

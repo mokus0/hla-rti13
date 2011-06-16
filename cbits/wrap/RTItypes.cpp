@@ -2,6 +2,8 @@
 
 #include "wrap/rti.h"
 
+#ifdef RTI_NG_API
+
 ccall const char *wrap_DEFAULT_SPACE_NAME()               { return DEFAULT_SPACE_NAME;           }
 ccall const char *wrap_DEFAULT_SPACE_DIMENSION_NAME()     { return DEFAULT_SPACE_DIMENSION_NAME; }
 
@@ -18,6 +20,15 @@ ccall RTI_ULong wrap_RTI_INTERNAL_RELEASE()         { return RTI_INTERNAL_RELEAS
 
 ccall RTI_ULong wrap_MIN_EXTENT()                   { return MIN_EXTENT; }
 ccall RTI_ULong wrap_MAX_EXTENT()                   { return MAX_EXTENT; }
+
+#else
+
+ccall const char *wrap_RTI_VERSION()                { return rti13::RTIversion(); }
+
+ccall RTI_ULong wrap_MIN_EXTENT()                   { return rti13::Region::getMinExtent(); }
+ccall RTI_ULong wrap_MAX_EXTENT()                   { return rti13::Region::getMaxExtent(); }
+
+#endif
 
 ///// AttributeHandleValuePairSet
 #define invoke(method)  wrap(return ((rti13::AttributeHandleValuePairSet *)ahvpSet)->method)

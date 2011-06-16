@@ -586,7 +586,8 @@ changeInteractionOrderType rtiAmb theClass theType =
 -- publications of objects, attributes and interactions.  Note that when the
 -- returned 'Region' is garbage-collected the corresponding region in the RTI
 -- will be deleted, and as a consequence will no longer be associated with any
--- subscriptions or publications.
+-- subscriptions or publications (TODO: consider whether this is actually 
+-- desirable behavior).
 createRegion :: RTIAmbassador t -> SpaceHandle -> ULong -> IO Region
 createRegion rtiAmb theSpace numberOfExtents = do
     let regionsMVar = rtiCreatedRegions rtiAmb
@@ -598,26 +599,23 @@ createRegion rtiAmb theSpace numberOfExtents = do
     
     where 
         deleteRegion theRegion = do
-            -- Important: we 'takeMVar' rather than 'modifyMVar_' because
-            -- the MVar also serves as a lock to prevent the RTIAmbassador
-            -- from being deleted before we finish deleting the region.  So 
-            -- the MVar must be empty from here until after the region is
-            -- safely deleted.
-            regions <- takeMVar (rtiCreatedRegions rtiAmb)
-            
-            if S.member theRegion regions
-                then do
-                    withRTIAmbassador rtiAmb $ \rtiAmb ->
-                        wrapExceptions (FFI.deleteRegion rtiAmb theRegion)
-                    
-                    putMVar (rtiCreatedRegions rtiAmb) (S.delete theRegion regions)
-                else do
-                    putMVar (rtiCreatedRegions rtiAmb) regions
+            modifyMVar_ (rtiCreatedRegions rtiAmb) $ \regions -> 
+                if S.member theRegion regions
+                    then do
+                        withRTIAmbassador rtiAmb $ \rtiAmb ->
+                            wrapExceptions (FFI.deleteRegion rtiAmb theRegion)
+                        
+                        return (S.delete theRegion regions)
+                    else do
+                        return regions
             
             -- This is _ONLY_ to enforce that the Region not outlive the RTIAmbassador.
             -- In particular, it does NOT ensure that the Region will be finalized
             -- before the RTIAmbassador.
             touchForeignPtr (rtiAmbPtr rtiAmb)
+
+deleteRegion :: RTIAmbassador t -> Region -> IO ()
+deleteRegion _rtiAmb (Region r) = finalizeForeignPtr r
 
 -- |This must be called if an existing region is modified in any way, in order
 -- to inform the RTI of the changes.

@@ -9,7 +9,7 @@
 #   include "NullFederateAmbassador.hh"
 #   include "fedtime.hh"
 #   define rti13 RTI
-#   define NullFedAmb 
+#   define NullFedAmb NullFederateAmbassador
 #elif defined(DLC_API)
 #   include "RTI13.h"
 #   include "NullFederateAmbassador13.h"

@@ -56,6 +56,7 @@ newtype ExtentIndex = ExtentIndex ULong
     deriving (Eq, Ord, Bits, Enum, Num, Real, Integral, Data, Typeable, Storable)
 instance Show ExtentIndex            where showsPrec p (ExtentIndex            x) = showsPrec p x
 instance Read ExtentIndex            where readsPrec p s = [(ExtentIndex x, rest) | (x, rest) <- readsPrec p s]
+
 instance Bounded ExtentIndex where
     minBound = wrap_MIN_EXTENT
     maxBound = wrap_MAX_EXTENT
