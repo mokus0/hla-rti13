@@ -121,7 +121,7 @@ Library
   
   -- Various forbidden flag combinations
   -- ===================================
-  if flag(dlc-api) && flag(rti-ng) || (!flag(dlc-api) && !flag(rti-ng))
+  if (flag(dlc-api) && flag(rti-ng)) || !(flag(dlc-api) || flag(rti-ng))
     -- must select exactly one API
     build-depends:      base > 1 && < 0
     buildable:          False
