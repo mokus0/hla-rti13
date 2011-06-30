@@ -14,6 +14,9 @@
 
 // need to declare this because the C headers need it
 #if defined(__alpha) || (defined(__sgi) && _MIPS_SZLONG == 64) || (defined(__sparcv9))  || (defined(__x86_64))
+#ifndef RTI_64_BIT_LONG
+#define RTI_64_BIT_LONG 1
+#endif
 typedef unsigned int RTI_ULong;
 #else
 typedef unsigned long RTI_ULong;
