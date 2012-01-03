@@ -8,8 +8,9 @@ import Network.HLA.RTI13.RTITypes
 import Data.ByteString (ByteString)
 import qualified Data.Map as M (Map)
 import qualified Data.Set as S (Set)
-import Foreign
 import Foreign.C
+import Foreign.Ptr
+import System.IO.Unsafe
 
 {-# NOINLINE freeHaskellFunPtrPtr #-}
 freeHaskellFunPtrPtr :: FunPtr (FunPtr a -> IO ())

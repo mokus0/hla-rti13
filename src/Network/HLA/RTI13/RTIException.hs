@@ -9,7 +9,9 @@ import System.IO.Unsafe
 import qualified Data.IntMap as IM
 import Data.StateRef
 import Foreign.C.String
-import Foreign
+import Foreign.Marshal
+import Foreign.Ptr
+import Foreign.Storable
 import Unsafe.Coerce
 import Data.Generics
 import Control.Exception
