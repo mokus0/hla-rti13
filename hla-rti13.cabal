@@ -7,8 +7,8 @@ build-type:             Custom
 -- Custom Setup.hs adds -L and -I dirs based on RTI_HOME environment variable,
 -- if set.
 
-author:                 James Cook <james.cook@usma.edu>
-maintainer:             James Cook <james.cook@usma.edu>
+author:                 James Cook <mokus@deepbondi.net>
+maintainer:             James Cook <mokus@deepbondi.net>
 license:                PublicDomain
 homepage:               /dev/null
 
