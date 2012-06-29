@@ -2,7 +2,7 @@ name:                   hla-rti13
 version:                0.0.0.1
 stability:              experimental
 
-cabal-version:          >= 1.2
+cabal-version:          >= 1.6
 build-type:             Custom
 -- Custom Setup.hs adds -L and -I dirs based on RTI_HOME environment variable,
 -- if set.
@@ -18,6 +18,10 @@ description:            HLA RTI bindings for DMSO RTI 1.3NG or the C++
                         Dynamic Link Compatible interface standard
 
 tested-with:            GHC == 6.12.1, GHC == 7.0.2
+
+source-repository head
+  type: git
+  location: git://github.com/mokus0/hla-rti13.git
 
 Flag portico
   description:          Include a pkgconfig dependency on portico.  This
@@ -72,7 +76,7 @@ Library
   other-modules:        Network.HLA.RTI13.HsFederateAmbassador.FunPtrWrappers
                         Network.HLA.RTI13.OddsAndEnds
                         
-  build-depends:        base >= 4, containers, syb, mtl,
+  build-depends:        base >= 4 && < 5, containers, syb, mtl,
                         bytestring,
                         stateref
   
